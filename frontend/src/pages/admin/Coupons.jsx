@@ -93,7 +93,7 @@ const Coupons = () => {
       });
       fetchCoupons();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to save coupon.');
+      toast.error(err.message || 'Failed to save coupon.');
     }
   };
 

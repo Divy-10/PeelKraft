@@ -45,7 +45,7 @@ const MyProfile = () => {
       updateUser(res.data);
       toast.success('Profile updated successfully!');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to update profile.');
+      toast.error(err.message || 'Failed to update profile.');
     } finally {
       setProfileLoading(false);
     }
@@ -64,7 +64,7 @@ const MyProfile = () => {
         fullName: '', phone: '', addressLine1: '', addressLine2: '', city: '', state: '', pincode: '', label: 'home'
       });
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to add address.');
+      toast.error(err.message || 'Failed to add address.');
     } finally {
       setAddressLoading(false);
     }

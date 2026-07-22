@@ -51,7 +51,7 @@ const OrderDetails = () => {
       toast.success('Order status updated successfully!');
       fetchOrder();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to update order.');
+      toast.error(err.message || 'Failed to update order.');
     } finally {
       setUpdating(false);
     }

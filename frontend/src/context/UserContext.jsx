@@ -31,7 +31,7 @@ export const UserProvider = ({ children }) => {
 
   const login = async (email, password) => {
     const res = await userAuthApi.login({ email, password });
-    const { token: newToken, user: userData } = res.data;
+    const { token: newToken, user: userData } = res;
     localStorage.setItem('pk_user_token', newToken);
     setToken(newToken);
     setUser(userData);
@@ -40,7 +40,7 @@ export const UserProvider = ({ children }) => {
 
   const register = async (data) => {
     const res = await userAuthApi.register(data);
-    const { token: newToken, user: userData } = res.data;
+    const { token: newToken, user: userData } = res;
     localStorage.setItem('pk_user_token', newToken);
     setToken(newToken);
     setUser(userData);

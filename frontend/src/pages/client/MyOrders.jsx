@@ -39,7 +39,7 @@ const MyOrders = () => {
         setOrders(orders.map((o) => (o._id === orderId ? res.data : o)));
         toast.success('Order cancelled successfully.');
       } catch (err) {
-        toast.error(err.response?.data?.message || 'Failed to cancel order.');
+        toast.error(err.message || 'Failed to cancel order.');
       }
     }
   };

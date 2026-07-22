@@ -123,7 +123,7 @@ const ProductDetails = () => {
       setNewReview({ rating: 5, title: '', comment: '' });
       toast.success('Review submitted successfully!');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to submit review.');
+      toast.error(err.message || 'Failed to submit review.');
     } finally {
       setReviewLoading(false);
     }

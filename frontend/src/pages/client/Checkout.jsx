@@ -51,7 +51,7 @@ const Checkout = () => {
       setAppliedCoupon(res.data.code);
       toast.success(`Coupon applied! You save ₹${res.data.discount}`);
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Invalid coupon.');
+      toast.error(err.message || 'Invalid coupon.');
       setDiscount(0);
       setAppliedCoupon('');
     }
@@ -141,7 +141,7 @@ const Checkout = () => {
         navigate(`/order-success/${orderRes.data._id}`);
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to place order.');
+      toast.error(err.message || 'Failed to place order.');
       setLoading(false);
     }
   };
