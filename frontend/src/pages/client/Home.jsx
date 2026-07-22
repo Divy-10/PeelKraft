@@ -172,19 +172,19 @@ const Home = () => {
             >
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-gray-100 shadow-sm mb-8">
                 <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 font-poppins">100% Natural & Sustainable</span>
+                <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 font-poppins">100% Natural</span>
               </div>
 
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] leading-[1.1] font-poppins font-bold text-dark mb-6 tracking-tight text-balance">
-                Pure Organic <br />
+                Nature's <br />
                 <span className="text-primary-500 relative inline-block">
-                  Fruit of Nature
+                  Hidden Treasure
                   <svg className="absolute -bottom-2 left-0 w-full text-primary-200" viewBox="0 0 100 10" preserveAspectRatio="none"><path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="2" fill="transparent" /></svg>
                 </span>
               </h1>
 
               <p className="text-lg text-gray-500 font-inter mb-10 max-w-lg leading-relaxed">
-                PeelKraft transforms discarded organic orange peels into delicious, nutrient-rich sustainable food products for your healthy lifestyle.
+                Discover the power of naturally crafted orange peel products made with sustainability, nutrition, and exceptional taste in every bite.
               </p>
 
               <div className="flex flex-wrap gap-4 items-center">
@@ -253,9 +253,9 @@ const Home = () => {
       <section className="section-padding bg-white border-b border-gray-100 overflow-hidden">
         <div className="container-custom">
           <SectionHeading
-            badge="100% Natural"
-            title="Nature's Hidden Treasure"
-            subtitle="Discover the power of naturally crafted orange peel products made with sustainability, nutrition, and exceptional taste in every bite."
+            badge="Our Products"
+            title="Live & Wild Harvest"
+            subtitle="Discover our range of premium organic food products made from carefully selected orange peels."
           />
         </div>
 
