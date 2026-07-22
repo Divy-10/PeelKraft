@@ -37,7 +37,7 @@ const WhatsAppButton = () => {
       dragElastic={0.1}
       onPointerDown={handlePointerDown}
       onDrag={handleDrag}
-      className="fixed bottom-6 left-6 z-50 cursor-grab active:cursor-grabbing touch-none select-none"
+      className="fixed bottom-24 right-6 z-50 cursor-grab active:cursor-grabbing touch-none select-none"
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ duration: 0.5, delay: 1 }}
