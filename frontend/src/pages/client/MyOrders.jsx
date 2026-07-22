@@ -122,8 +122,20 @@ const MyOrders = () => {
                           }`}>
                             {order.status === 'delivered' && <FiCheck />}
                             {order.status === 'cancelled' && <FiXCircle />}
-                            {order.status === 'shipped' && <FiTruck />}
-                            {order.status.replace('_', ' ')}
+                            {(order.status === 'shipped' || order.status === 'dispatch' || order.status === 'out_for_delivery') && <FiTruck />}
+                            {
+                              {
+                                pending: 'Pending',
+                                confirmed: 'Confirmed',
+                                preparing: 'Preparing',
+                                dispatch: 'Dispatched',
+                                shipped: 'Shipped',
+                                out_for_delivery: 'Out for Delivery',
+                                delivered: 'Delivered',
+                                cancelled: 'Cancelled',
+                                returned: 'Returned'
+                              }[order.status] || order.status
+                            }
                           </span>
                         </div>
                       </div>

@@ -170,7 +170,8 @@ const OrderDetails = () => {
               >
                 <option value="pending">Pending</option>
                 <option value="confirmed">Confirmed</option>
-                <option value="packed">Packed</option>
+                <option value="preparing">Preparing</option>
+                <option value="dispatch">Dispatch</option>
                 <option value="shipped">Shipped</option>
                 <option value="out_for_delivery">Out for Delivery</option>
                 <option value="delivered">Delivered</option>
