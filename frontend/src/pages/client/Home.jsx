@@ -282,10 +282,10 @@ const Home = () => {
               const singleProduct = products[0];
               const rawImages = getProductImages(singleProduct);
               let slides = [...rawImages];
-              if (slides.length === 1) {
-                slides = [slides[0], slides[0], slides[0]];
-              } else if (slides.length === 2) {
-                slides = [slides[0], slides[1], slides[0]];
+              if (slides.length > 0) {
+                while (slides.length < 6) {
+                  slides = [...slides, ...rawImages];
+                }
               }
 
               return (
