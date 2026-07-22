@@ -109,7 +109,8 @@ const Checkout = () => {
               navigate(`/order-success/${orderRes.data._id}`);
             } catch (err) {
               console.error('Simulation error:', err);
-              toast.error(err.message || 'Order creation failed in simulation mode.');
+              const errMsg = err.errors && err.errors.length > 0 ? `${err.message}: ${err.errors.join(', ')}` : err.message;
+              toast.error(errMsg || 'Order creation failed in simulation mode.');
             }
           }, 1500);
           return;
@@ -152,7 +153,8 @@ const Checkout = () => {
               navigate(`/order-success/${orderRes.data._id}`);
             } catch (err) {
               console.error('Order creation error:', err);
-              toast.error(err.message || 'Order creation failed after payment. Contact support.');
+              const errMsg = err.errors && err.errors.length > 0 ? `${err.message}: ${err.errors.join(', ')}` : err.message;
+              toast.error(errMsg || 'Order creation failed after payment. Contact support.');
             }
           },
           prefill: { name: address.fullName, email: user?.email, contact: address.phone },
@@ -165,7 +167,9 @@ const Checkout = () => {
         setLoading(false);
       }
     } catch (err) {
-      toast.error(err.message || 'Failed to place order.');
+      console.error('Place order error:', err);
+      const errMsg = err.errors && err.errors.length > 0 ? `${err.message}: ${err.errors.join(', ')}` : err.message;
+      toast.error(errMsg || 'Failed to place order.');
       setLoading(false);
     }
   };
