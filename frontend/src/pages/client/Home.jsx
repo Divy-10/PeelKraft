@@ -267,27 +267,29 @@ const Home = () => {
       </section>
 
       {/* ===== FEATURED PRODUCTS (Live & Wild Harvest) ===== */}
-      <section className="section-padding bg-white border-b border-gray-100">
+      <section className="section-padding bg-white border-b border-gray-100 overflow-hidden">
         <div className="container-custom">
           <SectionHeading
             badge="Our Products"
             title="Live & Wild Harvest"
             subtitle="Discover our range of premium organic food products made from carefully selected orange peels."
           />
+        </div>
 
-          {products.length > 0 ? (
-            products.length === 1 ? (
-              (() => {
-                const singleProduct = products[0];
-                const rawImages = getProductImages(singleProduct);
-                let slides = [...rawImages];
-                if (slides.length === 1) {
-                  slides = [slides[0], slides[0], slides[0]];
-                } else if (slides.length === 2) {
-                  slides = [slides[0], slides[1], slides[0]];
-                }
-                return (
-                  <div className="max-w-4xl mx-auto flex flex-col items-center">
+        {products.length > 0 ? (
+          products.length === 1 ? (
+            (() => {
+              const singleProduct = products[0];
+              const rawImages = getProductImages(singleProduct);
+              let slides = [...rawImages];
+              if (slides.length === 1) {
+                slides = [slides[0], slides[0], slides[0]];
+              } else if (slides.length === 2) {
+                slides = [slides[0], slides[1], slides[0]];
+              }
+              return (
+                <div className="w-full flex flex-col items-center">
+                  <div className="w-full overflow-hidden mb-6">
                     <Swiper
                       modules={[EffectCoverflow, Pagination, Autoplay]}
                       effect="coverflow"
@@ -295,7 +297,8 @@ const Home = () => {
                       centeredSlides={true}
                       slidesPerView="auto"
                       loop={true}
-                      autoplay={{ delay: 4000, disableOnInteraction: false }}
+                      speed={1000}
+                      autoplay={{ delay: 2500, disableOnInteraction: false }}
                       coverflowEffect={{
                         rotate: 0,
                         stretch: 0,
@@ -324,12 +327,14 @@ const Home = () => {
                         </SwiperSlide>
                       ))}
                     </Swiper>
-                    
+                  </div>
+                  
+                  <div className="container-custom">
                     <motion.div 
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
-                      className="text-center mt-8 max-w-xl"
+                      className="text-center mt-4 max-w-xl mx-auto"
                     >
                       <span className="text-xs font-semibold uppercase tracking-wider text-primary-500 font-poppins mb-2 block">
                         {singleProduct.category && typeof singleProduct.category === 'object' ? singleProduct.category.name : 'Orange Peel Snacks'}
@@ -348,9 +353,11 @@ const Home = () => {
                       </Link>
                     </motion.div>
                   </div>
-                );
-              })()
-            ) : (
+                </div>
+              );
+            })()
+          ) : (
+            <div className="container-custom">
               <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                 {products.slice(0, 3).map((product, i) => (
                   <motion.div
@@ -388,8 +395,10 @@ const Home = () => {
                   </motion.div>
                 ))}
               </div>
-            )
-          ) : (
+            </div>
+          )
+        ) : (
+          <div className="container-custom">
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {[1, 2, 3, 4].map((i) => (
                 <div key={i} className="card-premium items-center">
@@ -400,18 +409,19 @@ const Home = () => {
                 </div>
               ))}
             </div>
-          )}
-
-          <div className="text-center mt-12">
-            <Link
-              to="/products"
-              className="btn-outline"
-            >
-              View All Products
-            </Link>
           </div>
+        )}
+
+        <div className="container-custom mt-12 text-center">
+          <Link
+            to="/products"
+            className="btn-outline"
+          >
+            View All Products
+          </Link>
         </div>
       </section>
+
 
 
 
