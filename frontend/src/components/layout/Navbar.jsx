@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiMenu, FiX, FiSearch, FiShoppingCart, FiUser, FiHeart } from 'react-icons/fi';
+import { FiMenu, FiX, FiSearch, FiShoppingCart, FiUser, FiHeart, FiLogOut } from 'react-icons/fi';
 import { useSettings } from '../../context/SettingsContext';
 import { useCart } from '../../context/CartContext';
 import { useUser } from '../../context/UserContext';
