@@ -9,42 +9,42 @@ const sections = [
     title: 'Circular Economy', 
     desc: 'We create a closed-loop system where orange peel waste from juice manufacturers becomes the raw material for premium food products. Nothing goes to waste.', 
     color: 'bg-green-100 text-green-600',
-    image: 'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=800&q=80' 
+    image: '/images/circular_economy.png' 
   },
   { 
     icon: FiDroplet, 
     title: 'Waste Reduction', 
     desc: 'India generates over 4 million tonnes of citrus peel waste annually. PeelKraft diverts hundreds of tonnes from landfills each year, reducing methane emissions and soil contamination.', 
     color: 'bg-blue-100 text-blue-600',
-    image: 'https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?auto=format&fit=crop&w=800&q=80'
+    image: '/images/peelkraft-hero-oranges.jpg'
   },
   { 
     icon: FiSun, 
     title: 'Food Innovation', 
     desc: 'Our R&D team has developed proprietary processes to extract maximum nutrition from orange peels while maintaining taste and texture that consumers love.', 
     color: 'bg-primary-100 text-primary-600',
-    image: 'https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&w=800&q=80'
+    image: '/images/juicetap-machines.jpg'
   },
   { 
     icon: FiGlobe, 
     title: 'Environmental Impact', 
     desc: 'By recycling orange peels instead of sending them to landfills, we prevent the release of greenhouse gases and reduce the need for additional agricultural land.', 
     color: 'bg-emerald-100 text-emerald-600',
-    image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80'
+    image: '/images/hero_orange_bowl.png'
   },
   { 
     icon: FiTrendingUp, 
     title: 'Sustainable Growth', 
     desc: 'Our business model proves that sustainability and profitability can coexist. We create value for farmers, manufacturers, consumers, and the environment.', 
     color: 'bg-gold-100 text-gold-600',
-    image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80'
+    image: '/images/peelkraft-about-turning-orange-peels-to-gold.jpg'
   },
   { 
     icon: FiHeart, 
     title: 'Community Impact', 
     desc: 'PeelKraft creates employment opportunities in rural areas, supports local farmers, and promotes health awareness through our products and educational content.', 
     color: 'bg-rose-100 text-rose-600',
-    image: 'https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=800&q=80'
+    image: '/images/peelkraft-waste-to-wonder-orange-peel-story.jpg'
   },
 ];
 
