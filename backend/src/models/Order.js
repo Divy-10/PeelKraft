@@ -104,7 +104,7 @@ const orderSchema = new mongoose.Schema(
 );
 
 // Generate order number
-orderSchema.pre('save', async function (next) {
+orderSchema.pre('validate', async function (next) {
   if (this.isNew && !this.orderNumber) {
     const count = await mongoose.model('Order').countDocuments();
     this.orderNumber = `PK${Date.now().toString(36).toUpperCase()}${(count + 1).toString().padStart(4, '0')}`;
