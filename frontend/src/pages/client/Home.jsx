@@ -303,7 +303,7 @@ const Home = () => {
                       }}
                       loop={true}
                       speed={1000}
-                      autoplay={{ delay: 2500, disableOnInteraction: false }}
+                      autoplay={{ delay: 5000, disableOnInteraction: false }}
                       coverflowEffect={{
                         rotate: 35,
                         stretch: 10,
