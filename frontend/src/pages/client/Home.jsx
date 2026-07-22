@@ -281,14 +281,11 @@ const Home = () => {
             (() => {
               const singleProduct = products[0];
               const rawImages = getProductImages(singleProduct);
-              let slides = [];
-              if (rawImages.length > 0) {
-                // Repeat the images so we have at least 9 slides.
-                // This ensures Swiper's infinite loop has enough slides to show on both left and right sides.
-                const repeatCount = Math.max(3, Math.ceil(9 / rawImages.length));
-                for (let i = 0; i < repeatCount; i++) {
-                  slides = [...slides, ...rawImages];
-                }
+              let slides = [...rawImages];
+              if (slides.length === 1) {
+                slides = [slides[0], slides[0], slides[0]];
+              } else if (slides.length === 2) {
+                slides = [slides[0], slides[1], slides[0]];
               }
 
               return (
@@ -299,7 +296,11 @@ const Home = () => {
                       effect="coverflow"
                       grabCursor={true}
                       centeredSlides={true}
-                      slidesPerView="auto"
+                      slidesPerView={1.2}
+                      breakpoints={{
+                        640: { slidesPerView: 2 },
+                        1024: { slidesPerView: 3 },
+                      }}
                       loop={true}
                       speed={1000}
                       autoplay={{ delay: 2500, disableOnInteraction: false }}
