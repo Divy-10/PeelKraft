@@ -14,7 +14,7 @@ const OrderSuccess = () => {
     const fetchOrder = async () => {
       try {
         const res = await orderApi.getById(orderId);
-        setOrder(res.data.data);
+        setOrder(res.data);
       } catch (err) {
         console.error('Error fetching order:', err);
       } finally {

@@ -41,8 +41,8 @@ const ProductDetails = () => {
         if (isAuthenticated) {
           try {
             const wishRes = await wishlistApi.get();
-            const inWishlist = wishRes.data.data.some(
-              (item) => item.product._id === res.data._id
+            const inWishlist = (wishRes.data || []).some(
+              (item) => item.product?._id === res.data?._id || item.product === res.data?._id
             );
             setWishlisted(inWishlist);
           } catch (e) {
@@ -53,7 +53,7 @@ const ProductDetails = () => {
         // Load reviews
         try {
           const revRes = await reviewApi.getByProduct(res.data._id);
-          setReviews(revRes.data.data);
+          setReviews(revRes.data || []);
         } catch (e) {
           console.error('Error loading reviews:', e);
         }
@@ -119,7 +119,7 @@ const ProductDetails = () => {
         productId: product._id,
         ...newReview,
       });
-      setReviews([res.data.data, ...reviews]);
+      setReviews([res.data, ...reviews]);
       setNewReview({ rating: 5, title: '', comment: '' });
       toast.success('Review submitted successfully!');
     } catch (err) {

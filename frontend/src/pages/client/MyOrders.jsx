@@ -22,7 +22,7 @@ const MyOrders = () => {
     const fetchOrders = async () => {
       try {
         const res = await orderApi.getMyOrders();
-        setOrders(res.data.data);
+        setOrders(res.data || []);
       } catch (err) {
         console.error('Failed to load orders:', err);
       } finally {
@@ -36,7 +36,7 @@ const MyOrders = () => {
     if (window.confirm('Are you sure you want to cancel this order?')) {
       try {
         const res = await orderApi.cancel(orderId, { reason: 'Cancelled by customer' });
-        setOrders(orders.map((o) => (o._id === orderId ? res.data.data : o)));
+        setOrders(orders.map((o) => (o._id === orderId ? res.data : o)));
         toast.success('Order cancelled successfully.');
       } catch (err) {
         toast.error(err.response?.data?.message || 'Failed to cancel order.');

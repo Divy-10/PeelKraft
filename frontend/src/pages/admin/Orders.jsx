@@ -16,8 +16,8 @@ const Orders = () => {
     setLoading(true);
     try {
       const res = await orderApi.getAll({ page, limit: 15, status, search });
-      setOrders(res.data.data);
-      setTotalPages(res.data.pagination?.pages || 1);
+      setOrders(res.data || []);
+      setTotalPages(res.pagination?.pages || 1);
     } catch (err) {
       console.error('Failed to fetch orders:', err);
     } finally {

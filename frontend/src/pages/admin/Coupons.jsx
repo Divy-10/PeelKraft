@@ -17,7 +17,7 @@ const Coupons = () => {
   const fetchCoupons = async () => {
     try {
       const res = await couponApi.getAll();
-      setCoupons(res.data.data);
+      setCoupons(res.data || []);
     } catch (err) {
       console.error(err);
       toast.error('Failed to load coupons.');

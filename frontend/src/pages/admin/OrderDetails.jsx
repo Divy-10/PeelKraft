@@ -20,7 +20,7 @@ const OrderDetails = () => {
   const fetchOrder = async () => {
     try {
       const res = await orderApi.getAdminById(id);
-      const data = res.data.data;
+      const data = res.data;
       setOrder(data);
       setStatus(data.status);
       setTrackingNumber(data.trackingNumber || '');

@@ -42,7 +42,7 @@ const MyProfile = () => {
     setProfileLoading(true);
     try {
       const res = await userAuthApi.updateProfile(profileForm);
-      updateUser(res.data.data);
+      updateUser(res.data);
       toast.success('Profile updated successfully!');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to update profile.');
@@ -56,8 +56,8 @@ const MyProfile = () => {
     setAddressLoading(true);
     try {
       const res = await userAuthApi.addAddress(addressForm);
-      setAddresses(res.data.data);
-      updateUser({ addresses: res.data.data });
+      setAddresses(res.data);
+      updateUser({ addresses: res.data });
       toast.success('Address added successfully!');
       setShowAddressForm(false);
       setAddressForm({
@@ -73,8 +73,8 @@ const MyProfile = () => {
   const handleDeleteAddress = async (addrId) => {
     try {
       const res = await userAuthApi.deleteAddress(addrId);
-      setAddresses(res.data.data);
-      updateUser({ addresses: res.data.data });
+      setAddresses(res.data);
+      updateUser({ addresses: res.data });
       toast.success('Address removed.');
     } catch (err) {
       toast.error('Failed to remove address.');

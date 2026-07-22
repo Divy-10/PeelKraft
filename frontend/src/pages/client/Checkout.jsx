@@ -47,9 +47,9 @@ const Checkout = () => {
     if (!couponCode.trim()) return;
     try {
       const res = await couponApi.validate({ code: couponCode, subtotal });
-      setDiscount(res.data.data.discount);
-      setAppliedCoupon(res.data.data.code);
-      toast.success(`Coupon applied! You save ₹${res.data.data.discount}`);
+      setDiscount(res.data.discount);
+      setAppliedCoupon(res.data.code);
+      toast.success(`Coupon applied! You save ₹${res.data.discount}`);
     } catch (err) {
       toast.error(err.response?.data?.message || 'Invalid coupon.');
       setDiscount(0);
@@ -82,7 +82,7 @@ const Checkout = () => {
         if (!scriptLoaded) { toast.error('Failed to load payment gateway.'); setLoading(false); return; }
 
         const rpRes = await paymentApi.createRazorpayOrder({ amount: total });
-        const { orderId, keyId } = rpRes.data.data;
+        const { orderId, keyId } = rpRes.data;
 
         const options = {
           key: keyId,
@@ -111,11 +111,11 @@ const Checkout = () => {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,
-                orderId: orderRes.data.data._id,
+                orderId: orderRes.data._id,
               });
 
               clearCart();
-              navigate(`/order-success/${orderRes.data.data._id}`);
+              navigate(`/order-success/${orderRes.data._id}`);
             } catch {
               toast.error('Order creation failed after payment. Contact support.');
             }
@@ -138,7 +138,7 @@ const Checkout = () => {
           deliveryNotes,
         });
         clearCart();
-        navigate(`/order-success/${orderRes.data.data._id}`);
+        navigate(`/order-success/${orderRes.data._id}`);
       }
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to place order.');
