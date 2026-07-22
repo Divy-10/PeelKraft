@@ -128,17 +128,6 @@ const Checkout = () => {
         razorpay.on('payment.failed', () => { toast.error('Payment failed. Please try again.'); setLoading(false); });
         razorpay.open();
         setLoading(false);
-      } else {
-        // COD
-        const orderRes = await orderApi.create({
-          items: items.map((i) => ({ product: i._id, quantity: i.quantity })),
-          shippingAddress: address,
-          paymentMethod: 'cod',
-          couponCode: appliedCoupon,
-          deliveryNotes,
-        });
-        clearCart();
-        navigate(`/order-success/${orderRes.data._id}`);
       }
     } catch (err) {
       toast.error(err.message || 'Failed to place order.');
@@ -186,20 +175,13 @@ const Checkout = () => {
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
                 <h2 className="text-lg font-poppins font-bold text-dark mb-4 flex items-center gap-2"><FiCreditCard className="text-primary-500" /> Payment Method</h2>
                 <div className="space-y-3">
-                  <label className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition ${paymentMethod === 'razorpay' ? 'border-primary-500 bg-primary-50/50' : 'border-gray-200 hover:border-gray-300'}`}>
-                    <input type="radio" name="payment" value="razorpay" checked={paymentMethod === 'razorpay'} onChange={(e) => setPaymentMethod(e.target.value)} className="text-primary-500 focus:ring-primary-500" />
+                  <div className="flex items-center gap-3 p-4 rounded-xl border border-primary-500 bg-primary-50/50">
+                    <div className="w-2 h-2 rounded-full bg-primary-500" />
                     <div>
                       <p className="font-semibold text-dark text-sm font-poppins">Pay Online (Razorpay)</p>
                       <p className="text-xs text-gray-500 font-inter">UPI, Credit/Debit Card, Net Banking, Wallets</p>
                     </div>
-                  </label>
-                  <label className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition ${paymentMethod === 'cod' ? 'border-primary-500 bg-primary-50/50' : 'border-gray-200 hover:border-gray-300'}`}>
-                    <input type="radio" name="payment" value="cod" checked={paymentMethod === 'cod'} onChange={(e) => setPaymentMethod(e.target.value)} className="text-primary-500 focus:ring-primary-500" />
-                    <div>
-                      <p className="font-semibold text-dark text-sm font-poppins">Cash on Delivery</p>
-                      <p className="text-xs text-gray-500 font-inter">Pay when you receive the order</p>
-                    </div>
-                  </label>
+                  </div>
                 </div>
               </motion.div>
             </div>
