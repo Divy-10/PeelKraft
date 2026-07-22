@@ -253,9 +253,9 @@ const Home = () => {
       <section className="section-padding bg-white border-b border-gray-100 overflow-hidden">
         <div className="container-custom">
           <SectionHeading
-            badge="Our Products"
-            title="Live & Wild Harvest"
-            subtitle="Discover our range of premium organic food products made from carefully selected orange peels."
+            badge="100% Natural"
+            title="Nature's Hidden Treasure"
+            subtitle="Discover the power of naturally crafted orange peel products made with sustainability, nutrition, and exceptional taste in every bite."
           />
         </div>
 
