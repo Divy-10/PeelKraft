@@ -296,7 +296,11 @@ const Home = () => {
                       effect="coverflow"
                       grabCursor={true}
                       centeredSlides={true}
-                      slidesPerView={1}
+                      slidesPerView={1.2}
+                      breakpoints={{
+                        640: { slidesPerView: 2 },
+                        1024: { slidesPerView: 3 },
+                      }}
                       loop={true}
                       speed={1000}
                       autoplay={{ delay: 2500, disableOnInteraction: false }}

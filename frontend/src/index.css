@@ -227,7 +227,7 @@
 /* Custom styles for the single-product coverflow carousel */
 .single-product-swiper {
   width: 100%;
-  max-width: 500px;
+  max-width: 1200px;
   margin: 0 auto;
   padding-top: 20px;
   padding-bottom: 50px;
@@ -241,8 +241,9 @@
   border-radius: 2rem;
   overflow: hidden;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  transform: scale(0.96);
-  opacity: 0.9;
+  transform: scale(0.85);
+  opacity: 0.45;
+  filter: grayscale(40%) brightness(1.25);
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
 }
 
