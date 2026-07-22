@@ -305,10 +305,10 @@ const Home = () => {
                       speed={1000}
                       autoplay={{ delay: 2500, disableOnInteraction: false }}
                       coverflowEffect={{
-                        rotate: 0,
-                        stretch: 0,
-                        depth: 100,
-                        modifier: 2.5,
+                        rotate: 35,
+                        stretch: 10,
+                        depth: 160,
+                        modifier: 1,
                         slideShadows: false,
                       }}
                       pagination={{ clickable: true }}
