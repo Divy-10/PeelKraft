@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiMenu, FiX, FiSearch, FiShoppingCart } from 'react-icons/fi';
+import { FiMenu, FiX, FiSearch, FiShoppingCart, FiUser, FiHeart } from 'react-icons/fi';
 import { useSettings } from '../../context/SettingsContext';
+import { useCart } from '../../context/CartContext';
+import { useUser } from '../../context/UserContext';
 
 const navLinks = [
   { name: 'Home', path: '/' },
@@ -17,6 +19,8 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const { getItemCount } = useCart();
+  const { isAuthenticated, user } = useUser();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 30);
@@ -32,6 +36,8 @@ const Navbar = () => {
     if (path === '/') return location.pathname === '/';
     return location.pathname.startsWith(path);
   };
+
+  const cartCount = getItemCount();
 
   return (
     <>
@@ -79,7 +85,7 @@ const Navbar = () => {
             </div>
 
             {/* Right Actions */}
-            <div className="flex items-center gap-3 shrink-0">
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               <Link
                 to="/search"
                 className="p-2.5 rounded-full hover:bg-gray-100 text-gray-700 transition-colors"
@@ -88,14 +94,49 @@ const Navbar = () => {
                 <FiSearch className="w-5 h-5" />
               </Link>
 
-              <a
-                href="https://www.amazon.in"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hidden md:flex btn-amazon"
+              {/* Wishlist Link */}
+              {isAuthenticated && (
+                <Link
+                  to="/wishlist"
+                  className="p-2.5 rounded-full hover:bg-gray-100 text-gray-700 transition-colors hidden sm:flex"
+                  aria-label="Wishlist"
+                >
+                  <FiHeart className="w-5 h-5" />
+                </Link>
+              )}
+
+              {/* Cart link with badge */}
+              <Link
+                to="/cart"
+                className="p-2.5 rounded-full hover:bg-gray-100 text-gray-700 transition-colors relative"
+                aria-label="Cart"
               >
-                Buy on Amazon
-              </a>
+                <FiShoppingCart className="w-5 h-5" />
+                {cartCount > 0 && (
+                  <span className="absolute top-1 right-1 bg-primary-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center font-poppins">
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
+
+              {/* Account / Login link */}
+              {isAuthenticated ? (
+                <Link
+                  to="/my-profile"
+                  className="hidden md:flex items-center gap-1.5 px-4 py-2 border border-gray-200 hover:border-gray-300 rounded-xl text-sm font-semibold text-dark font-poppins transition bg-white"
+                >
+                  <FiUser className="w-4 h-4" />
+                  <span>Account</span>
+                </Link>
+              ) : (
+                <Link
+                  to="/login"
+                  className="hidden md:flex items-center gap-1.5 px-4 py-2 bg-dark text-white rounded-xl text-sm font-semibold font-poppins hover:bg-gray-800 transition"
+                >
+                  <FiUser className="w-4 h-4" />
+                  <span>Login</span>
+                </Link>
+              )}
 
               {/* Mobile Menu Toggle */}
               <button
@@ -161,17 +202,41 @@ const Navbar = () => {
                       </Link>
                     </motion.div>
                   ))}
+                  
+                  {isAuthenticated && (
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: navLinks.length * 0.05 }}
+                    >
+                      <Link
+                        to="/wishlist"
+                        className={`block px-4 py-3.5 rounded-xl font-poppins font-semibold transition-all text-base ${
+                          isActive('/wishlist') ? 'bg-primary-50 text-primary-500' : 'text-gray-600 hover:bg-gray-50'
+                        }`}
+                      >
+                        Wishlist
+                      </Link>
+                    </motion.div>
+                  )}
                 </div>
                 {/* Action button at bottom */}
                 <div className="pt-6 border-t border-gray-100 mt-auto">
-                  <a
-                    href="https://www.amazon.in"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex btn-amazon w-full justify-center py-3.5 text-base font-semibold"
-                  >
-                    Buy on Amazon
-                  </a>
+                  {isAuthenticated ? (
+                    <Link
+                      to="/my-profile"
+                      className="flex bg-dark text-white rounded-xl w-full justify-center py-3.5 text-base font-semibold font-poppins hover:bg-gray-800 transition"
+                    >
+                      My Profile
+                    </Link>
+                  ) : (
+                    <Link
+                      to="/login"
+                      className="flex bg-dark text-white rounded-xl w-full justify-center py-3.5 text-base font-semibold font-poppins hover:bg-gray-800 transition"
+                    >
+                      Login / SignUp
+                    </Link>
+                  )}
                 </div>
               </motion.div>
             </>

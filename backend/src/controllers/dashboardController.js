@@ -5,9 +5,10 @@ import Contact from '../models/Contact.js';
 import Newsletter from '../models/Newsletter.js';
 import Testimonial from '../models/Testimonial.js';
 import FAQ from '../models/FAQ.js';
+import Order from '../models/Order.js';
+import User from '../models/User.js';
 import ApiResponse from '../utils/ApiResponse.js';
 import { asyncHandler } from '../utils/helpers.js';
-import { getDashboardStats, getMonthlyChartData } from '../services/analyticsService.js';
 
 // @desc    Get dashboard stats (admin)
 // @route   GET /api/dashboard/stats
@@ -17,36 +18,41 @@ export const getStats = asyncHandler(async (req, res) => {
     categoryCount,
     blogCount,
     faqCount,
-    testimonialCount,
     unreadContactCount,
-    totalContactCount,
     activeSubscriberCount,
-    analyticsStats,
+    orderCount,
+    userCount,
+    salesData,
+    lowStockCount,
   ] = await Promise.all([
     Product.countDocuments(),
     Category.countDocuments(),
     Blog.countDocuments(),
     FAQ.countDocuments(),
-    Testimonial.countDocuments(),
     Contact.countDocuments({ status: 'unread' }),
-    Contact.countDocuments(),
     Newsletter.countDocuments({ status: 'active' }),
-    getDashboardStats(),
+    Order.countDocuments(),
+    User.countDocuments(),
+    Order.aggregate([
+      { $match: { status: { $ne: 'cancelled' } } },
+      { $group: { _id: null, totalSales: { $sum: '$grandTotal' } } },
+    ]),
+    Product.countDocuments({ $expr: { $lte: ['$stock', '$lowStockAlert'] } }),
   ]);
+
+  const totalSales = salesData[0]?.totalSales || 0;
 
   const stats = {
     products: productCount,
     categories: categoryCount,
     blogs: blogCount,
     faqs: faqCount,
-    testimonials: testimonialCount,
     unreadMessages: unreadContactCount,
-    totalMessages: totalContactCount,
     subscribers: activeSubscriberCount,
-    visitors: analyticsStats.totalPageViews,
-    monthlyVisitors: analyticsStats.monthlyPageViews,
-    amazonClicks: analyticsStats.totalAmazonClicks,
-    monthlyAmazonClicks: analyticsStats.monthlyAmazonClicks,
+    totalOrders: orderCount,
+    totalUsers: userCount,
+    totalSales,
+    lowStockProducts: lowStockCount,
   };
 
   res.json(new ApiResponse(200, 'Dashboard stats', stats));
@@ -55,20 +61,18 @@ export const getStats = asyncHandler(async (req, res) => {
 // @desc    Get dashboard charts (admin)
 // @route   GET /api/dashboard/charts
 export const getCharts = asyncHandler(async (req, res) => {
-  const chartData = await getMonthlyChartData();
-
-  // Get top products by views
-  const topProducts = await Product.find({ status: 'published' })
-    .sort({ views: -1 })
+  // Get top products by stock
+  const topProducts = await Product.find()
+    .sort({ stock: 1 })
     .limit(5)
-    .select('name views amazonClicks thumbnail')
+    .select('name stock lowStockAlert thumbnail')
     .lean();
 
-  // Get top blogs by views
-  const topBlogs = await Blog.find({ status: 'published' })
-    .sort({ views: -1 })
+  // Get recent orders
+  const recentOrders = await Order.find()
+    .populate('user', 'firstName lastName email')
+    .sort({ createdAt: -1 })
     .limit(5)
-    .select('title views featuredImage')
     .lean();
 
   // Recent contacts
@@ -79,9 +83,8 @@ export const getCharts = asyncHandler(async (req, res) => {
 
   res.json(
     new ApiResponse(200, 'Dashboard charts', {
-      monthly: chartData,
       topProducts,
-      topBlogs,
+      recentOrders,
       recentContacts,
     })
   );

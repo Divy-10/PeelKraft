@@ -188,20 +188,18 @@ const Home = () => {
               </p>
 
               <div className="flex flex-wrap gap-4 items-center">
-                <a
-                  href="https://www.amazon.in"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-amazon text-base px-8 py-3.5 shadow-xl shadow-amber-500/20 hover:-translate-y-1 transition-all duration-300"
-                >
-                  <FiShoppingCart className="w-5 h-5" />
-                  Buy on Amazon
-                </a>
                 <Link
                   to="/products"
+                  className="btn-primary text-base px-8 py-3.5 shadow-xl shadow-primary-500/20 hover:-translate-y-1 transition-all duration-300"
+                >
+                  <FiShoppingCart className="w-5 h-5" />
+                  Shop Now
+                </Link>
+                <Link
+                  to="/about"
                   className="btn-secondary text-base px-8 py-3.5 bg-white border-gray-200 hover:border-gray-300 hover:bg-gray-50 hover:-translate-y-1 transition-all duration-300 shadow-sm"
                 >
-                  Explore Products
+                  Our Story
                 </Link>
               </div>
 

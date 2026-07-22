@@ -22,7 +22,15 @@ const ProductForm = () => {
       name: '',
       category: '',
       shortDescription: '',
-      amazonLink: '',
+      mrp: 0,
+      sellingPrice: 0,
+      costPrice: 0,
+      discountPercent: 0,
+      stock: 0,
+      lowStockAlert: 5,
+      sku: '',
+      barcode: '',
+      trackInventory: true,
       status: 'draft',
       featured: false,
       isUpcoming: false,
@@ -223,7 +231,7 @@ const ProductForm = () => {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-4 gap-6">
             <div>
               <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Weight / Pack Size</label>
               <input
@@ -243,13 +251,92 @@ const ProductForm = () => {
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Amazon Redirect Link</label>
+              <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">SKU</label>
               <input
-                type="url"
-                {...register('amazonLink')}
+                type="text"
+                {...register('sku')}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 outline-none text-sm font-inter"
-                placeholder="https://amazon.in/dp/..."
+                placeholder="PK-ORG-01"
               />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Barcode</label>
+              <input
+                type="text"
+                {...register('barcode')}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 outline-none text-sm font-inter"
+                placeholder="890123..."
+              />
+            </div>
+          </div>
+
+          <h3 className="font-poppins font-bold text-dark border-b border-gray-100 pb-3 pt-4">Pricing & Inventory</h3>
+          <div className="grid md:grid-cols-5 gap-6">
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">MRP (₹) *</label>
+              <input
+                type="number"
+                {...register('mrp', { required: 'MRP is required', valueAsNumber: true })}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 outline-none text-sm font-inter"
+                placeholder="299"
+              />
+              {errors.mrp && <p className="text-red-500 text-xs mt-1">{errors.mrp.message}</p>}
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Selling Price (₹) *</label>
+              <input
+                type="number"
+                {...register('sellingPrice', { required: 'Selling price is required', valueAsNumber: true })}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 outline-none text-sm font-inter"
+                placeholder="249"
+              />
+              {errors.sellingPrice && <p className="text-red-500 text-xs mt-1">{errors.sellingPrice.message}</p>}
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Cost Price (₹)</label>
+              <input
+                type="number"
+                {...register('costPrice', { valueAsNumber: true })}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 outline-none text-sm font-inter"
+                placeholder="100"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Discount (%)</label>
+              <input
+                type="number"
+                {...register('discountPercent', { valueAsNumber: true })}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 outline-none text-sm font-inter"
+                placeholder="15"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Stock Quantity *</label>
+              <input
+                type="number"
+                {...register('stock', { required: 'Stock quantity is required', valueAsNumber: true })}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 outline-none text-sm font-inter"
+                placeholder="50"
+              />
+              {errors.stock && <p className="text-red-500 text-xs mt-1">{errors.stock.message}</p>}
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Low Stock Alert Limit</label>
+              <input
+                type="number"
+                {...register('lowStockAlert', { valueAsNumber: true })}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 outline-none text-sm font-inter"
+                placeholder="5"
+              />
+            </div>
+            <div className="flex items-center mt-6">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" {...register('trackInventory')} className="rounded border-gray-300 text-primary-500" />
+                <span className="text-xs font-semibold text-gray-600 uppercase font-poppins">Track Inventory Stock</span>
+              </label>
             </div>
           </div>
 

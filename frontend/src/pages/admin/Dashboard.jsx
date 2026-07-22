@@ -1,37 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  FiPackage, FiTag, FiFileText, FiBookOpen, FiHelpCircle,
-  FiMessageSquare, FiMail, FiStar, FiChevronRight, FiTrendingUp, FiMousePointer, FiUsers
+  FiPackage, FiMail, FiMessageSquare, FiChevronRight, FiTrendingUp, FiShoppingCart, FiAlertTriangle, FiUsers
 } from 'react-icons/fi';
-import { Line } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler
-} from 'chart.js';
 import { dashboardApi } from '../../api';
 import { formatDateShort } from '../../utils';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler
-);
-
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [charts, setCharts] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -44,8 +21,8 @@ const Dashboard = () => {
           dashboardApi.getStats(),
           dashboardApi.getCharts()
         ]);
-        setStats(statsRes.data);
-        setCharts(chartsRes.data);
+        setStats(statsRes.data.data || statsRes.data);
+        setCharts(chartsRes.data.data || chartsRes.data);
       } catch (err) {
         console.error('Error fetching dashboard statistics:', err);
       } finally {
@@ -64,52 +41,14 @@ const Dashboard = () => {
   }
 
   const statCards = [
-    { title: 'Total Products', value: stats?.products || 0, icon: FiPackage, color: 'bg-blue-500', link: '/admin/products' },
-    { title: 'Categories', value: stats?.categories || 0, icon: FiTag, color: 'bg-emerald-500', link: '/admin/categories' },
-    { title: 'Blog Articles', value: stats?.blogs || 0, icon: FiFileText, color: 'bg-purple-500', link: '/admin/blogs' },
-    { title: 'Website Visitors', value: stats?.visitors || 0, icon: FiUsers, color: 'bg-indigo-500', link: '#' },
-    { title: 'Amazon Clicks', value: stats?.amazonClicks || 0, icon: FiMousePointer, color: 'bg-orange-500', link: '#' },
-    { title: 'Newsletter Subscribers', value: stats?.subscribers || 0, icon: FiMail, color: 'bg-rose-500', link: '/admin/newsletter' },
-    { title: 'Inquiries Inbox', value: stats?.unreadMessages || 0, icon: FiMessageSquare, color: 'bg-teal-500', link: '/admin/contacts' },
+    { title: 'Total Sales Revenue', value: `₹${stats?.totalSales || 0}`, icon: FiTrendingUp, color: 'bg-emerald-500', link: '/admin/orders' },
+    { title: 'Total Orders Placed', value: stats?.totalOrders || 0, icon: FiShoppingCart, color: 'bg-blue-500', link: '/admin/orders' },
+    { title: 'Low Stock Products', value: stats?.lowStockProducts || 0, icon: FiAlertTriangle, color: 'bg-amber-500', link: '/admin/products' },
+    { title: 'Registered Users', value: stats?.totalUsers || 0, icon: FiUsers, color: 'bg-purple-500', link: '#' },
   ];
 
-  const chartData = {
-    labels: charts?.monthly?.months || [],
-    datasets: [
-      {
-        fill: true,
-        label: 'Page Views',
-        data: charts?.monthly?.pageViews || [],
-        borderColor: '#1E7A34',
-        backgroundColor: 'rgba(30, 122, 52, 0.1)',
-        tension: 0.4,
-      },
-      {
-        fill: true,
-        label: 'Amazon Redirect Clicks',
-        data: charts?.monthly?.amazonClicks || [],
-        borderColor: '#F7931E',
-        backgroundColor: 'rgba(247, 147, 30, 0.1)',
-        tension: 0.4,
-      }
-    ]
-  };
-
-  const chartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-        labels: { font: { fontFamily: 'Inter' } }
-      },
-    },
-    scales: {
-      y: { beginAtZero: true }
-    }
-  };
-
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 font-inter">
       {/* Metric Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {statCards.map((card, i) => {
@@ -124,7 +63,7 @@ const Dashboard = () => {
             >
               <div className="space-y-1">
                 <p className="text-gray-400 text-sm font-medium">{card.title}</p>
-                <p className="text-3xl font-poppins font-bold text-dark">{card.value}</p>
+                <p className="text-2xl font-poppins font-bold text-dark">{card.value}</p>
                 {card.link !== '#' && (
                   <Link to={card.link} className="inline-flex items-center gap-1 text-xs text-primary-500 font-semibold pt-2 hover:underline">
                     Manage <FiChevronRight />
@@ -139,63 +78,65 @@ const Dashboard = () => {
         })}
       </div>
 
-      {/* Main Chart */}
-      <div className="bg-white p-6 rounded-2xl shadow-card border border-gray-100">
-        <h3 className="text-lg font-poppins font-bold text-dark mb-6">Traffic & Engagement Analytics</h3>
-        <div className="h-64 sm:h-80 md:h-96">
-          <Line data={chartData} options={chartOptions} />
-        </div>
-      </div>
-
       {/* Split grid for lists */}
       <div className="grid lg:grid-cols-2 gap-8">
-        {/* Top Performing Products */}
+        {/* Recent Orders */}
         <div className="bg-white p-6 rounded-2xl shadow-card border border-gray-100">
-          <h3 className="text-lg font-poppins font-bold text-dark mb-4">Popular Products</h3>
+          <h3 className="text-lg font-poppins font-bold text-dark mb-4 flex justify-between items-center">
+            <span>Recent Orders</span>
+            <Link to="/admin/orders" className="text-xs text-primary-500 hover:underline">View All</Link>
+          </h3>
           <div className="divide-y divide-gray-100">
-            {charts?.topProducts?.map((product) => (
-              <div key={product._id} className="py-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <img
-                    src={product.thumbnail?.url || 'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=100'}
-                    alt={product.name}
-                    className="w-12 h-12 rounded-xl object-cover"
-                  />
+            {charts?.recentOrders && charts.recentOrders.length > 0 ? (
+              charts.recentOrders.map((order) => (
+                <div key={order._id} onClick={() => navigate(`/admin/orders/${order._id}`)} className="py-4 flex items-center justify-between cursor-pointer hover:bg-gray-50/50 px-2 rounded-xl transition">
                   <div>
-                    <h4 className="font-semibold text-sm text-dark line-clamp-1">{product.name}</h4>
-                    <p className="text-xs text-gray-400">{product.views} Product Views</p>
+                    <h4 className="font-semibold text-sm text-dark">#{order.orderNumber}</h4>
+                    <p className="text-xs text-gray-400 font-inter">{order.user?.firstName} {order.user?.lastName} • {formatDateShort(order.createdAt)}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-dark">₹{order.grandTotal}</p>
+                    <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${
+                      order.status === 'delivered' ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-600'
+                    }`}>
+                      {order.status}
+                    </span>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-sm font-bold text-primary-500">{product.amazonClicks}</p>
-                  <p className="text-xs text-gray-400">Amazon Clicks</p>
-                </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className="text-gray-400 text-sm py-4">No recent orders.</p>
+            )}
           </div>
         </div>
 
-        {/* Recent Contact Messages */}
+        {/* Low Stock Warning Products */}
         <div className="bg-white p-6 rounded-2xl shadow-card border border-gray-100">
-          <h3 className="text-lg font-poppins font-bold text-dark mb-4 flex items-center justify-between">
-            <span>Recent Inquiries</span>
-            <Link to="/admin/contacts" className="text-xs text-primary-500 hover:underline">View Inbox</Link>
-          </h3>
+          <h3 className="text-lg font-poppins font-bold text-dark mb-4">Stock Warning Alert</h3>
           <div className="divide-y divide-gray-100">
-            {charts?.recentContacts?.map((message) => (
-              <div key={message._id} className="py-4 space-y-1">
-                <div className="flex justify-between items-center">
-                  <h4 className="font-semibold text-sm text-dark">{message.name}</h4>
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${
-                    message.status === 'unread' ? 'bg-red-50 text-red-500' : 'bg-green-50 text-green-500'
-                  }`}>
-                    {message.status}
-                  </span>
+            {charts?.topProducts && charts.topProducts.length > 0 ? (
+              charts.topProducts.map((product) => (
+                <div key={product._id} className="py-4 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={product.thumbnail?.url || '/images/logo.png'}
+                      alt={product.name}
+                      className="w-12 h-12 rounded-xl object-cover border border-gray-100 bg-gray-50 p-1"
+                    />
+                    <div>
+                      <h4 className="font-semibold text-sm text-dark line-clamp-1">{product.name}</h4>
+                      <p className="text-xs text-gray-400 font-inter">Alert trigger limit: {product.lowStockAlert} units</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-red-500">{product.stock} left</p>
+                    <p className="text-xs text-gray-400 font-inter">Available stock</p>
+                  </div>
                 </div>
-                <p className="text-xs text-gray-400">{message.email} • {formatDateShort(message.createdAt)}</p>
-                <p className="text-sm text-gray-600 line-clamp-1 italic">"{message.message}"</p>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className="text-gray-400 text-sm py-4">All products have sufficient stock levels.</p>
+            )}
           </div>
         </div>
       </div>

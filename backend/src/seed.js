@@ -13,6 +13,7 @@ import FAQ from './models/FAQ.js';
 import Testimonial from './models/Testimonial.js';
 import Settings from './models/Settings.js';
 import SEO from './models/SEO.js';
+import Coupon from './models/Coupon.js';
 
 export const seedDatabase = async (isCli = false) => {
   try {
@@ -28,6 +29,7 @@ export const seedDatabase = async (isCli = false) => {
       Testimonial.deleteMany({}),
       Settings.deleteMany({}),
       SEO.deleteMany({}),
+      Coupon.deleteMany({}),
     ]);
     console.log('🗑️  Cleared existing data');
 
@@ -64,13 +66,19 @@ export const seedDatabase = async (isCli = false) => {
         storage: 'Store in a cool, dry place. Keep away from direct sunlight. Seal tightly after use.',
         shelfLife: '12 months from date of manufacture',
         weight: '200g',
-        amazonLink: 'https://www.amazon.in',
+        mrp: 299,
+        sellingPrice: 249,
+        costPrice: 80,
+        discountPercent: 16,
+        stock: 120,
+        sku: 'PK-OPP-200',
+        barcode: '8901234567890',
         status: 'published',
         featured: true,
         seoTitle: 'Premium Orange Peel Powder | PeelKraft',
         seoDescription: 'Buy premium organic orange peel powder. Rich in Vitamin C, antioxidants & fiber. Perfect for smoothies, baking & skincare.',
-        thumbnail: { url: '/images/logo.png' },
-        featuredImage: { url: '/images/logo.png' },
+        thumbnail: { url: 'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=800' },
+        featuredImage: { url: 'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=800' },
         gallery: [
           { url: 'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=800', alt: 'Orange peel powder in bowl' },
           { url: 'https://images.unsplash.com/photo-1587735243615-c03f25aaff15?w=800', alt: 'Fresh oranges' },
@@ -89,15 +97,20 @@ export const seedDatabase = async (isCli = false) => {
         storage: 'Store in an airtight container at room temperature.',
         shelfLife: '6 months from date of manufacture',
         weight: '150g',
-        amazonLink: 'https://www.amazon.in',
+        mrp: 199,
+        sellingPrice: 169,
+        costPrice: 50,
+        discountPercent: 15,
+        stock: 85,
+        sku: 'PK-COB-150',
         status: 'published',
         featured: true,
         seoTitle: 'Candied Orange Peel Bites | Healthy Snacks | PeelKraft',
         seoDescription: 'Try PeelKraft candied orange peel bites. A delicious, guilt-free snack packed with fiber and natural citrus goodness.',
-        thumbnail: { url: '/images/logo.png' },
-        featuredImage: { url: '/images/logo.png' },
+        thumbnail: { url: 'https://images.unsplash.com/photo-1582979512210-99b6a53386f9?w=800' },
+        featuredImage: { url: 'https://images.unsplash.com/photo-1582979512210-99b6a53386f9?w=800' },
         gallery: [
-          { url: '/images/logo.png', alt: 'PeelKraft' },
+          { url: 'https://images.unsplash.com/photo-1582979512210-99b6a53386f9?w=800', alt: 'PeelKraft' },
         ],
       },
       {
@@ -112,15 +125,20 @@ export const seedDatabase = async (isCli = false) => {
         storage: 'Store in a cool, dry place away from strong odours.',
         shelfLife: '18 months from date of manufacture',
         weight: '100g (50 tea bags)',
-        amazonLink: 'https://www.amazon.in',
+        mrp: 249,
+        sellingPrice: 199,
+        costPrice: 60,
+        discountPercent: 20,
+        stock: 60,
+        sku: 'PK-OPT-100',
         status: 'published',
         featured: true,
         seoTitle: 'Orange Peel Tea Blend | Herbal Tea | PeelKraft',
         seoDescription: 'Discover PeelKraft orange peel herbal tea. A caffeine-free blend with chamomile & ginger for relaxation and digestion.',
-        thumbnail: { url: '/images/logo.png' },
-        featuredImage: { url: '/images/logo.png' },
+        thumbnail: { url: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800' },
+        featuredImage: { url: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800' },
         gallery: [
-          { url: '/images/logo.png', alt: 'PeelKraft' },
+          { url: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800', alt: 'PeelKraft' },
         ],
       },
       {
@@ -135,19 +153,36 @@ export const seedDatabase = async (isCli = false) => {
         storage: 'Store in a cool, dry place.',
         shelfLife: '12 months from date of manufacture',
         weight: '80g',
-        amazonLink: 'https://www.amazon.in',
+        mrp: 149,
+        sellingPrice: 129,
+        costPrice: 40,
+        discountPercent: 13,
+        stock: 90,
+        sku: 'PK-CZS-80',
         status: 'published',
         featured: true,
         seoTitle: 'Citrus Zest Seasoning | Gourmet Spice | PeelKraft',
         seoDescription: 'PeelKraft citrus zest seasoning. A gourmet spice blend with orange peel, herbs & spices. Perfect for healthy, flavorful cooking.',
-        thumbnail: { url: '/images/logo.png' },
-        featuredImage: { url: '/images/logo.png' },
+        thumbnail: { url: 'https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?w=800' },
+        featuredImage: { url: 'https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?w=800' },
         gallery: [
-          { url: '/images/logo.png', alt: 'PeelKraft' },
+          { url: 'https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?w=800', alt: 'PeelKraft' },
         ],
       },
     ]);
     console.log(`📦 Created ${products.length} products`);
+
+    // Create a seed Coupon
+    await Coupon.create({
+      code: 'WELCOME50',
+      description: '₹50 flat off on orders above ₹299',
+      discountType: 'flat',
+      discountValue: 50,
+      minPurchase: 299,
+      expiryDate: new Date('2027-12-31'),
+      isActive: true,
+    });
+    console.log('🎫 Seeded default WELCOME50 Coupon');
 
     // Create Blogs
     const blogs = await Blog.insertMany([

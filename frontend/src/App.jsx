@@ -29,6 +29,17 @@ const PrivacyPolicy = lazy(() => import('./pages/client/PrivacyPolicy'));
 const TermsConditions = lazy(() => import('./pages/client/TermsConditions'));
 const NotFound = lazy(() => import('./pages/client/NotFound'));
 
+// E-commerce Client Pages
+const Cart = lazy(() => import('./pages/client/Cart'));
+const Wishlist = lazy(() => import('./pages/client/Wishlist'));
+const Checkout = lazy(() => import('./pages/client/Checkout'));
+const OrderSuccess = lazy(() => import('./pages/client/OrderSuccess'));
+const MyProfile = lazy(() => import('./pages/client/MyProfile'));
+const MyOrders = lazy(() => import('./pages/client/MyOrders'));
+const Login = lazy(() => import('./pages/client/Login'));
+const Register = lazy(() => import('./pages/client/Register'));
+const ForgotPassword = lazy(() => import('./pages/client/ForgotPassword'));
+
 // Admin Pages (Lazy Loaded)
 const AdminLogin = lazy(() => import('./pages/admin/Login'));
 const Dashboard = lazy(() => import('./pages/admin/Dashboard'));
@@ -43,6 +54,11 @@ const AdminContacts = lazy(() => import('./pages/admin/Contacts'));
 const AdminNewsletter = lazy(() => import('./pages/admin/Newsletter'));
 const AdminSeo = lazy(() => import('./pages/admin/SeoManager'));
 const AdminSettings = lazy(() => import('./pages/admin/Settings'));
+
+// E-commerce Admin Pages
+const AdminOrders = lazy(() => import('./pages/admin/Orders'));
+const AdminOrderDetails = lazy(() => import('./pages/admin/OrderDetails'));
+const AdminCoupons = lazy(() => import('./pages/admin/Coupons'));
 
 const App = () => {
   return (
@@ -62,6 +78,17 @@ const App = () => {
           <Route path="/search" element={<SearchPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-conditions" element={<TermsConditions />} />
+          
+          {/* E-commerce client-side paths */}
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/order-success/:orderId" element={<OrderSuccess />} />
+          <Route path="/my-profile" element={<MyProfile />} />
+          <Route path="/my-orders" element={<MyOrders />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
         </Route>
 
         {/* Admin Routes */}
@@ -82,6 +109,11 @@ const App = () => {
           <Route path="newsletter" element={<AdminNewsletter />} />
           <Route path="seo" element={<AdminSeo />} />
           <Route path="settings" element={<AdminSettings />} />
+          
+          {/* E-commerce admin-side paths */}
+          <Route path="orders" element={<AdminOrders />} />
+          <Route path="orders/:id" element={<AdminOrderDetails />} />
+          <Route path="coupons" element={<AdminCoupons />} />
         </Route>
 
         {/* 404 */}

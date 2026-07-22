@@ -21,6 +21,10 @@ const config = {
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
   adminEmail: process.env.ADMIN_EMAIL || 'admin@peelkraft.com',
   adminPassword: process.env.ADMIN_PASSWORD || 'PeelKraft@2024',
+  razorpay: {
+    keyId: process.env.RAZORPAY_KEY_ID || '',
+    keySecret: process.env.RAZORPAY_KEY_SECRET || '',
+  },
 };
 
 export default config;

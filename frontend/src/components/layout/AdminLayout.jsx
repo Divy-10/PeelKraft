@@ -4,14 +4,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   FiGrid, FiPackage, FiTag, FiFileText, FiBookOpen, FiHelpCircle,
   FiMessageSquare, FiMail, FiStar, FiImage, FiSearch, FiSettings,
-  FiLogOut, FiMenu, FiX, FiChevronDown, FiUsers
+  FiLogOut, FiMenu, FiX, FiChevronDown, FiUsers, FiShoppingCart, FiPercent
 } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
 
 const sidebarItems = [
   { name: 'Dashboard', path: '/admin/dashboard', icon: FiGrid },
+  { name: 'Orders', path: '/admin/orders', icon: FiShoppingCart },
   { name: 'Products', path: '/admin/products', icon: FiPackage },
   { name: 'Categories', path: '/admin/categories', icon: FiTag },
+  { name: 'Coupons', path: '/admin/coupons', icon: FiPercent },
   { name: 'Blogs', path: '/admin/blogs', icon: FiFileText },
   { name: 'FAQs', path: '/admin/faqs', icon: FiHelpCircle },
   { name: 'Testimonials', path: '/admin/testimonials', icon: FiStar },

@@ -111,8 +111,17 @@ const Products = () => {
                       <img src={getImageUrl(product.thumbnail)} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                     </div>
                     <p className="text-[11px] uppercase tracking-wider text-gray-400 font-semibold mb-2">{product.category?.name || 'Product'}</p>
-                    <h3 className="font-poppins font-semibold text-dark text-lg mb-2 group-hover:text-primary-500 transition-colors">{product.name}</h3>
-                    <p className="text-sm text-gray-500 font-inter mb-6 line-clamp-2">{product.shortDescription}</p>
+                    <h3 className="font-poppins font-semibold text-dark text-lg mb-2 group-hover:text-primary-500 transition-colors line-clamp-1">{product.name}</h3>
+                    <p className="text-sm text-gray-500 font-inter mb-4 line-clamp-2">{product.shortDescription}</p>
+                    
+                    {/* Catalog Price */}
+                    <div className="flex items-center justify-center gap-2 mb-4">
+                      <span className="font-poppins font-bold text-dark text-base">₹{product.sellingPrice || product.mrp}</span>
+                      {product.mrp > product.sellingPrice && (
+                        <span className="text-xs text-gray-400 line-through font-inter">₹{product.mrp}</span>
+                      )}
+                    </div>
+
                     <span className="mt-auto text-sm font-poppins font-semibold text-primary-500">View Details →</span>
                   </Link>
                 </motion.div>

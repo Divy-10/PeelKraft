@@ -78,10 +78,54 @@ const productSchema = new mongoose.Schema(
       url: { type: String, default: '' },
       publicId: { type: String, default: '' },
     },
-    amazonLink: {
+    // ===== E-COMMERCE PRICING =====
+    mrp: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    sellingPrice: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    costPrice: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    discountPercent: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 100,
+    },
+    // ===== INVENTORY =====
+    sku: {
       type: String,
       default: '',
+      trim: true,
     },
+    barcode: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    stock: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    lowStockAlert: {
+      type: Number,
+      default: 5,
+      min: 0,
+    },
+    trackInventory: {
+      type: Boolean,
+      default: true,
+    },
+    // ===== STATUS =====
     status: {
       type: String,
       enum: ['draft', 'published'],
@@ -103,7 +147,14 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    amazonClicks: {
+    // ===== RATINGS CACHE =====
+    avgRating: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 5,
+    },
+    numReviews: {
       type: Number,
       default: 0,
     },
@@ -120,7 +171,10 @@ const productSchema = new mongoose.Schema(
 productSchema.index({ category: 1 });
 productSchema.index({ status: 1 });
 productSchema.index({ featured: 1 });
+productSchema.index({ sellingPrice: 1 });
+productSchema.index({ stock: 1 });
 productSchema.index({ name: 'text', description: 'text' });
 
 const Product = mongoose.model('Product', productSchema);
 export default Product;
+

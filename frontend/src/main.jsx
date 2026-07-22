@@ -11,27 +11,33 @@ import 'swiper/css/effect-coverflow';
 import App from './App';
 import { AuthProvider } from './context/AuthContext';
 import { SettingsProvider } from './context/SettingsContext';
+import { UserProvider } from './context/UserContext';
+import { CartProvider } from './context/CartContext';
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <HelmetProvider>
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <AuthProvider>
-        <SettingsProvider>
-          <App />
-          <ToastContainer
-            position="top-right"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-          />
-        </SettingsProvider>
+        <UserProvider>
+          <CartProvider>
+            <SettingsProvider>
+              <App />
+              <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+              />
+            </SettingsProvider>
+          </CartProvider>
+        </UserProvider>
       </AuthProvider>
     </BrowserRouter>
   </HelmetProvider>

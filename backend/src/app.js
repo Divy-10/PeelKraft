@@ -19,6 +19,13 @@ import settingsRoutes from './routes/settingsRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
 import mediaRoutes from './routes/mediaRoutes.js';
 import seoRoutes from './routes/seoRoutes.js';
+// E-commerce routes
+import userRoutes from './routes/userRoutes.js';
+import orderRoutes from './routes/orderRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js';
+import couponRoutes from './routes/couponRoutes.js';
+import wishlistRoutes from './routes/wishlistRoutes.js';
+import reviewRoutes from './routes/reviewRoutes.js';
 
 const app = express();
 
@@ -58,7 +65,7 @@ app.get('/', (req, res) => {
   res.json({
     success: true,
     message: 'Welcome to PeelKraft Backend API',
-    version: '1.0.0',
+    version: '2.0.0',
     documentation: '/api/health',
     health: 'http://localhost:5000/api/health'
   });
@@ -69,7 +76,7 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString(), env: config.nodeEnv });
 });
 
-// API Routes
+// API Routes — Existing
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
@@ -82,6 +89,14 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/media', mediaRoutes);
 app.use('/api/seo', seoRoutes);
+
+// API Routes — E-commerce
+app.use('/api/users', userRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/payments', paymentRoutes);
+app.use('/api/coupons', couponRoutes);
+app.use('/api/wishlist', wishlistRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 // 404 handler
 app.use((req, res) => {
