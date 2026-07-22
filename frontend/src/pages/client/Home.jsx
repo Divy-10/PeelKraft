@@ -172,7 +172,7 @@ const Home = () => {
             >
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-gray-100 shadow-sm mb-8">
                 <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 font-poppins">100% Organic & Sustainable</span>
+                <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 font-poppins">100% Natural & Sustainable</span>
               </div>
 
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] leading-[1.1] font-poppins font-bold text-dark mb-6 tracking-tight text-balance">
