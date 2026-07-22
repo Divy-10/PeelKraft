@@ -20,7 +20,7 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const { getItemCount } = useCart();
-  const { isAuthenticated, user } = useUser();
+  const { isAuthenticated, user, logout } = useUser();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 30);
@@ -121,13 +121,30 @@ const Navbar = () => {
 
               {/* Account / Login link */}
               {isAuthenticated ? (
-                <Link
-                  to="/my-profile"
-                  className="hidden md:flex items-center gap-1.5 px-4 py-2 border border-gray-200 hover:border-gray-300 rounded-xl text-sm font-semibold text-dark font-poppins transition bg-white"
-                >
-                  <FiUser className="w-4 h-4" />
-                  <span>Account</span>
-                </Link>
+                <div className="relative group hidden md:block">
+                  <button
+                    className="flex items-center gap-1.5 px-4 py-2 border border-gray-200 hover:border-gray-300 rounded-xl text-sm font-semibold text-dark font-poppins transition bg-white"
+                  >
+                    <FiUser className="w-4 h-4" />
+                    <span>{user?.firstName || 'Account'}</span>
+                  </button>
+                  {/* Dropdown containing details */}
+                  <div className="absolute right-0 mt-1 w-48 bg-white border border-gray-100 rounded-xl shadow-xl py-2 hidden group-hover:block z-50 text-xs font-inter">
+                    <div className="px-4 py-2 border-b border-gray-100">
+                      <p className="font-bold text-dark">{user?.firstName} {user?.lastName}</p>
+                      <p className="text-gray-400 text-[10px] truncate">{user?.email}</p>
+                    </div>
+                    <Link to="/my-profile" className="block px-4 py-2 hover:bg-gray-50 text-gray-700 font-semibold transition">My Profile</Link>
+                    <Link to="/my-orders" className="block px-4 py-2 hover:bg-gray-50 text-gray-700 font-semibold transition">My Orders</Link>
+                    <hr className="border-gray-100 my-1" />
+                    <button
+                      onClick={logout}
+                      className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-500 font-semibold transition"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
               ) : (
                 <Link
                   to="/login"

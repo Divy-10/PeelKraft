@@ -95,12 +95,22 @@ const ProductDetails = () => {
   };
 
   const handleAddToCart = () => {
+    if (!isAuthenticated) {
+      toast.info('Please login to add items to your cart.');
+      navigate('/login', { state: { from: `/products/${slug}` } });
+      return;
+    }
     if (!product || product.stock <= 0) return;
     addToCart(product, quantity);
     toast.success(`${product.name} added to cart!`);
   };
 
   const handleBuyNow = () => {
+    if (!isAuthenticated) {
+      toast.info('Please login to purchase products.');
+      navigate('/login', { state: { from: `/products/${slug}` } });
+      return;
+    }
     if (!product || product.stock <= 0) return;
     addToCart(product, quantity);
     navigate('/checkout');

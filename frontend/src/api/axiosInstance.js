@@ -13,7 +13,17 @@ const axiosInstance = axios.create({
 // Request interceptor — attach auth token
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('peelkraft_token');
+    const isUserRoute = 
+      config.url.startsWith('/users') || 
+      config.url.startsWith('/wishlist') || 
+      config.url.startsWith('/payments') ||
+      (config.url.startsWith('/orders') && !config.url.includes('/admin')) ||
+      (config.url.startsWith('/reviews') && config.method !== 'get');
+
+    const token = isUserRoute 
+      ? (localStorage.getItem('pk_user_token') || localStorage.getItem('peelkraft_token'))
+      : (localStorage.getItem('peelkraft_token') || localStorage.getItem('pk_user_token'));
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
