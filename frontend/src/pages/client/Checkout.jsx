@@ -108,8 +108,8 @@ const Checkout = () => {
               clearCart();
               navigate(`/order-success/${orderRes.data._id}`);
             } catch (err) {
-              console.error(err);
-              toast.error('Order creation failed in simulation mode.');
+              console.error('Simulation error:', err);
+              toast.error(err.message || 'Order creation failed in simulation mode.');
             }
           }, 1500);
           return;
@@ -150,8 +150,9 @@ const Checkout = () => {
 
               clearCart();
               navigate(`/order-success/${orderRes.data._id}`);
-            } catch {
-              toast.error('Order creation failed after payment. Contact support.');
+            } catch (err) {
+              console.error('Order creation error:', err);
+              toast.error(err.message || 'Order creation failed after payment. Contact support.');
             }
           },
           prefill: { name: address.fullName, email: user?.email, contact: address.phone },
