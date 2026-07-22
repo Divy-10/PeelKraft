@@ -10,11 +10,10 @@ const startServer = async () => {
     // Connect to MongoDB
     await connectDB();
 
-    // Auto-seed if database is empty
+    // Auto-seed if database is uninitialized
     const adminCount = await Admin.countDocuments();
-    const productCount = await Product.countDocuments();
     
-    if (adminCount === 0 || productCount === 0) {
+    if (adminCount === 0) {
       console.log('⚠️ Database is empty. Running automatic seed...');
       await seedDatabase(false);
     } else {
