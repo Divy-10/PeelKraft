@@ -96,3 +96,8 @@ export const authApi = {
   getAdmins: () => api.get('/auth/admins'),
   deleteAdmin: (id) => api.delete(`/auth/admins/${id}`),
 };
+
+export const recipeApi = {
+  getAll: () => Promise.resolve({ data: [] }),
+};
+

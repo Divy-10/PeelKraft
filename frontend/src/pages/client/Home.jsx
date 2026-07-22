@@ -123,6 +123,30 @@ const Home = () => {
     { num: '05', title: 'Distribution', desc: 'Delivered nationwide to health-conscious consumers' },
   ];
 
+  const getProductImages = (product) => {
+    const images = [];
+    if (product.thumbnail) images.push(product.thumbnail);
+    if (product.featuredImage && product.featuredImage.url) images.push(product.featuredImage);
+    if (product.gallery && product.gallery.length > 0) {
+      product.gallery.forEach(img => {
+        if (img && img.url) images.push(img);
+      });
+    }
+    
+    // Deduplicate based on URL
+    const uniqueImages = [];
+    const urls = new Set();
+    images.forEach(img => {
+      const url = typeof img === 'string' ? img : img.url;
+      if (url && !urls.has(url)) {
+        urls.add(url);
+        uniqueImages.push(img);
+      }
+    });
+
+    return uniqueImages;
+  };
+
   return (
     <>
       <SEOHead
@@ -252,43 +276,119 @@ const Home = () => {
           />
 
           {products.length > 0 ? (
-            <div className={`grid gap-6 ${products.length === 1 ? 'grid-cols-1 max-w-sm mx-auto' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'}`}>
-              {products.slice(0, 3).map((product, i) => (
-                <motion.div
-                  key={product._id || i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  className="card-premium group text-center"
-                >
-                  <div className="w-full aspect-[4/5] overflow-hidden rounded-xl mb-6 bg-gray-50 relative">
-                    {product.isUpcoming && (
-                      <span className="absolute top-3 left-3 z-10 bg-[#7BA639] text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-sm font-poppins">
-                        Upcoming
+            products.length === 1 ? (
+              (() => {
+                const singleProduct = products[0];
+                const rawImages = getProductImages(singleProduct);
+                let slides = [...rawImages];
+                if (slides.length === 1) {
+                  slides = [slides[0], slides[0], slides[0]];
+                } else if (slides.length === 2) {
+                  slides = [slides[0], slides[1], slides[0]];
+                }
+                return (
+                  <div className="max-w-4xl mx-auto flex flex-col items-center">
+                    <Swiper
+                      modules={[EffectCoverflow, Pagination, Autoplay]}
+                      effect="coverflow"
+                      grabCursor={true}
+                      centeredSlides={true}
+                      slidesPerView="auto"
+                      loop={true}
+                      autoplay={{ delay: 4000, disableOnInteraction: false }}
+                      coverflowEffect={{
+                        rotate: 0,
+                        stretch: 0,
+                        depth: 100,
+                        modifier: 2.5,
+                        slideShadows: false,
+                      }}
+                      pagination={{ clickable: true }}
+                      className="single-product-swiper"
+                    >
+                      {slides.map((img, index) => (
+                        <SwiperSlide key={index}>
+                          <div className="w-full h-full relative group">
+                            <img
+                              src={getImageUrl(img)}
+                              alt={singleProduct.name}
+                              className="w-full h-full object-cover rounded-3xl"
+                              loading="lazy"
+                            />
+                            {singleProduct.isUpcoming && (
+                              <span className="absolute top-4 left-4 z-10 bg-[#7BA639] text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-sm font-poppins">
+                                Upcoming
+                              </span>
+                            )}
+                          </div>
+                        </SwiperSlide>
+                      ))}
+                    </Swiper>
+                    
+                    <motion.div 
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      className="text-center mt-8 max-w-xl"
+                    >
+                      <span className="text-xs font-semibold uppercase tracking-wider text-primary-500 font-poppins mb-2 block">
+                        {singleProduct.category && typeof singleProduct.category === 'object' ? singleProduct.category.name : 'Orange Peel Snacks'}
                       </span>
-                    )}
-                    <img
-                      src={getImageUrl(product.thumbnail)}
-                      alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      loading="lazy"
-                    />
+                      <h3 className="font-poppins font-bold text-dark text-2xl md:text-3xl mb-3">
+                        {singleProduct.name}
+                      </h3>
+                      <p className="text-sm md:text-base text-gray-500 font-inter mb-6 leading-relaxed">
+                        {singleProduct.shortDescription || 'Pure, organic orange peel product carefully processed for health.'}
+                      </p>
+                      <Link
+                        to={`/products/${singleProduct.slug}`}
+                        className="btn-primary px-8 py-3"
+                      >
+                        View Details →
+                      </Link>
+                    </motion.div>
                   </div>
-                  <h3 className="font-poppins font-semibold text-dark text-lg mb-2">
-                    {product.name}
-                  </h3>
-                  <p className="text-sm text-gray-500 font-inter mb-6 line-clamp-2">
-                    {product.shortDescription || 'Pure, organic orange peel product carefully processed for health.'}
-                  </p>
-                  <Link
-                    to={`/products/${product.slug}`}
-                    className="mt-auto text-sm font-poppins font-semibold text-primary-500 hover:text-dark transition-colors"
+                );
+              })()
+            ) : (
+              <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                {products.slice(0, 3).map((product, i) => (
+                  <motion.div
+                    key={product._id || i}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="card-premium group text-center"
                   >
-                    View Details →
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
+                    <div className="w-full aspect-[4/5] overflow-hidden rounded-xl mb-6 bg-gray-50 relative">
+                      {product.isUpcoming && (
+                        <span className="absolute top-3 left-3 z-10 bg-[#7BA639] text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-sm font-poppins">
+                          Upcoming
+                        </span>
+                      )}
+                      <img
+                        src={getImageUrl(product.thumbnail)}
+                        alt={product.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                      />
+                    </div>
+                    <h3 className="font-poppins font-semibold text-dark text-lg mb-2">
+                      {product.name}
+                    </h3>
+                    <p className="text-sm text-gray-500 font-inter mb-6 line-clamp-2">
+                      {product.shortDescription || 'Pure, organic orange peel product carefully processed for health.'}
+                    </p>
+                    <Link
+                      to={`/products/${product.slug}`}
+                      className="mt-auto text-sm font-poppins font-semibold text-primary-500 hover:text-dark transition-colors"
+                    >
+                      View Details →
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+            )
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {[1, 2, 3, 4].map((i) => (
