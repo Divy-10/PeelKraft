@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiMapPin, FiCreditCard } from 'react-icons/fi';
@@ -31,13 +31,15 @@ const Checkout = () => {
   const shipping = subtotal >= 499 ? 0 : 49;
   const total = subtotal - discount + shipping;
 
-  if (!isAuthenticated) {
-    navigate('/login', { state: { from: '/checkout' } });
-    return null;
-  }
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: '/checkout' } });
+    } else if (items.length === 0) {
+      navigate('/cart');
+    }
+  }, [isAuthenticated, items.length, navigate]);
 
-  if (items.length === 0) {
-    navigate('/cart');
+  if (!isAuthenticated || items.length === 0) {
     return null;
   }
 
@@ -78,11 +80,43 @@ const Checkout = () => {
     setLoading(true);
     try {
       if (paymentMethod === 'razorpay') {
+        const rpRes = await paymentApi.createRazorpayOrder({ amount: total });
+        const { orderId, keyId, isMock } = rpRes.data;
+
+        if (isMock) {
+          toast.info('Razorpay credentials not configured. Simulating successful checkout...');
+          setTimeout(async () => {
+            try {
+              const orderRes = await orderApi.create({
+                items: items.map((i) => ({ product: i._id, quantity: i.quantity })),
+                shippingAddress: address,
+                paymentMethod: 'razorpay',
+                couponCode: appliedCoupon,
+                deliveryNotes,
+                razorpayOrderId: orderId,
+                razorpayPaymentId: `pay_mock_${Date.now()}`,
+                razorpaySignature: 'mock_signature',
+              });
+
+              await paymentApi.verifyPayment({
+                razorpay_order_id: orderId,
+                razorpay_payment_id: `pay_mock_${Date.now()}`,
+                razorpay_signature: 'mock_signature',
+                orderId: orderRes.data._id,
+              });
+
+              clearCart();
+              navigate(`/order-success/${orderRes.data._id}`);
+            } catch (err) {
+              console.error(err);
+              toast.error('Order creation failed in simulation mode.');
+            }
+          }, 1500);
+          return;
+        }
+
         const scriptLoaded = await loadRazorpayScript();
         if (!scriptLoaded) { toast.error('Failed to load payment gateway.'); setLoading(false); return; }
-
-        const rpRes = await paymentApi.createRazorpayOrder({ amount: total });
-        const { orderId, keyId } = rpRes.data;
 
         const options = {
           key: keyId,

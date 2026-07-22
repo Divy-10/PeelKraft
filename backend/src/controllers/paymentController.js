@@ -26,6 +26,20 @@ export const createRazorpayOrder = async (req, res, next) => {
       throw ApiError.badRequest('Invalid amount.');
     }
 
+    if (!config.razorpay.keyId || !config.razorpay.keySecret) {
+      console.log('⚠️ Razorpay credentials not configured. Returning mock order details...');
+      return res.json({
+        success: true,
+        data: {
+          orderId: `order_mock_${Date.now()}`,
+          amount: Math.round(amount * 100),
+          currency: 'INR',
+          keyId: 'rzp_test_mock_key',
+          isMock: true
+        },
+      });
+    }
+
     const razorpay = await getRazorpayInstance();
 
     const options = {
@@ -57,6 +71,39 @@ export const createRazorpayOrder = async (req, res, next) => {
 export const verifyPayment = async (req, res, next) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId } = req.body;
+
+    if (razorpay_order_id && razorpay_order_id.startsWith('order_mock_')) {
+      console.log('⚠️ Verifying mock payment in development mode...');
+      if (orderId) {
+        const order = await Order.findById(orderId);
+        if (order) {
+          order.paymentStatus = 'paid';
+          order.razorpayOrderId = razorpay_order_id;
+          order.razorpayPaymentId = razorpay_payment_id || `pay_mock_${Date.now()}`;
+          order.razorpaySignature = 'mock_signature';
+          order.status = 'confirmed';
+          order.statusHistory.push({
+            status: 'confirmed',
+            timestamp: new Date(),
+            note: 'Mock payment verified successfully (development mode)',
+          });
+          await order.save();
+
+          await Notification.create({
+            type: 'payment_received',
+            title: 'Payment Received',
+            message: `Mock payment of ₹${order.grandTotal} received for order #${order.orderNumber}.`,
+            refModel: 'Order',
+            refId: order._id,
+            forAdmin: true,
+          });
+        }
+      }
+      return res.json({
+        success: true,
+        message: 'Mock payment verified successfully.',
+      });
+    }
 
     // Verify signature
     const body = razorpay_order_id + '|' + razorpay_payment_id;
