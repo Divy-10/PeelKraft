@@ -50,6 +50,7 @@ const ProductForm = () => {
       },
       thumbnail: { url: '' },
       featuredImage: { url: '' },
+      video: { url: '', publicId: '' },
       seoTitle: '',
       seoDescription: '',
     }
@@ -58,6 +59,11 @@ const ProductForm = () => {
   const { fields: benefitFields, append: appendBenefit, remove: removeBenefit } = useFieldArray({
     control,
     name: 'benefits'
+  });
+
+  const { fields: packageFields, append: appendPackage, remove: removePackage } = useFieldArray({
+    control,
+    name: 'packageOptions'
   });
 
   const { fields: ingredientFields, append: appendIngredient, remove: removeIngredient } = useFieldArray({
@@ -87,6 +93,9 @@ const ProductForm = () => {
           product.gallery = galleryList;
           if (product.category && typeof product.category === 'object') {
             product.category = product.category._id;
+          }
+          if (!product.video) {
+            product.video = { url: '', publicId: '' };
           }
           reset(product);
           setEditorVal(product.description || '');
@@ -152,6 +161,32 @@ const ProductForm = () => {
     }
   };
 
+  const handleVideoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('folder', 'products');
+      
+      const res = await mediaApi.upload(formData);
+      setValue('video.url', res.data.url);
+      setValue('video.publicId', res.data.publicId);
+      toast.success('Product video uploaded successfully');
+    } catch (err) {
+      toast.error('Failed to upload video');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleRemoveVideo = () => {
+    setValue('video.url', '');
+    setValue('video.publicId', '');
+  };
+
   const onSubmit = async (data) => {
     data.description = editorVal;
     // Clean up empty fields
@@ -186,6 +221,7 @@ const ProductForm = () => {
   const thumbnailVal = watch('thumbnail.url');
   const featuredImageVal = watch('featuredImage.url');
   const galleryVal = watch('gallery') || [];
+  const videoVal = watch('video.url');
   const productName = watch('name');
 
   return (
@@ -250,7 +286,7 @@ const ProductForm = () => {
                 placeholder="12 months"
               />
             </div>
-            <div>
+            <div className="hidden">
               <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">SKU</label>
               <input
                 type="text"
@@ -259,7 +295,7 @@ const ProductForm = () => {
                 placeholder="PK-ORG-01"
               />
             </div>
-            <div>
+            <div className="hidden">
               <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Barcode</label>
               <input
                 type="text"
@@ -276,7 +312,16 @@ const ProductForm = () => {
               <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">MRP (₹) *</label>
               <input
                 type="number"
-                {...register('mrp', { required: 'MRP is required', valueAsNumber: true })}
+                {...register('mrp', { 
+                  required: 'MRP is required', 
+                  valueAsNumber: true,
+                  onChange: (e) => {
+                    const mrpVal = Number(e.target.value) || 0;
+                    const discountVal = Number(watch('discountPercent')) || 0;
+                    const newSellingPrice = mrpVal - (mrpVal * discountVal / 100);
+                    setValue('sellingPrice', Math.round(newSellingPrice));
+                  }
+                })}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 outline-none text-sm font-inter"
                 placeholder="299"
               />
@@ -286,26 +331,37 @@ const ProductForm = () => {
               <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Selling Price (₹) *</label>
               <input
                 type="number"
-                {...register('sellingPrice', { required: 'Selling price is required', valueAsNumber: true })}
+                {...register('sellingPrice', { 
+                  required: 'Selling price is required', 
+                  valueAsNumber: true,
+                  onChange: (e) => {
+                    const spVal = Number(e.target.value) || 0;
+                    const mrpVal = Number(watch('mrp')) || 0;
+                    if (mrpVal > 0) {
+                      const discountVal = Math.round(((mrpVal - spVal) / mrpVal) * 100);
+                      setValue('discountPercent', discountVal >= 0 ? discountVal : 0);
+                    }
+                  }
+                })}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 outline-none text-sm font-inter"
                 placeholder="249"
               />
               {errors.sellingPrice && <p className="text-red-500 text-xs mt-1">{errors.sellingPrice.message}</p>}
             </div>
-            <div>
-              <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Cost Price (₹)</label>
-              <input
-                type="number"
-                {...register('costPrice', { valueAsNumber: true })}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 outline-none text-sm font-inter"
-                placeholder="100"
-              />
-            </div>
+            <input type="hidden" {...register('costPrice', { valueAsNumber: true })} />
             <div>
               <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Discount (%)</label>
               <input
                 type="number"
-                {...register('discountPercent', { valueAsNumber: true })}
+                {...register('discountPercent', { 
+                  valueAsNumber: true,
+                  onChange: (e) => {
+                    const discountVal = Number(e.target.value) || 0;
+                    const mrpVal = Number(watch('mrp')) || 0;
+                    const newSellingPrice = mrpVal - (mrpVal * discountVal / 100);
+                    setValue('sellingPrice', Math.round(newSellingPrice));
+                  }
+                })}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 outline-none text-sm font-inter"
                 placeholder="15"
               />
@@ -314,7 +370,8 @@ const ProductForm = () => {
               <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Stock Quantity *</label>
               <input
                 type="number"
-                {...register('stock', { required: 'Stock quantity is required', valueAsNumber: true })}
+                min="0"
+                {...register('stock', { required: 'Stock quantity is required', valueAsNumber: true, min: { value: 0, message: 'Stock cannot be negative' } })}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 outline-none text-sm font-inter"
                 placeholder="50"
               />
@@ -327,7 +384,8 @@ const ProductForm = () => {
               <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Low Stock Alert Limit</label>
               <input
                 type="number"
-                {...register('lowStockAlert', { valueAsNumber: true })}
+                min="0"
+                {...register('lowStockAlert', { valueAsNumber: true, min: { value: 0, message: 'Limit cannot be negative' } })}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 outline-none text-sm font-inter"
                 placeholder="5"
               />
@@ -354,6 +412,173 @@ const ProductForm = () => {
             <label className="block text-xs font-semibold text-gray-600 mb-2 uppercase font-poppins font-medium">Full Description</label>
             <ReactQuill theme="snow" value={editorVal} onChange={setEditorVal} />
           </div>
+        </div>
+
+        {/* Package Options Management */}
+        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-card space-y-6">
+          <div className="flex justify-between items-center border-b border-gray-100 pb-3">
+            <h3 className="font-poppins font-bold text-dark">Package Options Management</h3>
+            <button
+              type="button"
+              onClick={() => appendPackage({
+                name: '',
+                mrp: 0,
+                sellingPrice: 0,
+                discountPercent: 0,
+                stock: 0,
+                sku: '',
+                status: 'active',
+                featured: false,
+                badge: ''
+              })}
+              className="btn-primary py-2 px-4 rounded-xl text-xs text-white flex items-center gap-1 bg-[#7BA639] hover:bg-[#688E2F]"
+            >
+              <FiPlus /> Add Package Option
+            </button>
+          </div>
+
+          {packageFields.length === 0 ? (
+            <div className="text-center py-8 text-gray-400 font-inter text-sm">
+              No package options added. Add at least one option to support packaging variants.
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {packageFields.map((field, index) => (
+                <div key={field.id} className="p-4 rounded-xl border border-gray-100 bg-gray-50/50 space-y-4 relative">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs font-bold text-primary-500 font-poppins">Option #{index + 1}</span>
+                    <button
+                      type="button"
+                      onClick={() => removePackage(index)}
+                      className="text-red-500 hover:text-red-700 text-xs flex items-center gap-1 font-semibold"
+                    >
+                      <FiTrash2 className="w-3.5 h-3.5" /> Remove
+                    </button>
+                  </div>
+
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins font-medium">Package Name *</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Pack of 10"
+                        {...register(`packageOptions.${index}.name`, { required: 'Name is required' })}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 outline-none text-sm font-inter"
+                      />
+                    </div>
+                    <div className="hidden">
+                      <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins font-medium">SKU</label>
+                      <input
+                        type="text"
+                        placeholder="PK-MINT-10"
+                        {...register(`packageOptions.${index}.sku`)}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 outline-none text-sm font-inter"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins font-medium">Custom Badge Tag</label>
+                      <input
+                        type="text"
+                        placeholder="Best Seller, Best Value"
+                        {...register(`packageOptions.${index}.badge`)}
+                        className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 outline-none text-sm font-inter"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-4 gap-4">
+                     <div>
+                       <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins font-medium">MRP (₹) *</label>
+                       <input
+                         type="number"
+                         required
+                         {...register(`packageOptions.${index}.mrp`, { 
+                           required: 'MRP is required', 
+                           valueAsNumber: true,
+                           onChange: (e) => {
+                             const mrpVal = Number(e.target.value) || 0;
+                             const discountVal = Number(watch(`packageOptions.${index}.discountPercent`)) || 0;
+                             const newSellingPrice = mrpVal - (mrpVal * discountVal / 100);
+                             setValue(`packageOptions.${index}.sellingPrice`, Math.round(newSellingPrice));
+                           }
+                         })}
+                         className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 outline-none text-sm font-inter"
+                       />
+                     </div>
+                     <div>
+                       <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins font-medium">Selling Price (₹) *</label>
+                       <input
+                         type="number"
+                         required
+                         {...register(`packageOptions.${index}.sellingPrice`, { 
+                           required: 'Price is required', 
+                           valueAsNumber: true,
+                           onChange: (e) => {
+                             const spVal = Number(e.target.value) || 0;
+                             const mrpVal = Number(watch(`packageOptions.${index}.mrp`)) || 0;
+                             if (mrpVal > 0) {
+                               const discountVal = Math.round(((mrpVal - spVal) / mrpVal) * 100);
+                               setValue(`packageOptions.${index}.discountPercent`, discountVal >= 0 ? discountVal : 0);
+                             }
+                           }
+                         })}
+                         className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 outline-none text-sm font-inter"
+                       />
+                     </div>
+                     <div>
+                       <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins font-medium">Stock Quantity *</label>
+                       <input
+                         type="number"
+                         required
+                         min="0"
+                         {...register(`packageOptions.${index}.stock`, { required: 'Stock is required', valueAsNumber: true, min: { value: 0, message: 'Stock cannot be negative' } })}
+                         className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 outline-none text-sm font-inter"
+                       />
+                     </div>
+                     <div>
+                       <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins font-medium">Discount (%)</label>
+                       <input
+                         type="number"
+                         {...register(`packageOptions.${index}.discountPercent`, { 
+                           valueAsNumber: true,
+                           onChange: (e) => {
+                             const discountVal = Number(e.target.value) || 0;
+                             const mrpVal = Number(watch(`packageOptions.${index}.mrp`)) || 0;
+                             const newSellingPrice = mrpVal - (mrpVal * discountVal / 100);
+                             setValue(`packageOptions.${index}.sellingPrice`, Math.round(newSellingPrice));
+                           }
+                         })}
+                         className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 outline-none text-sm font-inter"
+                       />
+                     </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-6 items-center pt-2">
+                    <label className="flex items-center gap-2 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        {...register(`packageOptions.${index}.featured`)}
+                        className="rounded border-gray-300 text-primary-500 focus:ring-primary-500"
+                      />
+                      <span className="text-xs text-gray-600 font-semibold font-poppins uppercase">Featured Variant Option</span>
+                    </label>
+
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-gray-600 font-semibold font-poppins uppercase">Status:</span>
+                      <select
+                        {...register(`packageOptions.${index}.status`)}
+                        className="px-2 py-1.5 rounded-lg border border-gray-200 outline-none text-xs font-semibold font-inter bg-white focus:border-primary-500"
+                      >
+                        <option value="active">Active / Enabled</option>
+                        <option value="disabled">Disabled / Inactive</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Multi-Image Product Media Section */}
@@ -409,6 +634,48 @@ const ProductForm = () => {
                     </div>
                   );
                 })}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Product Video Section */}
+        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-card space-y-6">
+          <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+            <h3 className="font-poppins font-bold text-dark">Product Video</h3>
+            <span className="text-xs text-gray-500 font-medium">
+              {videoVal ? '1 video uploaded' : 'No video uploaded'}
+            </span>
+          </div>
+
+          {!videoVal ? (
+            <div className="border-2 border-dashed border-gray-200 rounded-2xl p-6 text-center hover:border-primary-500 transition-colors relative bg-gray-50/50">
+              <div className="space-y-3">
+                <FiUploadCloud className="w-10 h-10 mx-auto text-[#7BA639]" />
+                <div>
+                  <p className="text-sm font-semibold text-gray-700">Click to select & upload Product Video</p>
+                  <p className="text-xs text-gray-400 mt-1">Select video file (MP4, WEBM, MOV)</p>
+                </div>
+                <input
+                  type="file"
+                  accept="video/*"
+                  onChange={handleVideoUpload}
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="relative rounded-xl overflow-hidden border border-gray-200 bg-black aspect-video max-w-md mx-auto">
+                <video src={videoVal} controls className="w-full h-full object-contain" />
+                <button
+                  type="button"
+                  onClick={handleRemoveVideo}
+                  className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full hover:bg-red-600 shadow-md transition"
+                  title="Remove Video"
+                >
+                  <FiTrash2 className="w-4 h-4" />
+                </button>
               </div>
             </div>
           )}

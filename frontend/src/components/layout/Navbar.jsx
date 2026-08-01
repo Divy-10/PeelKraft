@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiMenu, FiX, FiSearch, FiShoppingCart, FiUser, FiHeart, FiLogOut } from 'react-icons/fi';
 import { useSettings } from '../../context/SettingsContext';
@@ -19,6 +19,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { getItemCount } = useCart();
   const { isAuthenticated, user, logout } = useUser();
 
@@ -45,8 +46,8 @@ const Navbar = () => {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled ? 'bg-white/80 backdrop-blur-md border-b border-gray-100 py-3 shadow-sm' : 'bg-transparent py-5'
+        className={`fixed top-0 left-0 right-0 z-[999] transition-all duration-500 bg-white border-b border-gray-100 ${
+          scrolled ? 'py-3 shadow-[0_2px_20px_-8px_rgba(0,0,0,0.05)]' : 'py-4'
         }`}
       >
         <div className="container-custom">
@@ -88,7 +89,7 @@ const Navbar = () => {
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               <Link
                 to="/search"
-                className="p-2.5 rounded-full hover:bg-gray-100 text-gray-700 transition-colors"
+                className="p-2.5 rounded-full hover:bg-gray-100 text-gray-700 transition-colors hidden md:flex"
                 aria-label="Search"
               >
                 <FiSearch className="w-5 h-5" />
@@ -98,7 +99,7 @@ const Navbar = () => {
               {isAuthenticated && (
                 <Link
                   to="/wishlist"
-                  className="p-2.5 rounded-full hover:bg-gray-100 text-gray-700 transition-colors hidden sm:flex"
+                  className="p-2.5 rounded-full hover:bg-gray-100 text-gray-700 transition-colors flex"
                   aria-label="Wishlist"
                 >
                   <FiHeart className="w-5 h-5" />
@@ -185,7 +186,7 @@ const Navbar = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={() => setIsOpen(false)}
-                className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden"
+                className="fixed inset-0 z-[1000] bg-black/40 backdrop-blur-sm lg:hidden"
               />
               {/* Drawer */}
               <motion.div
@@ -193,7 +194,7 @@ const Navbar = () => {
                 animate={{ x: 0 }}
                 exit={{ x: '100%' }}
                 transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                className="fixed top-0 right-0 bottom-0 z-50 w-80 max-w-[85vw] bg-white shadow-2xl p-6 flex flex-col lg:hidden border-l border-gray-100"
+                className="fixed top-0 right-0 h-screen h-[100dvh] z-[1001] w-80 max-w-[85vw] bg-white shadow-2xl p-6 flex flex-col lg:hidden border-l border-gray-100"
               >
                 {/* Header inside drawer */}
                 <div className="flex items-center justify-between pb-6 border-b border-gray-100 mb-6">
@@ -205,6 +206,21 @@ const Navbar = () => {
                   >
                     <FiX className="w-6 h-6" />
                   </button>
+                </div>
+                {/* Search Bar inside Drawer */}
+                <div className="mb-4 relative">
+                  <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <input
+                    type="text"
+                    placeholder="Search products..."
+                    className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-inter focus:outline-none focus:border-primary-300"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && e.target.value.trim()) {
+                        navigate(`/search?q=${encodeURIComponent(e.target.value.trim())}`);
+                        setIsOpen(false);
+                      }
+                    }}
+                  />
                 </div>
                 {/* Links */}
                 <div className="flex-1 space-y-2 overflow-y-auto">

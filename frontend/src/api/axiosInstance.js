@@ -18,7 +18,7 @@ axiosInstance.interceptors.request.use(
       config.url.startsWith('/wishlist') || 
       config.url.startsWith('/payments') ||
       (config.url.startsWith('/orders') && !config.url.includes('/admin')) ||
-      (config.url.startsWith('/reviews') && config.method !== 'get');
+      (config.url.startsWith('/reviews') && config.method !== 'get' && !window.location.pathname.startsWith('/admin'));
 
     const token = isUserRoute 
       ? (localStorage.getItem('pk_user_token') || localStorage.getItem('peelkraft_token'))

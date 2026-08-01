@@ -7,7 +7,7 @@ import { useAuth } from '../../context/AuthContext';
 import SEOHead from '../../components/seo/SEOHead';
 
 const Login = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { register, handleSubmit, formState: { errors }, setError } = useForm();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuth();
@@ -20,7 +20,17 @@ const Login = () => {
       toast.success('Welcome back to the Admin Dashboard!');
       navigate('/admin/dashboard');
     } catch (err) {
-      toast.error(err.message || 'Invalid email or password');
+      const errMsg = err.message || 'Invalid email or password';
+      if (errMsg.toLowerCase().includes('email or password')) {
+        setError('email', { type: 'manual', message: errMsg });
+        setError('password', { type: 'manual', message: errMsg });
+      } else if (errMsg.toLowerCase().includes('email')) {
+        setError('email', { type: 'manual', message: errMsg });
+      } else if (errMsg.toLowerCase().includes('password')) {
+        setError('password', { type: 'manual', message: errMsg });
+      } else {
+        toast.error(errMsg);
+      }
     } finally {
       setLoading(false);
     }
@@ -54,7 +64,11 @@ const Login = () => {
                     type="email"
                     {...register('email', { required: 'Email is required' })}
                     placeholder="admin@peelkraft.com"
-                    className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition-all font-inter bg-white"
+                    className={`w-full pl-12 pr-4 py-3 rounded-xl border outline-none transition-all font-inter bg-white ${
+                      errors.email
+                        ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-100'
+                        : 'border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100'
+                    }`}
                   />
                 </div>
                 {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
@@ -68,7 +82,11 @@ const Login = () => {
                     type={showPassword ? 'text' : 'password'}
                     {...register('password', { required: 'Password is required' })}
                     placeholder="••••••••"
-                    className="w-full pl-12 pr-12 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition-all font-inter bg-white"
+                    className={`w-full pl-12 pr-12 py-3 rounded-xl border outline-none transition-all font-inter bg-white ${
+                      errors.password
+                        ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-100'
+                        : 'border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100'
+                    }`}
                   />
                   <button
                     type="button"

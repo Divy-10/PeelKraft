@@ -4,47 +4,34 @@ import SEOHead from '../../components/seo/SEOHead';
 import Breadcrumbs from '../../components/seo/Breadcrumbs';
 
 const sections = [
-  { 
-    icon: FiRefreshCw, 
-    title: 'Circular Economy', 
-    desc: 'We create a closed-loop system where orange peel waste from juice manufacturers becomes the raw material for premium food products. Nothing goes to waste.', 
+  {
+    icon: FiRefreshCw,
+    title: 'Circular Economy',
+    desc: 'We create a closed-loop system where orange peel waste from juice manufacturers becomes the raw material for premium food products. Nothing goes to waste.',
     color: 'bg-green-100 text-green-600',
-    image: '/images/circular_economy.png' 
+    image: '/images/circular_economy.jpg'
   },
-  { 
-    icon: FiDroplet, 
-    title: 'Waste Reduction', 
-    desc: 'India generates over 4 million tonnes of citrus peel waste annually. PeelKraft diverts hundreds of tonnes from landfills each year, reducing methane emissions and soil contamination.', 
-    color: 'bg-blue-100 text-blue-600',
-    image: '/images/waste_reduction.png'
-  },
-  { 
-    icon: FiSun, 
-    title: 'Food Innovation', 
-    desc: 'Our R&D team has developed proprietary processes to extract maximum nutrition from orange peels while maintaining taste and texture that consumers love.', 
+
+  {
+    icon: FiSun,
+    title: 'Food Innovation',
+    desc: 'Our R&D team has developed proprietary processes to extract maximum nutrition from orange peels while maintaining taste and texture that consumers love.',
     color: 'bg-primary-100 text-primary-600',
     image: '/images/food_innovation.png'
   },
-  { 
-    icon: FiGlobe, 
-    title: 'Environmental Impact', 
-    desc: 'By recycling orange peels instead of sending them to landfills, we prevent the release of greenhouse gases and reduce the need for additional agricultural land.', 
+  {
+    icon: FiGlobe,
+    title: 'Environmental Impact',
+    desc: 'PeelKraft transforms discarded orange peels into premium food products, reducing food waste through innovative upcycling. By giving natural resources a second life, we promote sustainability, support responsible production, and contribute to a cleaner, more circular economy.',
     color: 'bg-emerald-100 text-emerald-600',
     image: '/images/environmental_impact.png'
   },
-  { 
-    icon: FiTrendingUp, 
-    title: 'Sustainable Growth', 
-    desc: 'Our business model proves that sustainability and profitability can coexist. We create value for farmers, manufacturers, consumers, and the environment.', 
+  {
+    icon: FiTrendingUp,
+    title: 'Sustainable Growth',
+    desc: 'Our business model proves that sustainability and profitability can coexist. We create value for manufacturers, consumers, and the environment.',
     color: 'bg-gold-100 text-gold-600',
     image: '/images/sustainable_growth.png'
-  },
-  { 
-    icon: FiHeart, 
-    title: 'Community Impact', 
-    desc: 'PeelKraft creates employment opportunities in rural areas, supports local farmers, and promotes health awareness through our products and educational content.', 
-    color: 'bg-rose-100 text-rose-600',
-    image: '/images/community_impact.png'
   },
 ];
 
@@ -57,9 +44,9 @@ const Sustainability = () => (
       <div className="absolute top-0 right-0 w-96 h-96 bg-primary-100/40 rounded-full blur-3xl -z-10" />
       <div className="container-custom w-full">
         <Breadcrumbs items={[{ label: 'Sustainability' }]} />
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }} 
-          animate={{ opacity: 1, y: 0 }} 
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="mt-8 max-w-3xl"
         >
@@ -90,9 +77,8 @@ const Sustainability = () => (
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
-                className={`flex flex-col lg:flex-row items-center gap-12 lg:gap-20 ${
-                  isEven ? '' : 'lg:flex-row-reverse'
-                }`}
+                className={`flex flex-col lg:flex-row items-center gap-12 lg:gap-20 ${isEven ? '' : 'lg:flex-row-reverse'
+                  }`}
               >
                 {/* Image Block */}
                 <div className="w-full lg:w-1/2 relative">

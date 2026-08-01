@@ -30,11 +30,19 @@ const Settings = () => {
       amazonStoreUrl: '',
       logo: { url: '' },
       favicon: { url: '' },
+      shippingCharge: 49,
+      freeShippingMinAmount: 499,
       smtp: {
         host: '',
         port: 587,
         user: '',
         pass: ''
+      },
+      stats: {
+        happyCustomers: '10000+',
+        productsCount: '50+',
+        peelsRecycled: '500T',
+        averageRating: '4.9/5'
       }
     }
   });
@@ -204,7 +212,11 @@ const Settings = () => {
           </div>
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Corporate Address</label>
-            <input type="text" {...register('address')} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none text-sm" />
+            <textarea 
+              rows={3} 
+              {...register('address')} 
+              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none text-sm resize-y" 
+            />
           </div>
         </div>
 
@@ -219,6 +231,33 @@ const Settings = () => {
             <div>
               <label className="block text-xs font-semibold text-gray-600 mb-1 font-poppins">Amazon Brand Store Link</label>
               <input type="url" {...register('amazonStoreUrl')} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none text-sm" placeholder="https://www.amazon.in/stores/PeelKraft" />
+            </div>
+          </div>
+        </div>
+
+        {/* Shipping Configurations */}
+        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-card space-y-6">
+          <h3 className="font-poppins font-bold text-dark border-b border-gray-100 pb-3">Shipping Configurations</h3>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Standard Shipping Charge (₹) *</label>
+              <input 
+                type="number" 
+                {...register('shippingCharge', { required: 'Shipping charge is required', min: { value: 0, message: 'Must be at least 0' } })} 
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none text-sm" 
+                placeholder="49" 
+              />
+              {errors.shippingCharge && <p className="text-red-500 text-xs mt-1">{errors.shippingCharge.message}</p>}
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Free Shipping Minimum Purchase (₹) *</label>
+              <input 
+                type="number" 
+                {...register('freeShippingMinAmount', { required: 'Minimum purchase is required', min: { value: 0, message: 'Must be at least 0' } })} 
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none text-sm" 
+                placeholder="499" 
+              />
+              {errors.freeShippingMinAmount && <p className="text-red-500 text-xs mt-1">{errors.freeShippingMinAmount.message}</p>}
             </div>
           </div>
         </div>
@@ -243,6 +282,29 @@ const Settings = () => {
           <div className="md:w-1/3">
             <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Sender Password / App Key</label>
             <input type="password" {...register('smtp.pass')} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none text-sm" placeholder="••••••••" />
+          </div>
+        </div>
+
+        {/* Company Impact Statistics */}
+        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-card space-y-6">
+          <h3 className="font-poppins font-bold text-dark border-b border-gray-100 pb-3">Impact Statistics</h3>
+          <div className="grid md:grid-cols-4 gap-6">
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Happy Customers</label>
+              <input type="text" {...register('stats.happyCustomers')} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none text-sm" placeholder="10000+" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Products Count</label>
+              <input type="text" {...register('stats.productsCount')} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none text-sm" placeholder="50+" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Peels Recycled</label>
+              <input type="text" {...register('stats.peelsRecycled')} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none text-sm" placeholder="500T" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Average Rating</label>
+              <input type="text" {...register('stats.averageRating')} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none text-sm" placeholder="4.9/5" />
+            </div>
           </div>
         </div>
 

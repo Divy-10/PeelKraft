@@ -104,6 +104,8 @@ export const userAuthApi = {
   login: (data) => api.post('/users/login', data),
   forgotPassword: (data) => api.post('/users/forgot-password', data),
   resetPassword: (data) => api.post('/users/reset-password', data),
+  verifyEmail: (data) => api.post('/users/verify-email', data),
+  resendEmail: (data) => api.post('/users/resend-email', data),
   getProfile: () => api.get('/users/profile'),
   updateProfile: (data) => api.put('/users/profile', data),
   changePassword: (data) => api.post('/users/change-password', data),
@@ -134,6 +136,7 @@ export const paymentApi = {
 // Coupons
 export const couponApi = {
   validate: (data) => api.post('/coupons/validate', data),
+  getActive: () => api.get('/coupons/active'),
   getAll: () => api.get('/coupons'),
   create: (data) => api.post('/coupons', data),
   update: (id, data) => api.put(`/coupons/${id}`, data),
@@ -149,14 +152,33 @@ export const wishlistApi = {
 
 // Reviews
 export const reviewApi = {
-  getByProduct: (productId) => api.get(`/reviews/product/${productId}`),
+  getByProduct: (productId, params) => api.get(`/reviews/product/${productId}`, { params }),
   create: (data) => api.post('/reviews', data),
   getAll: (params) => api.get('/reviews', { params }),
   updateStatus: (id, data) => api.put(`/reviews/${id}`, data),
+  toggleFeatured: (id) => api.patch(`/reviews/${id}/featured`),
+  markHelpful: (id) => api.post(`/reviews/${id}/helpful`),
   delete: (id) => api.delete(`/reviews/${id}`),
 };
 
 export const recipeApi = {
   getAll: () => Promise.resolve({ data: [] }),
 };
+
+export const popupApi = {
+  getActive: () => api.get('/popups/active'),
+  incrementView: (id) => api.post(`/popups/${id}/view`),
+  incrementClick: (id) => api.post(`/popups/${id}/click`),
+  incrementCopy: (id) => api.post(`/popups/${id}/copy`),
+  incrementClose: (id) => api.post(`/popups/${id}/close`),
+  // Admin APIs
+  getAll: (params) => api.get('/popups', { params }),
+  create: (data) => api.post('/popups', data),
+  update: (id, data) => api.put(`/popups/${id}`, data),
+  delete: (id) => api.delete(`/popups/${id}`),
+  duplicate: (id) => api.post(`/popups/${id}/duplicate`),
+  toggleStatus: (id) => api.patch(`/popups/${id}/status`),
+  getAnalytics: () => api.get('/popups/analytics/overview'),
+};
+
 

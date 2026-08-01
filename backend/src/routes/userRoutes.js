@@ -2,7 +2,7 @@ import { Router } from 'express';
 import {
   registerUser, loginUser, getUserProfile, updateUserProfile,
   changeUserPassword, addAddress, updateAddress, deleteAddress,
-  forgotPassword, resetPassword,
+  forgotPassword, resetPassword, verifyEmail, resendEmail,
 } from '../controllers/userController.js';
 import userAuth from '../middleware/userAuth.js';
 import { authLimiter } from '../middleware/rateLimiter.js';
@@ -12,6 +12,8 @@ const router = Router();
 // Public
 router.post('/register', authLimiter, registerUser);
 router.post('/login', authLimiter, loginUser);
+router.post('/verify-email', authLimiter, verifyEmail);
+router.post('/resend-email', authLimiter, resendEmail);
 router.post('/forgot-password', authLimiter, forgotPassword);
 router.post('/reset-password', resetPassword);
 

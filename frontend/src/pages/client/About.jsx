@@ -4,18 +4,16 @@ import SEOHead from '../../components/seo/SEOHead';
 import Breadcrumbs from '../../components/seo/Breadcrumbs';
 
 const timeline = [
-  { year: '2020', title: 'The Idea', desc: 'JuiceTap Global identifies the massive orange peel waste problem in India\'s juice industry.' },
-  { year: '2021', title: 'R&D Phase', desc: 'Our food scientists develop the proprietary process to convert orange peels into food-grade products.' },
-  { year: '2022', title: 'PeelKraft Born', desc: 'PeelKraft launches as a sub-brand of JuiceTap Global with its first product — Orange Peel Powder.' },
-  { year: '2023', title: 'Scaling Up', desc: 'Product range expands to include snacks, tea blends, and seasonings. Amazon store goes live.' },
-  { year: '2024', title: 'Growing Impact', desc: '500+ tonnes of orange peels recycled. 10,000+ happy customers across India.' },
+  { year: '2025', title: 'The Idea', desc: 'JuiceTap Global identifies the massive orange peel waste problem in India\'s juice industry.' },
+  { year: '2025', title: 'R&D Phase', desc: 'Our food scientists develop the proprietary process to convert orange peels into food-grade products.' },
+  { year: 'May 2026', title: 'PeelKraft Born', desc: 'PeelKraft launches as a sub-brand of JuiceTap Global with its first product — Orange Peel Powder.' },
+  { year: 'July 2026', title: 'Scaling Up', desc: 'Product range expands to include snacks, tea blends, and seasonings. Amazon store goes live.' },
 ];
 
 const values = [
   { icon: FiHeart, title: 'Health First', desc: 'Every product is designed to nourish your body with natural vitamins, fiber, and antioxidants.' },
   { icon: FiGlobe, title: 'Planet Positive', desc: 'We\'re committed to zero-waste manufacturing and reducing our environmental footprint.' },
   { icon: FiAward, title: 'Uncompromising Quality', desc: 'FSSAI certified, lab-tested, and produced in state-of-the-art facilities.' },
-  { icon: FiUsers, title: 'Community Driven', desc: 'Creating employment and supporting local farmers in India\'s citrus belt.' },
 ];
 
 const About = () => (
@@ -30,8 +28,8 @@ const About = () => (
           <motion.div initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
             <span className="inline-block px-3 py-1 bg-primary-50 text-primary-500 font-poppins font-semibold text-xs uppercase tracking-widest rounded-full mb-6">About PeelKraft</span>
             <h1 className="text-page font-poppins font-bold text-dark mb-6">Turning Orange Peels into <span className="text-primary-500">Gold</span></h1>
-            <p className="text-gray-500 font-inter leading-relaxed mb-6 text-lg">PeelKraft is a premium sustainable food brand by JuiceTap Global Pvt Ltd. We transform the orange peels discarded by India's juice industry into delicious, nutritious food products — creating value from waste while promoting health and sustainability.</p>
-            <p className="text-gray-500 font-inter leading-relaxed">Our mission is simple: prove that sustainable food can be premium, delicious, and accessible to everyone.</p>
+            <p className="text-gray-500 font-inter leading-relaxed mb-6 text-lg">PeelKraft is a sustainability-driven startup built on the principles of the circular economy. As a subbrand of JuiceTap, India's rapidly growing network of automated fresh orange juice vending machines, PeelKraft transforms premium orange peels into innovative, high-value consumer products.</p>
+            <p className="text-gray-500 font-inter leading-relaxed text-lg">By leveraging a unique supply chain advantage, PeelKraft converts what is traditionally considered waste into differentiated products across the confectionery, wellness, and functional snacking categories.</p>
           </motion.div>
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }}>
             <img
@@ -101,7 +99,7 @@ const About = () => (
           <span className="inline-block px-3 py-1 bg-primary-50 text-primary-500 font-poppins font-semibold text-xs uppercase tracking-widest rounded-full mb-6">Our Values</span>
           <h2 className="text-section font-poppins font-bold text-dark">What We <span className="text-primary-500">Stand For</span></h2>
         </motion.div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {values.map((item, i) => {
             const Icon = item.icon;
             return (
@@ -124,7 +122,7 @@ const About = () => (
       <div className="container-custom">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
-            <span className="inline-block px-3 py-1 bg-white/10 text-primary-500 font-poppins font-semibold text-xs uppercase tracking-widest rounded-full border border-white/10 mb-6">Our Parent Company</span>
+            <span className="inline-block px-3 py-1 bg-white/10 text-primary-500 font-poppins font-semibold text-xs uppercase tracking-widest rounded-full border border-white/10 mb-6">Powered by JuiceTap</span>
             <h2 className="text-section font-poppins font-bold mb-6">About <span className="text-primary-500">JuiceTap</span></h2>
             <p className="text-gray-300 font-inter leading-relaxed mb-6">
               JuiceTap operates automated vending machines that dispense 100% freshly squeezed orange juice. The company imports premium Valencia oranges from South Africa, Egypt, and Australia to ensure consistent quality and taste.

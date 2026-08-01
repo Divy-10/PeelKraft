@@ -40,6 +40,11 @@ export const UserProvider = ({ children }) => {
 
   const register = async (data) => {
     const res = await userAuthApi.register(data);
+    return res;
+  };
+
+  const verifyEmail = async (email, otp) => {
+    const res = await userAuthApi.verifyEmail({ email, otp });
     const { token: newToken, user: userData } = res;
     localStorage.setItem('pk_user_token', newToken);
     setToken(newToken);
@@ -60,7 +65,7 @@ export const UserProvider = ({ children }) => {
   const isAuthenticated = !!user && !!token;
 
   return (
-    <UserContext.Provider value={{ user, token, loading, login, register, logout, isAuthenticated, updateUser }}>
+    <UserContext.Provider value={{ user, token, loading, login, register, verifyEmail, logout, isAuthenticated, updateUser }}>
       {children}
     </UserContext.Provider>
   );

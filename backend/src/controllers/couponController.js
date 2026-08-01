@@ -56,6 +56,20 @@ export const validateCoupon = async (req, res, next) => {
   }
 };
 
+// Get Active Coupons (Client)
+export const getActiveCoupons = async (req, res, next) => {
+  try {
+    const coupons = await Coupon.find({
+      isActive: true,
+      startDate: { $lte: new Date() },
+      expiryDate: { $gt: new Date() },
+    }).select('-usedBy -usedCount');
+    res.json({ success: true, data: coupons });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // ========== ADMIN CRUD ==========
 
 // Get All Coupons

@@ -5,12 +5,29 @@ const reviewSchema = new mongoose.Schema(
     product: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Product',
-      required: true,
+      required: false, // Optional for general experience reviews
+      default: null,
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
+      required: false, // Optional for guest reviews
+      default: null,
+    },
+    customerName: {
+      type: String,
+      required: [true, 'Customer name is required'],
+      trim: true,
+    },
+    email: {
+      type: String,
+      required: [true, 'Email is required'],
+      trim: true,
+      lowercase: true,
+    },
+    profilePhoto: {
+      type: String,
+      default: '',
     },
     rating: {
       type: Number,
@@ -26,9 +43,13 @@ const reviewSchema = new mongoose.Schema(
     },
     comment: {
       type: String,
-      default: '',
+      required: [true, 'Review comment is required'],
       trim: true,
-      maxlength: 1000,
+      maxlength: 2000,
+    },
+    images: {
+      type: [String],
+      default: [],
     },
     isVerifiedPurchase: {
       type: Boolean,
@@ -36,8 +57,20 @@ const reviewSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['pending', 'approved', 'rejected'],
+      enum: ['pending', 'approved', 'rejected', 'spam'],
       default: 'pending',
+    },
+    featured: {
+      type: Boolean,
+      default: false,
+    },
+    helpfulCount: {
+      type: Number,
+      default: 0,
+    },
+    helpfulUsers: {
+      type: [String], // Store IP hashes or user IDs to prevent double click
+      default: [],
     },
   },
   {
@@ -45,9 +78,9 @@ const reviewSchema = new mongoose.Schema(
   }
 );
 
-// Ensure one review per user per product
-reviewSchema.index({ product: 1, user: 1 }, { unique: true });
+// Indexes
 reviewSchema.index({ product: 1, status: 1 });
+reviewSchema.index({ featured: 1, status: 1 });
 
 const Review = mongoose.model('Review', reviewSchema);
 export default Review;

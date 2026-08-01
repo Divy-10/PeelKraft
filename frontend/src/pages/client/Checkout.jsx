@@ -5,18 +5,21 @@ import { FiMapPin, FiCreditCard } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import { useCart } from '../../context/CartContext';
 import { useUser } from '../../context/UserContext';
-import { orderApi, paymentApi, couponApi } from '../../api';
+import { useSettings } from '../../context/SettingsContext';
+import { orderApi, paymentApi, couponApi, productApi } from '../../api';
 import SEOHead from '../../components/seo/SEOHead';
 import Breadcrumbs from '../../components/seo/Breadcrumbs';
 
 const Checkout = () => {
   const { items, getSubtotal, clearCart, getItemCount } = useCart();
   const { user, isAuthenticated } = useUser();
+  const { settings } = useSettings();
   const navigate = useNavigate();
 
   const [address, setAddress] = useState({
     fullName: user?.firstName ? `${user.firstName} ${user.lastName}` : '',
     phone: user?.phone || '',
+    whatsapp: user?.phone || '',
     addressLine1: '', addressLine2: '', city: '', state: '', pincode: '', country: 'India',
   });
   const [couponCode, setCouponCode] = useState('');
@@ -26,9 +29,32 @@ const Checkout = () => {
   const [deliveryNotes, setDeliveryNotes] = useState('');
   const [loading, setLoading] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const [activeCoupons, setActiveCoupons] = useState([]);
+  const [couponsLoading, setCouponsLoading] = useState(true);
+
+  useEffect(() => {
+    if (user && user.addresses && user.addresses.length > 0) {
+      const defaultAddr = user.addresses.find((addr) => addr.isDefault) || user.addresses[0];
+      if (defaultAddr) {
+        setAddress({
+          fullName: defaultAddr.fullName || '',
+          phone: defaultAddr.phone || '',
+          whatsapp: defaultAddr.whatsapp || defaultAddr.phone || user.phone || '',
+          addressLine1: defaultAddr.addressLine1 || '',
+          addressLine2: defaultAddr.addressLine2 || '',
+          city: defaultAddr.city || '',
+          state: defaultAddr.state || '',
+          pincode: defaultAddr.pincode || '',
+          country: defaultAddr.country || 'India',
+        });
+      }
+    }
+  }, [user]);
 
   const subtotal = getSubtotal();
-  const shipping = subtotal >= 499 ? 0 : 49;
+  const threshold = settings?.freeShippingMinAmount !== undefined ? Number(settings.freeShippingMinAmount) : 499;
+  const defaultShipping = settings?.shippingCharge !== undefined ? Number(settings.shippingCharge) : 49;
+  const shipping = subtotal >= threshold ? 0 : defaultShipping;
   const total = subtotal - discount + shipping;
 
   useEffect(() => {
@@ -39,16 +65,33 @@ const Checkout = () => {
     }
   }, [isAuthenticated, items.length, navigate]);
 
+  useEffect(() => {
+    const fetchActiveCoupons = async () => {
+      try {
+        const res = await couponApi.getActive();
+        console.log('Active coupons API response:', res.data);
+        setActiveCoupons(res.data || []);
+      } catch (err) {
+        console.error('Failed to fetch coupons:', err);
+        toast.error(`Coupons fetch failure: ${err.response?.data?.message || err.message || err}`);
+      } finally {
+        setCouponsLoading(false);
+      }
+    };
+    fetchActiveCoupons();
+  }, []);
+
   if (!isAuthenticated || items.length === 0) {
     return null;
   }
 
   const handleAddressChange = (e) => setAddress({ ...address, [e.target.name]: e.target.value });
 
-  const applyCoupon = async () => {
-    if (!couponCode.trim()) return;
+  const applyCoupon = async (codeOverride) => {
+    const code = codeOverride || couponCode;
+    if (!code.trim()) return;
     try {
-      const res = await couponApi.validate({ code: couponCode, subtotal });
+      const res = await couponApi.validate({ code, subtotal });
       setDiscount(res.data.discount);
       setAppliedCoupon(res.data.code);
       toast.success(`Coupon applied! You save ₹${res.data.discount}`);
@@ -57,6 +100,13 @@ const Checkout = () => {
       setDiscount(0);
       setAppliedCoupon('');
     }
+  };
+
+  const removeCoupon = () => {
+    setDiscount(0);
+    setAppliedCoupon('');
+    setCouponCode('');
+    toast.info('Coupon removed successfully.');
   };
 
   const loadRazorpayScript = () => {
@@ -72,12 +122,57 @@ const Checkout = () => {
   };
 
   const placeOrder = async () => {
-    if (!address.fullName || !address.phone || !address.addressLine1 || !address.city || !address.state || !address.pincode) {
+    if (!address.fullName || !address.phone || !address.whatsapp || !address.addressLine1 || !address.city || !address.state || !address.pincode) {
       return toast.error('Please fill all address fields.');
+    }
+    const cleanWhatsApp = address.whatsapp.replace(/\D/g, '');
+    if (cleanWhatsApp.length < 10) {
+      return toast.error('Please enter a valid WhatsApp number (at least 10 digits).');
     }
     if (!agreeTerms) return toast.error('Please agree to the terms and conditions.');
 
     setLoading(true);
+
+    // Verify stock levels from the database in real-time before paying
+    try {
+      const freshProducts = await Promise.all(
+        items.map(item => productApi.getBySlug(item.slug)
+          .then(res => ({ item, fresh: res.data }))
+          .catch(() => ({ item, fresh: null }))
+        )
+      );
+
+      for (const { item, fresh } of freshProducts) {
+        if (!fresh) {
+          setLoading(false);
+          return toast.error(`Product ${item.name} is no longer available.`);
+        }
+        if (fresh.packageOptions && fresh.packageOptions.length > 0 && item.packageOptionId) {
+          const opt = fresh.packageOptions.find(o => o._id.toString() === item.packageOptionId);
+          if (!opt) {
+            setLoading(false);
+            return toast.error(`Selected option for ${item.name} is no longer available.`);
+          }
+          if (opt.status === 'disabled') {
+            setLoading(false);
+            return toast.error(`${item.name} (${opt.name}) is currently unavailable.`);
+          }
+          if (fresh.trackInventory && opt.stock < item.quantity) {
+            setLoading(false);
+            return toast.error(`Insufficient stock for ${item.name} (${opt.name}). Available: ${opt.stock}`);
+          }
+        } else {
+          if (fresh.trackInventory && fresh.stock < item.quantity) {
+            setLoading(false);
+            return toast.error(`Insufficient stock for ${item.name}. Available: ${fresh.stock}`);
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Stock verification failed:', err);
+      setLoading(false);
+      return toast.error('Could not verify product availability. Please try again.');
+    }
     try {
       if (paymentMethod === 'razorpay') {
         const rpRes = await paymentApi.createRazorpayOrder({ amount: total });
@@ -88,7 +183,11 @@ const Checkout = () => {
           setTimeout(async () => {
             try {
               const orderRes = await orderApi.create({
-                items: items.map((i) => ({ product: i._id, quantity: i.quantity })),
+                items: items.map((i) => ({ 
+                  product: i.product || i._id, 
+                  packageOptionId: i.packageOptionId || '', 
+                  quantity: i.quantity 
+                })),
                 shippingAddress: address,
                 paymentMethod: 'razorpay',
                 couponCode: appliedCoupon,
@@ -131,7 +230,11 @@ const Checkout = () => {
             try {
               // Create order after payment
               const orderRes = await orderApi.create({
-                items: items.map((i) => ({ product: i._id, quantity: i.quantity })),
+                items: items.map((i) => ({ 
+                  product: i.product || i._id, 
+                  packageOptionId: i.packageOptionId || '', 
+                  quantity: i.quantity 
+                })),
                 shippingAddress: address,
                 paymentMethod: 'razorpay',
                 couponCode: appliedCoupon,
@@ -174,7 +277,7 @@ const Checkout = () => {
     }
   };
 
-  const inputCls = 'w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition font-inter text-sm';
+  const inputCls = 'input-premium';
 
   return (
     <>
@@ -197,12 +300,13 @@ const Checkout = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div><label className="block text-xs font-medium text-gray-500 mb-1 font-inter">Full Name *</label><input name="fullName" value={address.fullName} onChange={handleAddressChange} required className={inputCls} /></div>
                   <div><label className="block text-xs font-medium text-gray-500 mb-1 font-inter">Phone *</label><input name="phone" value={address.phone} onChange={handleAddressChange} required className={inputCls} /></div>
+                  <div><label className="block text-xs font-medium text-gray-500 mb-1 font-inter">WhatsApp Number *</label><input name="whatsapp" type="tel" value={address.whatsapp} onChange={handleAddressChange} required className={inputCls} placeholder="+91 9876543210" pattern="[\d\s+\-()]*" /></div>
+                  <div><label className="block text-xs font-medium text-gray-500 mb-1 font-inter">Country</label><input name="country" value={address.country} onChange={handleAddressChange} className={inputCls} /></div>
                   <div className="md:col-span-2"><label className="block text-xs font-medium text-gray-500 mb-1 font-inter">Address Line 1 *</label><input name="addressLine1" value={address.addressLine1} onChange={handleAddressChange} required className={inputCls} /></div>
                   <div className="md:col-span-2"><label className="block text-xs font-medium text-gray-500 mb-1 font-inter">Address Line 2</label><input name="addressLine2" value={address.addressLine2} onChange={handleAddressChange} className={inputCls} /></div>
                   <div><label className="block text-xs font-medium text-gray-500 mb-1 font-inter">City *</label><input name="city" value={address.city} onChange={handleAddressChange} required className={inputCls} /></div>
                   <div><label className="block text-xs font-medium text-gray-500 mb-1 font-inter">State *</label><input name="state" value={address.state} onChange={handleAddressChange} required className={inputCls} /></div>
                   <div><label className="block text-xs font-medium text-gray-500 mb-1 font-inter">Pincode *</label><input name="pincode" value={address.pincode} onChange={handleAddressChange} required className={inputCls} /></div>
-                  <div><label className="block text-xs font-medium text-gray-500 mb-1 font-inter">Country</label><input name="country" value={address.country} onChange={handleAddressChange} className={inputCls} /></div>
                 </div>
                 <div className="mt-4">
                   <label className="block text-xs font-medium text-gray-500 mb-1 font-inter">Delivery Notes (optional)</label>
@@ -232,9 +336,14 @@ const Checkout = () => {
                 <div className="space-y-3 mb-4">
                   {items.map((item) => (
                     <div key={item._id} className="flex items-center gap-3">
-                      <img src={item.image} alt={item.name} className="w-12 h-12 object-cover rounded-lg bg-gray-50" />
+                      <div className="w-12 h-12 shrink-0 product-image-container rounded-lg overflow-hidden">
+                        <img src={item.image} alt={item.name} className="product-image" />
+                      </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-dark line-clamp-1 font-inter">{item.name}</p>
+                        {item.packageName && (
+                          <p className="text-xs text-primary-600 font-semibold font-poppins mt-0.5">{item.packageName}</p>
+                        )}
                         <p className="text-xs text-gray-500 font-inter">Qty: {item.quantity}</p>
                       </div>
                       <span className="text-sm font-bold text-dark font-poppins">₹{item.price * item.quantity}</span>
@@ -244,9 +353,96 @@ const Checkout = () => {
 
                 {/* Coupon */}
                 <div className="flex gap-2 mb-4">
-                  <input value={couponCode} onChange={(e) => setCouponCode(e.target.value)} placeholder="Coupon code" className="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-sm font-inter focus:border-primary-500 outline-none" />
-                  <button onClick={applyCoupon} className="px-4 py-2 bg-dark text-white rounded-lg text-sm font-semibold hover:bg-gray-800 transition font-poppins">Apply</button>
+                  <input 
+                    value={couponCode} 
+                    onChange={(e) => setCouponCode(e.target.value)} 
+                    placeholder="Coupon code" 
+                    disabled={!!appliedCoupon}
+                    className="flex-1 input-premium !py-2.5 disabled:bg-gray-50 disabled:text-gray-400" 
+                  />
+                  {appliedCoupon ? (
+                    <button 
+                      onClick={removeCoupon} 
+                      className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-semibold font-poppins transition-all"
+                    >
+                      Remove
+                    </button>
+                  ) : (
+                    <button 
+                      onClick={() => applyCoupon(couponCode)} 
+                      className="px-5 py-2.5 bg-dark hover:bg-gray-800 text-white rounded-xl text-xs font-semibold font-poppins transition-all"
+                    >
+                      Apply
+                    </button>
+                  )}
                 </div>
+
+                {/* Available Coupons */}
+                {activeCoupons.length > 0 && (
+                  <div className="mt-4 mb-4 border border-dashed border-gray-200 rounded-xl p-4 bg-gray-50/50">
+                    <p className="text-xs font-bold text-gray-500 mb-3 font-poppins uppercase tracking-wider flex items-center gap-1.5">
+                      🎟️ Available Offers
+                    </p>
+                    <div className="space-y-2.5 max-h-52 overflow-y-auto pr-1">
+                      {activeCoupons.map((c) => {
+                        const isSelected = couponCode.toUpperCase() === c.code.toUpperCase();
+                        const isApplied = appliedCoupon.toUpperCase() === c.code.toUpperCase();
+                        return (
+                          <div 
+                            key={c._id} 
+                            onClick={() => setCouponCode(c.code)}
+                            className={`p-3 rounded-lg border transition-all duration-200 cursor-pointer flex justify-between items-center ${
+                              isApplied 
+                                ? 'border-green-500 bg-green-50/40 shadow-sm' 
+                                : isSelected 
+                                  ? 'border-primary-500 bg-primary-50/30' 
+                                  : 'border-gray-100 hover:border-gray-200 bg-white'
+                            }`}
+                          >
+                            <div className="min-w-0 pr-2">
+                              <div className="flex items-center gap-2">
+                                <span className={`font-bold text-xs px-2.5 py-0.5 rounded font-poppins border ${
+                                  isApplied 
+                                    ? 'bg-green-100 text-green-800 border-green-200' 
+                                    : 'bg-primary-100 text-primary-800 border-primary-200'
+                                }`}>
+                                  {c.code}
+                                </span>
+                                {c.minPurchase > 0 && (
+                                  <span className="text-[10px] text-gray-400 font-inter font-medium">
+                                    Min: ₹{c.minPurchase}
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-[11px] text-gray-600 mt-1.5 font-inter leading-relaxed">
+                                {c.description || `${c.discountValue}% Off your order`}
+                              </p>
+                            </div>
+                            <button 
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (isApplied) {
+                                  removeCoupon();
+                                } else {
+                                  setCouponCode(c.code);
+                                  applyCoupon(c.code);
+                                }
+                              }}
+                              className={`text-xs font-bold font-poppins px-3 py-1.5 rounded-lg transition shrink-0 ${
+                                isApplied
+                                  ? 'bg-red-600 hover:bg-red-700 text-white shadow-sm'
+                                  : 'bg-dark hover:bg-gray-800 text-white'
+                              }`}
+                            >
+                              {isApplied ? 'Remove' : 'Apply'}
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
 
                 <div className="space-y-2 text-sm font-inter border-t border-gray-100 pt-4">
                   <div className="flex justify-between text-gray-600"><span>Subtotal</span><span>₹{subtotal}</span></div>
@@ -261,7 +457,7 @@ const Checkout = () => {
                   <span className="text-xs text-gray-500 font-inter">I agree to the <a href="/terms-conditions" target="_blank" className="text-primary-500 underline">Terms & Conditions</a> and <a href="/privacy-policy" target="_blank" className="text-primary-500 underline">Privacy Policy</a></span>
                 </label>
 
-                <button onClick={placeOrder} disabled={loading || !agreeTerms} className="w-full mt-4 py-3.5 bg-primary-500 hover:bg-primary-600 text-white font-semibold rounded-xl transition-all shadow-lg shadow-primary-500/20 font-poppins disabled:opacity-50">
+                <button onClick={placeOrder} disabled={loading || !agreeTerms} className="btn-primary w-full mt-4 !rounded-xl">
                   {loading ? 'Processing...' : paymentMethod === 'razorpay' ? `Pay ₹${total}` : 'Place Order (COD)'}
                 </button>
               </div>

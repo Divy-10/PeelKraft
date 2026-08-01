@@ -258,9 +258,9 @@ export const seedDatabase = async (isCli = false) => {
       companyName: 'PeelKraft',
       tagline: 'Premium Sustainable Food from Orange Peels',
       email: 'info@peelkraft.com',
-      phone: '+91 85115 33004',
-      address: '5Q82+VM Surat, Gujarat, India',
-      whatsapp: '+918511533004',
+      phone: '+91 99980 38191',
+      address: 'JUICETAP GLOBAL PRIVATE LIMITED Plot 13-14, Nandini Farm, Tata Motors Lane, Bhatpore, Hazira, Surat, Gujarat 394510',
+      whatsapp: '+919998038191',
       socialLinks: {
         instagram: 'https://instagram.com/peelkraft',
       },

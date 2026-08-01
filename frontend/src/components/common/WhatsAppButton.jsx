@@ -7,10 +7,11 @@ import { useSettings } from '../../context/SettingsContext';
 const WhatsAppButton = () => {
   const { settings } = useSettings();
   const [isOpen, setIsOpen] = useState(false);
+  const [showInstruction, setShowInstruction] = useState(true);
   const isDragging = useRef(false);
 
   // Format phone number for WhatsApp wa.me link
-  const rawPhone = settings?.whatsapp || settings?.phone || '+918511533004';
+  const rawPhone = settings?.whatsapp || settings?.phone || '+919998038191';
   const cleanPhone = rawPhone.replace(/[^0-9]/g, '');
   const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent('Hello PeelKraft! I am interested in your organic orange peel products.')}`;
 
@@ -44,13 +45,28 @@ const WhatsAppButton = () => {
     >
       <div className="relative group flex items-center gap-3">
         {/* Drag Hint & Chat Tooltip */}
-        <div className="hidden sm:flex flex-col bg-white text-[#2D3A1E] px-3.5 py-2 rounded-2xl shadow-xl border border-emerald-100 text-xs font-semibold pointer-events-none group-hover:opacity-100 transition-opacity">
-          <div className="flex items-center gap-1.5 text-emerald-700 font-bold">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-            Chat with PeelKraft
+        {showInstruction && (
+          <div className="hidden sm:flex items-start gap-2 bg-white text-[#2D3A1E] px-3.5 py-2 rounded-2xl shadow-xl border border-emerald-100 text-xs font-semibold relative transition-opacity min-w-[150px]">
+            <div className="flex-1 flex flex-col">
+              <div className="flex items-center gap-1.5 text-emerald-700 font-bold">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                Chat with PeelKraft
+              </div>
+              <span className="text-[10px] text-gray-400 font-normal">Drag to move button</span>
+            </div>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowInstruction(false);
+              }}
+              className="text-gray-400 hover:text-gray-600 transition-colors p-0.5 rounded-full hover:bg-gray-100 flex items-center justify-center cursor-pointer"
+              title="Close guide"
+            >
+              <FiX className="w-3.5 h-3.5" />
+            </button>
           </div>
-          <span className="text-[10px] text-gray-400 font-normal">Drag to move button</span>
-        </div>
+        )}
 
         {/* WhatsApp Circular Drag Button */}
         <button

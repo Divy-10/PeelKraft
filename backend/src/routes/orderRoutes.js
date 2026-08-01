@@ -2,11 +2,15 @@ import { Router } from 'express';
 import {
   createOrder, getMyOrders, getOrderById, cancelOrder,
   getAllOrders, getAdminOrderById, updateOrderStatus,
+  getOrderInvoicePdf,
 } from '../controllers/orderController.js';
 import userAuth from '../middleware/userAuth.js';
 import auth from '../middleware/auth.js';
 
 const router = Router();
+
+// Public routes
+router.get('/invoice/:orderNumber', getOrderInvoicePdf);
 
 // Customer routes
 router.post('/', userAuth, createOrder);

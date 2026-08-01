@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import { useUser } from './UserContext';
 
 const CartContext = createContext(null);
 
@@ -21,18 +22,30 @@ const getStoredCart = () => {
 
 export const CartProvider = ({ children }) => {
   const [items, setItems] = useState(getStoredCart);
+  const { isAuthenticated } = useUser();
+  const wasAuthenticated = useRef(isAuthenticated);
+
+  // Clear cart on logout
+  useEffect(() => {
+    if (wasAuthenticated.current && !isAuthenticated) {
+      setItems([]);
+      localStorage.removeItem(CART_KEY);
+    }
+    wasAuthenticated.current = isAuthenticated;
+  }, [isAuthenticated]);
 
   // Persist to localStorage
   useEffect(() => {
     localStorage.setItem(CART_KEY, JSON.stringify(items));
   }, [items]);
 
-  const addToCart = useCallback((product, quantity = 1) => {
+  const addToCart = useCallback((product, selectedPackage = null, quantity = 1) => {
     setItems((prev) => {
-      const existing = prev.find((item) => item._id === product._id);
+      const cartItemId = selectedPackage ? `${product._id}_${selectedPackage._id}` : product._id;
+      const existing = prev.find((item) => item._id === cartItemId);
       if (existing) {
         return prev.map((item) =>
-          item._id === product._id
+          item._id === cartItemId
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
@@ -40,13 +53,16 @@ export const CartProvider = ({ children }) => {
       return [
         ...prev,
         {
-          _id: product._id,
+          _id: cartItemId,
+          product: product._id,
           name: product.name,
           slug: product.slug,
           image: product.thumbnail?.url || product.gallery?.[0]?.url || '',
-          price: product.sellingPrice || product.mrp || 0,
-          mrp: product.mrp || 0,
-          stock: product.stock || 0,
+          price: selectedPackage ? selectedPackage.sellingPrice : (product.sellingPrice || product.mrp || 0),
+          mrp: selectedPackage ? selectedPackage.mrp : (product.mrp || 0),
+          stock: selectedPackage ? selectedPackage.stock : (product.stock || 0),
+          packageOptionId: selectedPackage ? selectedPackage._id : '',
+          packageName: selectedPackage ? selectedPackage.name : '',
           quantity,
         },
       ];
@@ -79,7 +95,10 @@ export const CartProvider = ({ children }) => {
   }, [items]);
 
   const isInCart = useCallback(
-    (productId) => items.some((item) => item._id === productId),
+    (productId, packageOptionId = '') => {
+      const cartItemId = packageOptionId ? `${productId}_${packageOptionId}` : productId;
+      return items.some((item) => item._id === cartItemId || (item.product === productId && item.packageOptionId === packageOptionId));
+    },
     [items]
   );
 

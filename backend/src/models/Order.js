@@ -12,6 +12,8 @@ const orderItemSchema = new mongoose.Schema({
   price: { type: Number, required: true },
   quantity: { type: Number, required: true, min: 1 },
   total: { type: Number, required: true },
+  packageOptionId: { type: String, default: '' },
+  packageName: { type: String, default: '' },
 });
 
 const orderSchema = new mongoose.Schema(
@@ -31,6 +33,7 @@ const orderSchema = new mongoose.Schema(
     shippingAddress: {
       fullName: { type: String, required: true },
       phone: { type: String, required: true },
+      whatsapp: { type: String, default: '' },
       addressLine1: { type: String, required: true },
       addressLine2: { type: String, default: '' },
       city: { type: String, required: true },
@@ -41,6 +44,7 @@ const orderSchema = new mongoose.Schema(
     billingAddress: {
       fullName: { type: String, default: '' },
       phone: { type: String, default: '' },
+      whatsapp: { type: String, default: '' },
       addressLine1: { type: String, default: '' },
       addressLine2: { type: String, default: '' },
       city: { type: String, default: '' },
@@ -85,11 +89,18 @@ const orderSchema = new mongoose.Schema(
         note: { type: String, default: '' },
       },
     ],
-    // Shipping
+    // Shipping & Fulfillment
     trackingNumber: { type: String, default: '' },
     courierName: { type: String, default: '' },
+    trackingUrl: { type: String, default: '' },
+    dispatchDate: { type: Date },
     estimatedDelivery: { type: Date },
     deliveredAt: { type: Date },
+    deliveryStatus: {
+      type: String,
+      enum: ['pending', 'shipped', 'out_for_delivery', 'delivered', 'returned', 'failed'],
+      default: 'pending',
+    },
     // Notes
     deliveryNotes: { type: String, default: '' },
     adminNotes: { type: String, default: '' },
@@ -113,7 +124,6 @@ orderSchema.pre('validate', async function (next) {
 
 orderSchema.index({ user: 1, createdAt: -1 });
 orderSchema.index({ status: 1 });
-orderSchema.index({ orderNumber: 1 });
 orderSchema.index({ paymentStatus: 1 });
 orderSchema.index({ createdAt: -1 });
 

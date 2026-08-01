@@ -30,7 +30,7 @@ const Contact = () => {
   const contactInfo = [
     { icon: FiMail, label: 'Email', value: settings.email, href: `mailto:${settings.email}` },
     { icon: FiPhone, label: 'Phone', value: settings.phone, href: `tel:${settings.phone}` },
-    { icon: FiMapPin, label: 'Address', value: settings.address },
+    { icon: FiMapPin, label: 'Address', value: settings.address || 'JUICETAP GLOBAL PRIVATE LIMITED Plot 13-14, Nandini Farm, Tata Motors Lane, Bhatpore, Hazira, Surat, Gujarat 394510' },
   ];
 
   return (
@@ -63,7 +63,15 @@ const Contact = () => {
                       </div>
                       <div>
                         <p className="text-sm text-gray-400">{item.label}</p>
-                        {item.href ? <a href={item.href} className="text-dark font-medium hover:text-primary-500 transition-colors">{item.value}</a> : <p className="text-dark font-medium">{item.value}</p>}
+                        {item.href ? (
+                          <a href={item.href} className="text-dark font-medium hover:text-primary-500 transition-colors">
+                            {item.value}
+                          </a>
+                        ) : (
+                          <p className="text-dark font-medium whitespace-pre-line">
+                            {item.value}
+                          </p>
+                        )}
                       </div>
                     </motion.div>
                   );
@@ -81,7 +89,7 @@ const Contact = () => {
               {/* Map */}
               <div className="mt-10 rounded-2xl overflow-hidden h-64 bg-gray-100">
                 <iframe
-                  src="https://maps.google.com/maps?q=JUICETAP%20GLOBAL%20PVT%20LTD,%2012-14,%20Tata%20Motors%20Lane,%20near%20Tapovan%20Farm,%20Surat,%20Gujarat%20394510&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                  src="https://maps.google.com/maps?q=5Q82%2BVM,%20Surat,%20Gujarat,%20India&t=&z=15&ie=UTF8&iwloc=&output=embed"
                   width="100%" height="100%" style={{ border: 0 }} allowFullScreen loading="lazy" title="PeelKraft Location"
                 />
               </div>

@@ -11,6 +11,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
   const { login } = useUser();
   const navigate = useNavigate();
   const location = useLocation();
@@ -19,13 +20,31 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrors({});
     setLoading(true);
     try {
       await login(email, password);
       toast.success('Welcome back!');
       navigate(from, { replace: true });
     } catch (err) {
-      toast.error(err.message || 'Login failed.');
+      const errMsg = err.message || 'Login failed.';
+      const newErrors = {};
+      
+      if (errMsg.toLowerCase().includes('email or password')) {
+        newErrors.email = 'Invalid email or password.';
+        newErrors.password = 'Invalid email or password.';
+      } else if (errMsg.toLowerCase().includes('email') || errMsg.toLowerCase().includes('account with this email')) {
+        newErrors.email = errMsg;
+      } else if (errMsg.toLowerCase().includes('password')) {
+        newErrors.password = errMsg;
+      } else {
+        newErrors.general = errMsg;
+      }
+      
+      setErrors(newErrors);
+      if (newErrors.general) {
+        toast.error(newErrors.general);
+      }
     } finally {
       setLoading(false);
     }
@@ -40,7 +59,7 @@ const Login = () => {
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-md"
         >
-          <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 md:p-10">
+          <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-6 sm:p-8 md:p-10">
             <div className="text-center mb-8">
               <Link to="/">
                 <img src="/images/logo.png" alt="PeelKraft" className="h-12 mx-auto mb-4" />
@@ -50,6 +69,11 @@ const Login = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
+              {errors.general && (
+                <div className="p-3 bg-red-50 border border-red-200 text-red-600 rounded-xl text-sm font-inter">
+                  {errors.general}
+                </div>
+              )}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5 font-inter">Email</label>
                 <div className="relative">
@@ -57,12 +81,22 @@ const Login = () => {
                   <input
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (errors.email) setErrors({ ...errors, email: '' });
+                    }}
                     required
-                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition font-inter text-sm"
+                    className={`w-full pl-11 pr-4 py-3 rounded-xl border outline-none transition font-inter text-sm ${
+                      errors.email
+                        ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-100'
+                        : 'border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100'
+                    }`}
                     placeholder="you@example.com"
                   />
                 </div>
+                {errors.email && (
+                  <p className="text-red-500 text-xs mt-1.5 font-inter">{errors.email}</p>
+                )}
               </div>
 
               <div>
@@ -72,9 +106,16 @@ const Login = () => {
                   <input
                     type={showPassword ? 'text' : 'password'}
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (errors.password) setErrors({ ...errors, password: '' });
+                    }}
                     required
-                    className="w-full pl-11 pr-11 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition font-inter text-sm"
+                    className={`w-full pl-11 pr-11 py-3 rounded-xl border outline-none transition font-inter text-sm ${
+                      errors.password
+                        ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-100'
+                        : 'border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100'
+                    }`}
                     placeholder="••••••••"
                   />
                   <button
@@ -85,9 +126,12 @@ const Login = () => {
                     {showPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
                   </button>
                 </div>
+                {errors.password && (
+                  <p className="text-red-500 text-xs mt-1.5 font-inter">{errors.password}</p>
+                )}
               </div>
 
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input type="checkbox" className="rounded border-gray-300 text-primary-500 focus:ring-primary-500" />
                   <span className="text-gray-600 font-inter">Remember me</span>

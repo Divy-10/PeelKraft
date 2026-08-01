@@ -13,10 +13,10 @@ const config = {
     apiSecret: process.env.CLOUDINARY_API_SECRET,
   },
   smtp: {
-    host: process.env.SMTP_HOST,
-    port: parseInt(process.env.SMTP_PORT, 10) || 587,
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
+    host: process.env.EMAIL_HOST || process.env.SMTP_HOST,
+    port: parseInt(process.env.EMAIL_PORT || process.env.SMTP_PORT, 10) || 587,
+    user: process.env.EMAIL_USER || process.env.SMTP_USER,
+    pass: process.env.EMAIL_PASS || process.env.SMTP_PASS,
   },
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
   adminEmail: process.env.ADMIN_EMAIL || 'admin@peelkraft.com',
@@ -25,6 +25,8 @@ const config = {
     keyId: process.env.RAZORPAY_KEY_ID || '',
     keySecret: process.env.RAZORPAY_KEY_SECRET || '',
   },
+  resendApiKey: process.env.RESEND_API_KEY,
+  emailFrom: process.env.EMAIL_FROM || 'onboarding@resend.dev',
 };
 
 export default config;

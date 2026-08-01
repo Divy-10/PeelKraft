@@ -1,7 +1,22 @@
 import mongoose from 'mongoose';
 
+const packageOptionSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  mrp: { type: Number, default: 0, min: 0 },
+  sellingPrice: { type: Number, default: 0, min: 0 },
+  costPrice: { type: Number, default: 0, min: 0 },
+  discountPercent: { type: Number, default: 0, min: 0, max: 100 },
+  stock: { type: Number, default: 0, min: 0 },
+  sku: { type: String, default: '', trim: true },
+  barcode: { type: String, default: '', trim: true },
+  status: { type: String, enum: ['active', 'disabled'], default: 'active' },
+  featured: { type: Boolean, default: false },
+  badge: { type: String, default: '' },
+});
+
 const productSchema = new mongoose.Schema(
   {
+    packageOptions: [packageOptionSchema],
     name: {
       type: String,
       required: [true, 'Product name is required'],
@@ -75,6 +90,10 @@ const productSchema = new mongoose.Schema(
       publicId: { type: String, default: '' },
     },
     featuredImage: {
+      url: { type: String, default: '' },
+      publicId: { type: String, default: '' },
+    },
+    video: {
       url: { type: String, default: '' },
       publicId: { type: String, default: '' },
     },

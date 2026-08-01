@@ -1,12 +1,13 @@
 import { Router } from 'express';
-import { validateCoupon, getAllCoupons, createCoupon, updateCoupon, deleteCoupon } from '../controllers/couponController.js';
-import userAuth from '../middleware/userAuth.js';
+import { validateCoupon, getActiveCoupons, getAllCoupons, createCoupon, updateCoupon, deleteCoupon } from '../controllers/couponController.js';
+import userAuth, { optionalUserAuth } from '../middleware/userAuth.js';
 import auth from '../middleware/auth.js';
 
 const router = Router();
 
 // Customer
-router.post('/validate', userAuth, validateCoupon);
+router.post('/validate', optionalUserAuth, validateCoupon);
+router.get('/active', getActiveCoupons);
 
 // Admin
 router.get('/', auth, getAllCoupons);

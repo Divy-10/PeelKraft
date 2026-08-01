@@ -44,6 +44,7 @@ const Footer = () => {
     Legal: [
       { name: 'Privacy Policy', path: '/privacy-policy' },
       { name: 'Terms & Conditions', path: '/terms-conditions' },
+      { name: 'Cookie Policy', path: '/cookie-policy' },
     ],
   };
 
@@ -79,7 +80,7 @@ const Footer = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className="flex-1 px-6 py-3.5 rounded-full bg-gray-50 border border-gray-200 text-dark placeholder-gray-400 focus:outline-none focus:border-primary-500 transition-colors font-inter text-sm"
+                className="flex-1 input-premium !rounded-full"
                 required
               />
               <button
@@ -107,7 +108,7 @@ const Footer = () => {
               />
             </Link>
             <p className="text-gray-500 leading-relaxed mb-6 max-w-sm text-sm font-inter">
-              Premium sustainable food products crafted from organic orange peels. By JuiceTap Global Pvt Ltd.
+              Premium sustainable food products crafted from orange peels. By JuiceTap Global Pvt Ltd.
             </p>
             <div className="space-y-3 text-gray-500 text-sm font-inter flex flex-col items-center md:items-start">
               <a href={`mailto:${settings.email}`} className="flex items-center gap-3 hover:text-primary-500 transition-colors">
@@ -116,8 +117,8 @@ const Footer = () => {
               <a href={`tel:${settings.phone}`} className="flex items-center gap-3 hover:text-primary-500 transition-colors">
                 <FiPhone className="w-4 h-4 text-gray-400" /> {settings.phone}
               </a>
-              <p className="flex items-center gap-3 justify-center text-center">
-                <FiMapPin className="w-4 h-4 text-gray-400 shrink-0" /> {settings.address}
+              <p className="flex items-start gap-3 text-left">
+                <FiMapPin className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" /> <span className="whitespace-pre-line">{settings.address}</span>
               </p>
             </div>
           </div>

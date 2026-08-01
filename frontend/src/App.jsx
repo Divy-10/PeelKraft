@@ -27,7 +27,13 @@ const Contact = lazy(() => import('./pages/client/Contact'));
 const SearchPage = lazy(() => import('./pages/client/Search'));
 const PrivacyPolicy = lazy(() => import('./pages/client/PrivacyPolicy'));
 const TermsConditions = lazy(() => import('./pages/client/TermsConditions'));
+const CookiePolicy = lazy(() => import('./pages/client/CookiePolicy'));
 const NotFound = lazy(() => import('./pages/client/NotFound'));
+
+import { CookieProvider } from './context/CookieContext';
+import { PopupProvider } from './context/PopupContext';
+import CookieBanner from './components/layout/CookieBanner';
+import CookieSettingsModal from './components/layout/CookieSettingsModal';
 
 // E-commerce Client Pages
 const Cart = lazy(() => import('./pages/client/Cart'));
@@ -39,6 +45,8 @@ const MyOrders = lazy(() => import('./pages/client/MyOrders'));
 const Login = lazy(() => import('./pages/client/Login'));
 const Register = lazy(() => import('./pages/client/Register'));
 const ForgotPassword = lazy(() => import('./pages/client/ForgotPassword'));
+const VerifyEmail = lazy(() => import('./pages/client/VerifyEmail'));
+const ResetPassword = lazy(() => import('./pages/client/ResetPassword'));
 
 // Admin Pages (Lazy Loaded)
 const AdminLogin = lazy(() => import('./pages/admin/Login'));
@@ -49,7 +57,7 @@ const AdminCategories = lazy(() => import('./pages/admin/Categories'));
 const AdminBlogs = lazy(() => import('./pages/admin/Blogs'));
 const AdminBlogForm = lazy(() => import('./pages/admin/BlogForm'));
 const AdminFaqs = lazy(() => import('./pages/admin/Faqs'));
-const AdminTestimonials = lazy(() => import('./pages/admin/Testimonials'));
+const AdminReviews = lazy(() => import('./pages/admin/Reviews'));
 const AdminContacts = lazy(() => import('./pages/admin/Contacts'));
 const AdminNewsletter = lazy(() => import('./pages/admin/Newsletter'));
 const AdminSeo = lazy(() => import('./pages/admin/SeoManager'));
@@ -59,67 +67,81 @@ const AdminSettings = lazy(() => import('./pages/admin/Settings'));
 const AdminOrders = lazy(() => import('./pages/admin/Orders'));
 const AdminOrderDetails = lazy(() => import('./pages/admin/OrderDetails'));
 const AdminCoupons = lazy(() => import('./pages/admin/Coupons'));
+const AdminPopups = lazy(() => import('./pages/admin/PopupList'));
+const AdminPopupForm = lazy(() => import('./pages/admin/PopupForm'));
 
 const App = () => {
   return (
-    <Suspense fallback={<PageLoader />}>
-      <Routes>
-        {/* Client Routes */}
-        <Route element={<ClientLayout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/products/:slug" element={<ProductDetails />} />
-          <Route path="/sustainability" element={<Sustainability />} />
-          <Route path="/blogs" element={<Blogs />} />
-          <Route path="/blogs/:slug" element={<BlogDetails />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms-conditions" element={<TermsConditions />} />
-          
-          {/* E-commerce client-side paths */}
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/wishlist" element={<Wishlist />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/order-success/:orderId" element={<OrderSuccess />} />
-          <Route path="/my-profile" element={<MyProfile />} />
-          <Route path="/my-orders" element={<MyOrders />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-        </Route>
+    <CookieProvider>
+      <PopupProvider>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+          {/* Client Routes */}
+          <Route element={<ClientLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/products/:slug" element={<ProductDetails />} />
+            <Route path="/sustainability" element={<Sustainability />} />
+            <Route path="/blogs" element={<Blogs />} />
+            <Route path="/blogs/:slug" element={<BlogDetails />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/search" element={<SearchPage />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-conditions" element={<TermsConditions />} />
+            <Route path="/cookie-policy" element={<CookiePolicy />} />
+            
+            {/* E-commerce client-side paths */}
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/order-success/:orderId" element={<OrderSuccess />} />
+            <Route path="/my-profile" element={<MyProfile />} />
+            <Route path="/my-orders" element={<MyOrders />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+          </Route>
 
-        {/* Admin Routes */}
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
-          <Route index element={<Dashboard />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="products" element={<AdminProducts />} />
-          <Route path="products/new" element={<AdminProductForm />} />
-          <Route path="products/edit/:id" element={<AdminProductForm />} />
-          <Route path="categories" element={<AdminCategories />} />
-          <Route path="blogs" element={<AdminBlogs />} />
-          <Route path="blogs/new" element={<AdminBlogForm />} />
-          <Route path="blogs/edit/:id" element={<AdminBlogForm />} />
-          <Route path="faqs" element={<AdminFaqs />} />
-          <Route path="testimonials" element={<AdminTestimonials />} />
-          <Route path="contacts" element={<AdminContacts />} />
-          <Route path="newsletter" element={<AdminNewsletter />} />
-          <Route path="seo" element={<AdminSeo />} />
-          <Route path="settings" element={<AdminSettings />} />
-          
-          {/* E-commerce admin-side paths */}
-          <Route path="orders" element={<AdminOrders />} />
-          <Route path="orders/:id" element={<AdminOrderDetails />} />
-          <Route path="coupons" element={<AdminCoupons />} />
-        </Route>
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+            <Route index element={<Dashboard />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="products" element={<AdminProducts />} />
+            <Route path="products/new" element={<AdminProductForm />} />
+            <Route path="products/edit/:id" element={<AdminProductForm />} />
+            <Route path="categories" element={<AdminCategories />} />
+            <Route path="blogs" element={<AdminBlogs />} />
+            <Route path="blogs/new" element={<AdminBlogForm />} />
+            <Route path="blogs/edit/:id" element={<AdminBlogForm />} />
+            <Route path="faqs" element={<AdminFaqs />} />
+            <Route path="reviews" element={<AdminReviews />} />
+            <Route path="contacts" element={<AdminContacts />} />
+            <Route path="newsletter" element={<AdminNewsletter />} />
+            <Route path="seo" element={<AdminSeo />} />
+            <Route path="settings" element={<AdminSettings />} />
+            
+            {/* E-commerce admin-side paths */}
+            <Route path="orders" element={<AdminOrders />} />
+            <Route path="orders/:id" element={<AdminOrderDetails />} />
+            <Route path="coupons" element={<AdminCoupons />} />
+            <Route path="popups" element={<AdminPopups />} />
+            <Route path="popups/new" element={<AdminPopupForm />} />
+            <Route path="popups/edit/:id" element={<AdminPopupForm />} />
+          </Route>
 
-        {/* 404 */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Suspense>
+          {/* 404 */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
+      <CookieBanner />
+      <CookieSettingsModal />
+      </PopupProvider>
+    </CookieProvider>
   );
 };
 

@@ -10,16 +10,18 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
     setLoading(true);
     try {
       await userAuthApi.forgotPassword({ email });
       setSent(true);
       toast.success('Password reset link sent to your email!');
     } catch (err) {
-      toast.error(err.message || 'Something went wrong.');
+      setError(err.message || 'Something went wrong.');
     } finally {
       setLoading(false);
     }
@@ -54,12 +56,22 @@ const ForgotPassword = () => {
                     <input
                       type="email"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (error) setError('');
+                      }}
                       required
-                      className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition font-inter text-sm"
+                      className={`w-full pl-11 pr-4 py-3 rounded-xl border outline-none transition font-inter text-sm ${
+                        error
+                          ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-100'
+                          : 'border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100'
+                      }`}
                       placeholder="you@example.com"
                     />
                   </div>
+                  {error && (
+                    <p className="text-red-500 text-xs mt-1.5 font-inter">{error}</p>
+                  )}
                 </div>
 
                 <button

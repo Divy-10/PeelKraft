@@ -1,4 +1,5 @@
 import ApiError from '../utils/ApiError.js';
+import logger from '../utils/logger.js';
 
 const errorHandler = (err, req, res, _next) => {
   let error = err;
@@ -28,7 +29,13 @@ const errorHandler = (err, req, res, _next) => {
   const statusCode = error.statusCode || 500;
   const message = error.message || 'Internal Server Error';
 
-  console.error(`❌ [${statusCode}] ${message}`, err.stack ? `\n${err.stack}` : '');
+  // Log error using centralized logger
+  logger.error(`[${statusCode}] ${message}`, {
+    stack: err.stack,
+    url: req.originalUrl,
+    method: req.method,
+    ip: req.ip
+  });
 
   res.status(statusCode).json({
     success: false,

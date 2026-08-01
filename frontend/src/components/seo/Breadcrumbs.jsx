@@ -28,14 +28,14 @@ const Breadcrumbs = ({ items }) => {
           <span>Home</span>
         </Link>
         {items.map((item, i) => (
-          <span key={i} className="flex items-center gap-2">
-            <FiChevronRight className="w-4 h-4 text-gray-300" />
+          <span key={i} className="inline-flex items-center gap-1.5 flex-wrap min-w-0 max-w-full">
+            <FiChevronRight className="w-4 h-4 text-gray-300 shrink-0" />
             {item.path && i < items.length - 1 ? (
-              <Link to={item.path} className="hover:text-primary-500 transition-colors">
+              <Link to={item.path} className="hover:text-primary-500 transition-colors break-words">
                 {item.label}
               </Link>
             ) : (
-              <span className="text-primary-500 font-medium">{item.label}</span>
+              <span className="text-primary-500 font-medium break-words leading-tight">{item.label}</span>
             )}
           </span>
         ))}

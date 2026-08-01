@@ -78,29 +78,33 @@ const Wishlist = () => {
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {items.map(({ product }) => {
                 if (!product) return null;
                 return (
-                  <motion.div key={product._id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm flex flex-col justify-between p-4 relative group">
+                  <motion.div key={product._id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm flex flex-col justify-between !p-3 md:!p-4 relative group">
+                    <button 
+                      onClick={() => handleRemove(product._id)} 
+                      className="absolute top-2 right-2 p-2 bg-white/90 hover:bg-white text-red-500 hover:text-red-650 rounded-full shadow-sm border border-gray-100 transition z-10" 
+                      title="Remove"
+                    >
+                      <FiTrash2 className="w-3.5 h-3.5" />
+                    </button>
                     <div>
-                      <Link to={`/products/${product.slug}`} className="block aspect-[4/3] rounded-xl overflow-hidden bg-gray-50 mb-4">
-                        <img src={product.thumbnail?.url || product.gallery?.[0]?.url} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                      <Link to={`/products/${product.slug}`} className="block product-image-container rounded-xl overflow-hidden mb-3">
+                        <img src={product.thumbnail?.url || product.gallery?.[0]?.url} alt={product.name} className="product-image group-hover:scale-105" />
                       </Link>
-                      <Link to={`/products/${product.slug}`} className="font-poppins font-semibold text-dark hover:text-primary-500 transition-colors line-clamp-1 block text-base">{product.name}</Link>
+                      <Link to={`/products/${product.slug}`} className="font-poppins font-semibold text-dark hover:text-primary-500 transition-colors line-clamp-2 md:line-clamp-1 text-sm md:text-base">{product.name}</Link>
                       <div className="flex items-center gap-2 mt-1">
-                        <span className="text-base font-bold text-dark font-poppins">₹{product.sellingPrice}</span>
+                        <span className="text-sm md:text-base font-bold text-dark font-poppins">₹{product.sellingPrice}</span>
                         {product.mrp > product.sellingPrice && (
-                          <span className="text-xs text-gray-400 line-through font-inter">₹{product.mrp}</span>
+                          <span className="text-[10px] md:text-xs text-gray-400 line-through font-inter">₹{product.mrp}</span>
                         )}
                       </div>
                     </div>
-                    <div className="flex gap-2 mt-6">
-                      <button onClick={() => handleAddToCart(product)} className="flex-1 inline-flex items-center justify-center gap-2 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl text-xs font-semibold font-poppins transition shadow-md shadow-primary-500/10">
-                        <FiShoppingBag /> Add to Cart
-                      </button>
-                      <button onClick={() => handleRemove(product._id)} className="p-2.5 border border-red-100 hover:bg-red-50 text-red-500 rounded-xl transition" title="Remove">
-                        <FiTrash2 className="w-4 h-4" />
+                    <div className="mt-4">
+                      <button onClick={() => handleAddToCart(product)} className="w-full inline-flex items-center justify-center gap-1.5 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-xl text-xs font-semibold font-poppins transition shadow-sm">
+                        <FiShoppingBag className="w-3.5 h-3.5" /> Add to Cart
                       </button>
                     </div>
                   </motion.div>

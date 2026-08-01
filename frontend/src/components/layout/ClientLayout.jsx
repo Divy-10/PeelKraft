@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import WhatsAppButton from '../common/WhatsAppButton';
+import PopupModal from '../common/PopupModal';
 import useScrollTop from '../../hooks/useScrollTop';
 
 const pageVariants = {
@@ -41,6 +42,7 @@ const ClientLayout = () => {
       </main>
       <Footer />
       <WhatsAppButton />
+      <PopupModal />
     </div>
   );
 };

@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   FiGrid, FiPackage, FiTag, FiFileText, FiBookOpen, FiHelpCircle,
   FiMessageSquare, FiMail, FiStar, FiImage, FiSearch, FiSettings,
-  FiLogOut, FiMenu, FiX, FiChevronDown, FiUsers, FiShoppingCart, FiPercent
+  FiLogOut, FiMenu, FiX, FiChevronDown, FiUsers, FiShoppingCart, FiPercent, FiActivity
 } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
 
@@ -13,14 +13,19 @@ const sidebarItems = [
   { name: 'Orders', path: '/admin/orders', icon: FiShoppingCart },
   { name: 'Products', path: '/admin/products', icon: FiPackage },
   { name: 'Categories', path: '/admin/categories', icon: FiTag },
-  { name: 'Coupons', path: '/admin/coupons', icon: FiPercent },
   { name: 'Blogs', path: '/admin/blogs', icon: FiFileText },
   { name: 'FAQs', path: '/admin/faqs', icon: FiHelpCircle },
-  { name: 'Testimonials', path: '/admin/testimonials', icon: FiStar },
+  { name: 'Reviews', path: '/admin/reviews', icon: FiStar },
   { name: 'Messages', path: '/admin/contacts', icon: FiMessageSquare },
   { name: 'Newsletter', path: '/admin/newsletter', icon: FiMail },
   { name: 'SEO', path: '/admin/seo', icon: FiSearch },
-  { name: 'Settings', path: '/admin/settings', icon: FiSettings },
+  
+  // Marketing
+  { name: 'Popup Advertisements', path: '/admin/popups', icon: FiActivity, section: 'Marketing' },
+  { name: 'Coupons', path: '/admin/coupons', icon: FiPercent },
+  
+  // System
+  { name: 'Settings', path: '/admin/settings', icon: FiSettings, section: 'System' },
 ];
 
 const AdminLayout = () => {
@@ -42,6 +47,8 @@ const AdminLayout = () => {
     if (path.includes('/admin/products/new')) return 'Add New Product';
     if (path.includes('/admin/blogs/edit')) return 'Edit Blog';
     if (path.includes('/admin/blogs/new')) return 'Add New Blog';
+    if (path.includes('/admin/popups/edit')) return 'Edit Popup Advertisement';
+    if (path.includes('/admin/popups/new')) return 'Add New Popup Advertisement';
     const lastSeg = path.split('/').pop().replace(/-/g, ' ');
     return lastSeg || 'Dashboard';
   };
@@ -74,19 +81,25 @@ const AdminLayout = () => {
             const Icon = item.icon;
             const active = isActive(item.path);
             return (
-              <Link
-                key={item.path}
-                to={item.path}
-                onClick={() => setSidebarOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-inter font-medium transition-all duration-200 ${
-                  active
-                    ? 'bg-primary-500/20 text-primary-500'
-                    : 'text-gray-400 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                <Icon className="w-5 h-5" />
-                {item.name}
-              </Link>
+              <div key={item.path} className="space-y-1">
+                {item.section && (
+                  <p className="px-4 pt-4 pb-1 text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+                    {item.section}
+                  </p>
+                )}
+                <Link
+                  to={item.path}
+                  onClick={() => setSidebarOpen(false)}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-inter font-medium transition-all duration-200 ${
+                    active
+                      ? 'bg-primary-500/20 text-primary-500'
+                      : 'text-gray-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                  {item.name}
+                </Link>
+              </div>
             );
           })}
         </nav>

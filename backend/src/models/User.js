@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 const addressSchema = new mongoose.Schema({
   fullName: { type: String, required: true, trim: true },
   phone: { type: String, required: true, trim: true },
+  whatsapp: { type: String, default: '', trim: true },
   addressLine1: { type: String, required: true, trim: true },
   addressLine2: { type: String, default: '', trim: true },
   city: { type: String, required: true, trim: true },
@@ -71,7 +72,7 @@ const userSchema = new mongoose.Schema(
 
 // Hash password before saving
 userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+  if (!this.isModified('password') || this.password.startsWith('$2a$') || this.password.startsWith('$2b$')) return next();
   const salt = await bcrypt.genSalt(12);
   this.password = await bcrypt.hash(this.password, salt);
   next();
@@ -87,7 +88,6 @@ userSchema.virtual('fullName').get(function () {
   return `${this.firstName} ${this.lastName}`;
 });
 
-userSchema.index({ email: 1 });
 userSchema.index({ status: 1 });
 
 const User = mongoose.model('User', userSchema);

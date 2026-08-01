@@ -6,6 +6,7 @@ import { Navigation, Pagination, Autoplay, EffectCoverflow } from 'swiper/module
 import { FiArrowRight, FiShoppingCart, FiStar, FiHeart, FiAward, FiRefreshCw, FiTrendingUp, FiUsers, FiPackage } from 'react-icons/fi';
 import { FaLeaf as FiLeaf } from 'react-icons/fa';
 import SEOHead from '../../components/seo/SEOHead';
+import WriteReviewModal from '../../components/common/WriteReviewModal';
 import { productApi, blogApi, faqApi, testimonialApi } from '../../api';
 import { formatDate, truncateText, stripHtml, getImageUrl } from '../../utils';
 import { useSettings } from '../../context/SettingsContext';
@@ -76,6 +77,7 @@ const Home = () => {
   const [faqs, setFaqs] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
   const [openFaq, setOpenFaq] = useState(null);
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -116,11 +118,36 @@ const Home = () => {
   ];
 
   const processSteps = [
-    { num: '01', title: 'Collection', desc: 'Premium orange peels sourced from certified juice manufacturers' },
-    { num: '02', title: 'Sent to Manufacturing', desc: 'Safely transported to our advanced facility for processing.' },
-    { num: '03', title: 'Processing', desc: 'Washed, dehydrated, and precision ground into premium products' },
-    { num: '04', title: 'Packaging', desc: 'Eco-friendly packaging that keeps products fresh' },
-    { num: '05', title: 'Distribution', desc: 'Delivered nationwide to health-conscious consumers' },
+    { 
+      num: '01', 
+      title: 'Fresh Juice Extraction', 
+      subtitle: 'At JuiceTap Vending Machines',
+      desc: 'Premium Valencia oranges are freshly squeezed in JuiceTap vending machines, and the fresh orange peels are collected immediately after every juice is served.' 
+    },
+    { 
+      num: '02', 
+      title: 'Peel Collection', 
+      subtitle: 'Collected with Care',
+      desc: 'The freshly generated peels are hygienically collected from JuiceTap machines and transported to our processing facility.' 
+    },
+    { 
+      num: '03', 
+      title: 'Cleaning & Processing', 
+      subtitle: 'Prepared Naturally',
+      desc: 'The peels are thoroughly washed, sanitized, and gently dehydrated to preserve their natural goodness and citrus aroma.' 
+    },
+    { 
+      num: '04', 
+      title: 'Crafted into Products', 
+      subtitle: 'From Peel to Premium',
+      desc: 'Processed orange peels are carefully crafted into Zest Mint Orange Peels, Orangettes, and Orange Peel Powder, bringing new value to every peel.' 
+    },
+    { 
+      num: '05', 
+      title: 'Packed & Delivered', 
+      subtitle: 'Freshness in Every Pack',
+      desc: 'Every product is hygienically packed and quality-checked to ensure it reaches you fresh, safe, and ready to enjoy.' 
+    },
   ];
 
   const getProductImages = (product) => {
@@ -147,6 +174,24 @@ const Home = () => {
     return uniqueImages;
   };
 
+  // Calculate real testimonials stats
+  const totalTestimonials = testimonials.length;
+  const avgRating = totalTestimonials > 0
+    ? (testimonials.reduce((sum, item) => sum + (item.rating || 5), 0) / totalTestimonials).toFixed(1)
+    : '4.9';
+  const roundedStars = Math.round(Number(avgRating));
+
+  const displayAvatars = totalTestimonials > 0
+    ? testimonials.slice(0, 3).map((item) => ({
+        name: item.name,
+        url: item.avatar?.url || `https://ui-avatars.com/api/?name=${encodeURIComponent(item.name)}&background=random`,
+      }))
+    : [
+        { name: 'Alice', url: 'https://ui-avatars.com/api/?name=Alice&background=random' },
+        { name: 'Bob', url: 'https://ui-avatars.com/api/?name=Bob&background=random' },
+        { name: 'Carol', url: 'https://ui-avatars.com/api/?name=Carol&background=random' },
+      ];
+
   return (
     <>
       <SEOHead
@@ -168,7 +213,7 @@ const Home = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="max-w-2xl"
+              className="max-w-2xl order-2 lg:order-1"
             >
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-gray-100 shadow-sm mb-8">
                 <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
@@ -206,16 +251,30 @@ const Home = () => {
               {/* Trust indicators */}
               <div className="mt-12 flex items-center gap-6 border-t border-gray-200/60 pt-8">
                 <div className="flex -space-x-3">
-                  <div className="w-10 h-10 rounded-full bg-gray-200 border-2 border-white overflow-hidden"><img src="https://ui-avatars.com/api/?name=Alice&background=random" alt="user" className="w-full h-full object-cover" /></div>
-                  <div className="w-10 h-10 rounded-full bg-gray-200 border-2 border-white overflow-hidden"><img src="https://ui-avatars.com/api/?name=Bob&background=random" alt="user" className="w-full h-full object-cover" /></div>
-                  <div className="w-10 h-10 rounded-full bg-gray-200 border-2 border-white overflow-hidden"><img src="https://ui-avatars.com/api/?name=Carol&background=random" alt="user" className="w-full h-full object-cover" /></div>
+                  {displayAvatars.map((avatar, idx) => (
+                    <div 
+                      key={idx} 
+                      className="w-10 h-10 rounded-full bg-gray-200 border-2 border-white overflow-hidden shadow-sm"
+                      title={avatar.name}
+                    >
+                      <img src={avatar.url} alt={avatar.name} className="w-full h-full object-cover" />
+                    </div>
+                  ))}
                 </div>
                 <div>
-                  <div className="flex gap-1 text-amber-400 text-sm mb-1">
-                    <span className="text-dark font-semibold mr-2">4.9/5</span>
-                    {'★'.repeat(5)}
+                  <div className="flex items-center gap-1 text-amber-400 text-sm mb-1">
+                    <span className="text-dark font-semibold mr-1.5">{avgRating}/5</span>
+                    <div className="flex text-amber-400">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <span key={i}>{i < roundedStars ? '★' : '☆'}</span>
+                      ))}
+                    </div>
                   </div>
-                  <p className="text-xs text-gray-500 font-medium">Loved by 10,000+ customers</p>
+                  <p className="text-xs text-gray-500 font-medium">
+                    {totalTestimonials > 0 
+                      ? `Based on ${totalTestimonials} verified reviews` 
+                      : 'Loved by 10,000+ customers'}
+                  </p>
                 </div>
               </div>
             </motion.div>
@@ -225,9 +284,9 @@ const Home = () => {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, delay: 0.2 }}
-              className="relative flex justify-center lg:justify-end"
+              className="relative flex justify-center lg:justify-end order-1 lg:order-2"
             >
-              <div className="relative w-full max-w-xl aspect-[4/3] lg:aspect-[3/2] rounded-3xl overflow-hidden shadow-2xl shadow-gray-200/50 border border-white/60 group bg-gray-50">
+              <div className="relative w-full max-w-xl aspect-[4/3] lg:aspect-[3/2] rounded-3xl overflow-hidden group bg-transparent">
                 <video
                   autoPlay
                   loop
@@ -271,7 +330,7 @@ const Home = () => {
 
               return (
                 <div className="w-full flex flex-col items-center">
-                  <div className="w-full overflow-hidden mb-6">
+                  <div className="w-full max-w-7xl mx-auto overflow-hidden mb-6">
                     <Swiper
                       modules={[EffectCoverflow, Pagination, Autoplay]}
                       effect="coverflow"
@@ -291,17 +350,17 @@ const Home = () => {
                         depth: 160,
                         modifier: 1,
                         slideShadows: false,
-                      }}
+                       }}
                       pagination={{ clickable: true }}
                       className="single-product-swiper"
                     >
                       {slides.map((img, index) => (
                         <SwiperSlide key={index}>
-                          <div className="w-full h-full relative group">
+                          <div className="w-full aspect-square relative group rounded-3xl overflow-hidden bg-transparent">
                             <img
                               src={getImageUrl(img)}
                               alt={singleProduct.name}
-                              className="w-full h-full object-cover rounded-3xl"
+                              className="w-full h-full object-cover"
                               loading="lazy"
                             />
                             {singleProduct.isUpcoming && (
@@ -344,51 +403,79 @@ const Home = () => {
             })()
           ) : (
             <div className="container-custom">
-              <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                {products.slice(0, 3).map((product, i) => (
-                  <motion.div
-                    key={product._id || i}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="card-premium group text-center"
-                  >
-                    <div className="w-full aspect-[4/5] overflow-hidden rounded-xl mb-6 bg-gray-50 relative">
-                      {product.isUpcoming && (
-                        <span className="absolute top-3 left-3 z-10 bg-[#7BA639] text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-sm font-poppins">
-                          Upcoming
-                        </span>
-                      )}
-                      <img
-                        src={getImageUrl(product.thumbnail)}
-                        alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        loading="lazy"
-                      />
-                    </div>
-                    <h3 className="font-poppins font-semibold text-dark text-lg mb-2">
-                      {product.name}
-                    </h3>
-                    <p className="text-sm text-gray-500 font-inter mb-6 line-clamp-2">
-                      {product.shortDescription || 'Pure, organic orange peel product carefully processed for health.'}
-                    </p>
-                    <Link
-                      to={`/products/${product.slug}`}
-                      className="mt-auto text-sm font-poppins font-semibold text-primary-500 hover:text-dark transition-colors"
+              <div className="grid gap-6 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3">
+                {products.slice(0, 3).map((product, i) => {
+                  const hasOptions = product.packageOptions && product.packageOptions.length > 0;
+                  const trackInventory = product.trackInventory !== false;
+                  const isOutOfStock = trackInventory
+                    ? (hasOptions
+                        ? product.packageOptions.every(opt => (opt.stock ?? 0) <= 0 || opt.status === 'disabled')
+                        : ((product.stock ?? 0) <= 0)
+                      )
+                    : false;
+                  return (
+                    <motion.div
+                      key={product._id || i}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      className="h-full"
                     >
-                      View Details →
-                    </Link>
-                  </motion.div>
-                ))}
+                      <Link
+                        to={`/products/${product.slug}`}
+                        className="card-premium group text-center block h-full !p-3 md:!p-6"
+                      >
+                        <div className="product-image-container rounded-xl mb-3 md:mb-6 relative">
+                          {product.isUpcoming && (
+                            <span className="hidden md:inline-block absolute top-3 left-3 z-10 bg-[#7BA639] text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-sm font-poppins">
+                              Upcoming
+                            </span>
+                          )}
+                          {isOutOfStock && !product.isUpcoming && (
+                            <span className="hidden md:inline-block absolute top-3 right-3 z-10 bg-red-600 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-sm font-poppins">
+                              Sold Out
+                            </span>
+                          )}
+                          <img
+                            src={getImageUrl(product.thumbnail)}
+                            alt={product.name}
+                            className={`product-image group-hover:scale-105 ${isOutOfStock && !product.isUpcoming ? 'opacity-50 grayscale-[40%]' : ''}`}
+                            loading="lazy"
+                          />
+                        </div>
+                        <h3 className="font-poppins font-semibold text-dark text-sm md:text-lg mb-1 md:mb-2 group-hover:text-primary-500 transition-colors line-clamp-2 md:line-clamp-1">
+                          {product.name}
+                        </h3>
+                        
+                        {/* Price section */}
+                        <div className="flex items-center justify-center gap-2 mb-1 md:mb-4">
+                          <span className="font-poppins font-bold text-dark text-sm md:text-base">₹{product.sellingPrice || product.mrp}</span>
+                          {product.mrp > product.sellingPrice && (
+                            <span className="text-xs text-gray-400 line-through font-inter">₹{product.mrp}</span>
+                          )}
+                        </div>
+
+                        <p className="hidden md:block text-sm text-gray-500 font-inter mb-6 line-clamp-2">
+                          {product.shortDescription || 'Pure, organic orange peel product carefully processed for health.'}
+                        </p>
+                        <span
+                          className="hidden md:inline-block mt-auto text-sm font-poppins font-semibold text-primary-500 hover:text-dark transition-colors"
+                        >
+                          View Details →
+                        </span>
+                      </Link>
+                    </motion.div>
+                  );
+                })}
               </div>
             </div>
           )
         ) : (
           <div className="container-custom">
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {[1, 2, 3, 4].map((i) => (
                 <div key={i} className="card-premium items-center">
-                  <div className="w-full aspect-[4/5] skeleton rounded-xl mb-6" />
+                  <div className="product-image-container skeleton rounded-xl mb-6" />
                   <div className="h-5 skeleton w-3/4 mb-3" />
                   <div className="h-4 skeleton w-full mb-6" />
                   <div className="h-4 skeleton w-1/2 mt-auto" />
@@ -445,10 +532,10 @@ const Home = () => {
                 From Waste to <span className="text-primary-500">Wonder</span>
               </h2>
               <p className="text-gray-500 font-inter leading-relaxed mb-6">
-                PeelKraft was born from a simple yet powerful idea — what if the orange peels that juice manufacturers throw away could become premium food products? Founded by JuiceTap Global Pvt Ltd, we saw an opportunity to create value from waste while promoting health and sustainability.
+                PeelKraft, powered by JuiceTap Global Pvt. Ltd., transforms orange peels collected from our fully automatic Valencia orange juice machines into premium natural products. Instead of creating waste, we give every peel a second life through Orange Peel Candy, Peel Powder, and Orange Tea—promoting sustainability, innovation, and a cleaner future.
               </p>
               <p className="text-gray-500 font-inter leading-relaxed mb-10">
-                Today, PeelKraft transforms thousands of kilograms of orange peels into delicious, nutritious products that are loved by health-conscious consumers across India.
+                Today, PeelKraft transforms hundreds of kilograms of orange peels into delicious, nutritious products that are loved by health-conscious consumers across India.
               </p>
               <Link to="/about" className="btn-secondary">
                 Read Our Story
@@ -508,13 +595,16 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="relative w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)] p-8 rounded-2xl bg-white border border-gray-100 hover:border-gray-200 transition-all duration-300 shadow-sm hover:shadow-md"
+                className="relative w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)] card-premium p-8 hover:border-primary-500/20"
               >
                 <span className="text-5xl font-poppins font-bold text-gray-100 absolute top-4 right-6 transition-colors group-hover:text-primary-50">
                   {step.num}
                 </span>
-                <h3 className="font-poppins font-semibold text-dark text-xl mb-3 relative z-10">{step.title}</h3>
-                <p className="text-gray-500 font-inter text-sm relative z-10">{step.desc}</p>
+                <h3 className="font-poppins font-semibold text-dark text-xl mb-1 relative z-10">{step.title}</h3>
+                {step.subtitle && (
+                  <p className="text-xs text-primary-500 font-semibold font-poppins mb-3 relative z-10 uppercase tracking-wider">{step.subtitle}</p>
+                )}
+                <p className="text-gray-500 font-inter text-sm relative z-10 leading-relaxed">{step.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -525,23 +615,52 @@ const Home = () => {
       <section className="section-padding bg-white border-y border-gray-100">
         <div className="container-custom">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            <Counter end={10000} suffix="+" label="Happy Customers" />
-            <Counter end={50} suffix="+" label="Products" />
-            <Counter end={500} suffix="T" label="Peels Recycled" />
-            <Counter end={4.9} suffix="/5" label="Average Rating" />
+            {(() => {
+              const parseStat = (val, defaultVal, defaultSuffix) => {
+                if (!val) return { end: defaultVal, suffix: defaultSuffix };
+                const numMatch = String(val).match(/^([\d.]+)/);
+                const end = numMatch ? parseFloat(numMatch[1]) : defaultVal;
+                const suffix = String(val).substring(numMatch ? numMatch[1].length : 0) || defaultSuffix;
+                return { end, suffix };
+              };
+              const happy = parseStat(settings?.stats?.happyCustomers, 10000, '+');
+              const prod = parseStat(settings?.stats?.productsCount, 50, '+');
+              const peels = parseStat(settings?.stats?.peelsRecycled, 500, 'T');
+              const rating = parseStat(settings?.stats?.averageRating, 4.9, '/5');
+              return (
+                <>
+                  <Counter end={happy.end} suffix={happy.suffix} label="Happy Customers" />
+                  <Counter end={prod.end} suffix={prod.suffix} label="Products" />
+                  <Counter end={peels.end} suffix={peels.suffix} label="Peels Recycled" />
+                  <Counter end={rating.end} suffix={rating.suffix} label="Average Rating" />
+                </>
+              );
+            })()}
           </div>
         </div>
       </section>
 
       {/* ===== TESTIMONIALS ===== */}
-      {testimonials.length > 0 && (
-        <section className="section-padding bg-gray-50">
-          <div className="container-custom">
-            <SectionHeading
-              badge="Testimonials"
-              title={<>What Our Customers <span className="text-primary-500">Say</span></>}
-            />
+      <section className="section-padding bg-gray-50">
+        <div className="container-custom">
+          <SectionHeading
+            badge="Testimonials"
+            title={<>What Our Customers <span className="text-primary-500">Say</span></>}
+          />
 
+          <div className="flex justify-center mt-2 mb-8">
+            <button
+              onClick={() => {
+                console.log('Home: Clicked Write a Review, setting reviewModalOpen to true');
+                setReviewModalOpen(true);
+              }}
+              className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-primary-500 hover:bg-primary-600 text-white font-poppins font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md shadow-primary-500/10 active:scale-98"
+            >
+              Write a Review
+            </button>
+          </div>
+
+          {testimonials.length > 0 ? (
             <Swiper
               modules={[Pagination, Autoplay]}
               spaceBetween={24}
@@ -556,7 +675,7 @@ const Home = () => {
             >
               {testimonials.map((t, i) => (
                 <SwiperSlide key={t._id || i}>
-                  <div className="card-premium h-full">
+                  <div className="card-premium h-full flex flex-col">
                     <div className="flex gap-1 mb-4">
                       {[...Array(5)].map((_, s) => (
                         <FiStar key={s} className={`w-4 h-4 ${s < t.rating ? 'text-gold-500 fill-gold-500' : 'text-gray-200'}`} />
@@ -564,21 +683,38 @@ const Home = () => {
                     </div>
                     <p className="text-gray-500 font-inter italic mb-6 line-clamp-4 text-sm">"{t.content}"</p>
                     <div className="flex items-center gap-3 mt-auto">
-                      <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-dark font-bold text-sm">
-                        {t.name?.[0]}
+                      <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-200 flex items-center justify-center shrink-0">
+                        {t.avatar?.url ? (
+                          <img src={t.avatar.url} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-dark font-bold text-sm">{t.name?.[0]}</span>
+                        )}
                       </div>
                       <div>
                         <p className="font-semibold text-sm text-dark font-poppins">{t.name}</p>
-                        <p className="text-xs text-gray-400 font-inter">{t.designation}</p>
+                        <p className="text-xs text-gray-400 font-inter">{t.designation || 'Verified Reviewer'}</p>
                       </div>
                     </div>
                   </div>
                 </SwiperSlide>
               ))}
             </Swiper>
-          </div>
-        </section>
-      )}
+          ) : (
+            <div className="text-center p-12 bg-white rounded-3xl border border-gray-100 max-w-xl mx-auto shadow-sm">
+              <p className="text-gray-400 font-inter text-sm mb-4">No reviews featured yet. Share your experience with us!</p>
+              <button
+                onClick={() => {
+                  console.log('Home (empty): Clicked Write First Review, setting reviewModalOpen to true');
+                  setReviewModalOpen(true);
+                }}
+                className="px-4 py-2 bg-gray-50 hover:bg-gray-100 text-gray-600 border border-gray-200 font-poppins font-semibold text-xs rounded-xl transition"
+              >
+                Write First Review
+              </button>
+            </div>
+          )}
+        </div>
+      </section>
 
       {/* ===== LATEST BLOGS ===== */}
       <section className="section-padding bg-white border-t border-gray-100">
@@ -648,7 +784,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
-                className="border border-gray-100 rounded-2xl overflow-hidden"
+                className={`border rounded-2xl overflow-hidden transition-all duration-300 bg-white ${openFaq === i ? 'border-primary-500/30 shadow-[0_4px_25px_rgba(247,147,30,0.08)]' : 'border-gray-100'}`}
               >
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
@@ -751,6 +887,7 @@ const Home = () => {
           </div>
         </div>
       </section>
+      <WriteReviewModal isOpen={reviewModalOpen} onClose={() => setReviewModalOpen(false)} />
     </>
   );
 };

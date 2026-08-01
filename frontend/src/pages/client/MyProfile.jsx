@@ -17,7 +17,7 @@ const MyProfile = () => {
 
   const [addresses, setAddresses] = useState([]);
   const [addressForm, setAddressForm] = useState({
-    fullName: '', phone: '', addressLine1: '', addressLine2: '', city: '', state: '', pincode: '', label: 'home'
+    fullName: '', phone: '', whatsapp: '', addressLine1: '', addressLine2: '', city: '', state: '', pincode: '', label: 'home'
   });
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [addressLoading, setAddressLoading] = useState(false);
@@ -53,6 +53,10 @@ const MyProfile = () => {
 
   const handleAddressSubmit = async (e) => {
     e.preventDefault();
+    const cleanWhatsApp = addressForm.whatsapp.replace(/\D/g, '');
+    if (cleanWhatsApp.length < 10) {
+      return toast.error('Please enter a valid WhatsApp number (at least 10 digits).');
+    }
     setAddressLoading(true);
     try {
       const res = await userAuthApi.addAddress(addressForm);
@@ -61,7 +65,7 @@ const MyProfile = () => {
       toast.success('Address added successfully!');
       setShowAddressForm(false);
       setAddressForm({
-        fullName: '', phone: '', addressLine1: '', addressLine2: '', city: '', state: '', pincode: '', label: 'home'
+        fullName: '', phone: '', whatsapp: '', addressLine1: '', addressLine2: '', city: '', state: '', pincode: '', label: 'home'
       });
     } catch (err) {
       toast.error(err.message || 'Failed to add address.');
@@ -215,6 +219,18 @@ const MyProfile = () => {
                           className={inputCls}
                         />
                       </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 mb-1 font-inter">WhatsApp Number *</label>
+                        <input
+                          type="tel"
+                          value={addressForm.whatsapp || ''}
+                          onChange={(e) => setAddressForm({ ...addressForm, whatsapp: e.target.value })}
+                          required
+                          className={inputCls}
+                          placeholder="+91 9876543210"
+                          pattern="[\d\s+\-()]*"
+                        />
+                      </div>
                       <div className="sm:col-span-2">
                         <label className="block text-xs font-medium text-gray-500 mb-1 font-inter">Address Line 1 *</label>
                         <input
@@ -302,7 +318,8 @@ const MyProfile = () => {
                             <span className="font-semibold text-dark">{addr.fullName}</span>
                             <span className="px-2 py-0.5 bg-gray-100 text-gray-500 text-[10px] uppercase font-bold rounded-full">{addr.label}</span>
                           </div>
-                          <p>{addr.phone}</p>
+                          <p>Phone: {addr.phone}</p>
+                          {addr.whatsapp && <p>WhatsApp: {addr.whatsapp}</p>}
                           <p>{addr.addressLine1}, {addr.addressLine2 && `${addr.addressLine2}, `}{addr.city}, {addr.state} - {addr.pincode}</p>
                         </div>
                         <button

@@ -14,6 +14,8 @@
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    max-width: 100%;
   }
 
   body {
@@ -24,7 +26,12 @@
     overflow-x: hidden;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: 'Poppins', sans-serif;
     font-weight: 700;
     line-height: 1.2;
@@ -45,6 +52,15 @@
   ::selection {
     background-color: #F7931E;
     color: #FFFFFF;
+  }
+
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid #F7931E !important;
+    outline-offset: 2px !important;
   }
 }
 
@@ -68,6 +84,7 @@
 
 /* ===== Component Classes ===== */
 @layer components {
+
   /* Container Width & Paddings */
   .container-custom {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
@@ -79,49 +96,56 @@
 
   /* 8px Grid Section Padding */
   .section-padding {
-    @apply py-10 md:py-16 lg:py-20 px-4 sm:px-6 lg:px-8;
+    @apply py-12 md:py-20 lg:py-24 px-6 lg:px-12;
   }
 
-  /* Flat Minimal Cards */
-  .card-premium, .card-glass {
-    @apply bg-white rounded-2xl p-6 border border-gray-100 transition-all duration-300
-      hover:shadow-md flex flex-col justify-between;
+  /* Flat Minimal Cards with soft premium shadow & elegant hover lift */
+  .card-premium {
+    @apply bg-white rounded-2xl p-6 border border-gray-100/80 transition-all duration-300 hover:shadow-premium hover:-translate-y-1 flex flex-col justify-between;
+  }
+
+  .card-glass {
+    @apply bg-white/70 backdrop-blur-md rounded-2xl p-6 border border-white/40 transition-all duration-300 hover:shadow-premium hover:-translate-y-1 flex flex-col justify-between;
   }
 
   /* Minimal Gradient Text */
-  .gradient-text, .gradient-text-green {
-    @apply text-primary-500;
+  .gradient-text {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-[#E07D0A] font-poppins;
+  }
+
+  .gradient-text-green {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-green-900 to-[#2A4D35] font-poppins;
   }
 
   /* Premium Buttons */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-primary-500 text-white font-poppins font-semibold text-sm rounded-full
-      hover:opacity-90 hover:scale-[1.02] transition-all duration-300 disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2.5 px-7 py-3.5 bg-primary-500 text-white font-poppins font-semibold text-sm rounded-full shadow-sm hover:bg-[#E07D0A] hover:shadow-lg hover:shadow-primary-500/20 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 disabled:opacity-50 disabled:pointer-events-none;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-white border border-gray-200 text-dark font-poppins font-semibold text-sm rounded-full
-      hover:border-gray-300 hover:bg-gray-50 transition-all duration-300;
+    @apply inline-flex items-center justify-center gap-2.5 px-7 py-3.5 bg-white border border-gray-200 text-dark font-poppins font-semibold text-sm rounded-full shadow-sm hover:border-dark hover:bg-gray-50 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300;
   }
 
   .btn-outline {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3.5 border border-primary-500 text-primary-500 font-poppins font-semibold text-sm rounded-full
-      hover:bg-primary-500 hover:text-white transition-all duration-300;
+    @apply inline-flex items-center justify-center gap-2.5 px-7 py-3.5 border-2 border-primary-500 text-primary-500 font-poppins font-semibold text-sm rounded-full hover:bg-primary-500 hover:text-white hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300;
   }
 
   .btn-amazon {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-dark text-white font-poppins font-semibold text-sm rounded-full
-      hover:opacity-90 transition-all duration-300;
+    @apply inline-flex items-center justify-center gap-2.5 px-7 py-3.5 bg-dark text-white font-poppins font-semibold text-sm rounded-full shadow-sm hover:bg-gray-800 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300;
   }
 
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3.5 text-primary-500 font-poppins font-semibold text-sm
-      hover:bg-cream-50 rounded-full transition-all duration-300;
+    @apply inline-flex items-center justify-center gap-2.5 px-7 py-3.5 text-primary-500 font-poppins font-semibold text-sm hover:bg-primary-50/50 rounded-full transition-all duration-300;
   }
 
   /* Skeleton Loading */
   .skeleton {
-    @apply animate-pulse bg-gray-100 rounded-xl;
+    @apply animate-pulse bg-gray-100 rounded-2xl;
+  }
+
+  /* Premium Form Controls */
+  .input-premium {
+    @apply w-full px-5 py-3.5 rounded-xl bg-gray-50/60 border border-gray-200 text-dark placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:bg-white focus:ring-4 focus:ring-primary-500/10 transition-all duration-300 font-inter text-sm;
   }
 
   /* Admin Sidebar & Content */
@@ -237,21 +261,18 @@
   background-position: center;
   background-size: cover;
   width: 100%;
-  height: 600px;
+  height: auto;
   border-radius: 2rem;
   overflow: hidden;
   transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-  filter: blur(8px) grayscale(10%) brightness(1.1) !important;
-  opacity: 0.3 !important;
+  filter: grayscale(10%) brightness(1.1) !important;
+  opacity: 0.6 !important;
 }
 
-@media (max-w: 640px) {
+@media (max-width: 640px) {
   .single-product-swiper {
     max-width: 320px;
-  }
-  .single-product-swiper .swiper-slide {
-    height: 400px;
   }
 }
 
@@ -268,4 +289,45 @@
 .Toastify__toast {
   border-radius: 12px !important;
   font-family: 'Inter', sans-serif !important;
+}
+
+/* Utility to hide scrollbars */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none !important;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+/* ===== Prose Content Responsiveness ===== */
+.prose-content img {
+  max-width: 100%;
+  height: auto;
+}
+
+.prose-content table {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+/* ===== Consistent 1:1 Product Image System ===== */
+.product-image-container {
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
 }

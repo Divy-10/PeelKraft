@@ -147,6 +147,9 @@ const MyOrders = () => {
                             <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-xl bg-gray-50 border border-gray-100" />
                             <div className="flex-1 min-w-0">
                               <p className="font-semibold text-dark text-sm line-clamp-1 font-inter">{item.name}</p>
+                              {item.packageName && (
+                                <p className="text-xs text-primary-600 font-semibold font-poppins mt-0.5">{item.packageName}</p>
+                              )}
                               <p className="text-xs text-gray-500 font-inter mt-0.5">Qty: {item.quantity} • Price: ₹{item.price}</p>
                             </div>
                           </div>

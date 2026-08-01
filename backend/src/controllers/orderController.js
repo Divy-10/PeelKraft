@@ -2,7 +2,9 @@ import Order from '../models/Order.js';
 import Product from '../models/Product.js';
 import Coupon from '../models/Coupon.js';
 import Notification from '../models/Notification.js';
+import Settings from '../models/Settings.js';
 import ApiError from '../utils/ApiError.js';
+import { generateInvoicePDF } from '../utils/invoiceGenerator.js';
 
 // Create Order
 export const createOrder = async (req, res, next) => {
@@ -25,11 +27,33 @@ export const createOrder = async (req, res, next) => {
       if (!product) {
         throw ApiError.badRequest(`Product not found: ${item.product}`);
       }
-      if (product.trackInventory && product.stock < item.quantity) {
-        throw ApiError.badRequest(`Insufficient stock for ${product.name}. Available: ${product.stock}`);
+
+      let price = 0;
+      let packageOptionId = '';
+      let packageName = '';
+
+      if (product.packageOptions && product.packageOptions.length > 0 && item.packageOptionId) {
+        const option = product.packageOptions.find(opt => opt._id.toString() === item.packageOptionId);
+        if (!option) {
+          throw ApiError.badRequest(`Package option not found for product: ${product.name}`);
+        }
+        if (option.status === 'disabled') {
+          throw ApiError.badRequest(`Package option ${option.name} is currently disabled.`);
+        }
+        if (product.trackInventory && option.stock < item.quantity) {
+          throw ApiError.badRequest(`Insufficient stock for ${product.name} (${option.name}). Available: ${option.stock}`);
+        }
+        price = option.sellingPrice || option.mrp || 0;
+        packageOptionId = option._id.toString();
+        packageName = option.name;
+      } else {
+        // Fallback to legacy single product
+        if (product.trackInventory && product.stock < item.quantity) {
+          throw ApiError.badRequest(`Insufficient stock for ${product.name}. Available: ${product.stock}`);
+        }
+        price = product.sellingPrice || product.mrp || 0;
       }
 
-      const price = product.sellingPrice || product.mrp || 0;
       const total = price * item.quantity;
       subtotal += total;
 
@@ -41,6 +65,8 @@ export const createOrder = async (req, res, next) => {
         price,
         quantity: item.quantity,
         total,
+        packageOptionId,
+        packageName,
       });
     }
 
@@ -91,7 +117,10 @@ export const createOrder = async (req, res, next) => {
     }
 
     // Calculate shipping and GST
-    const shippingCharge = subtotal >= 499 ? 0 : 49;
+    const settingsObj = await Settings.findOne() || {};
+    const threshold = settingsObj.freeShippingMinAmount !== undefined ? settingsObj.freeShippingMinAmount : 499;
+    const defaultShipping = settingsObj.shippingCharge !== undefined ? settingsObj.shippingCharge : 49;
+    const shippingCharge = subtotal >= threshold ? 0 : defaultShipping;
     const gst = 0; // Can be calculated if needed
     const grandTotal = subtotal - discount + shippingCharge + gst;
 
@@ -118,23 +147,46 @@ export const createOrder = async (req, res, next) => {
 
     // Reduce inventory
     for (const item of orderItems) {
-      await Product.findByIdAndUpdate(item.product, {
-        $inc: { stock: -item.quantity },
-      });
+      if (item.packageOptionId) {
+        await Product.updateOne(
+          { _id: item.product, 'packageOptions._id': item.packageOptionId },
+          { $inc: { 'packageOptions.$.stock': -item.quantity } }
+        );
+      } else {
+        await Product.findByIdAndUpdate(item.product, {
+          $inc: { stock: -item.quantity },
+        });
+      }
     }
 
     // Check for low stock and create notifications
     for (const item of orderItems) {
       const product = await Product.findById(item.product);
-      if (product && product.trackInventory && product.stock <= product.lowStockAlert) {
-        await Notification.create({
-          type: 'low_stock',
-          title: 'Low Stock Alert',
-          message: `${product.name} has only ${product.stock} units left.`,
-          refModel: 'Product',
-          refId: product._id,
-          forAdmin: true,
-        });
+      if (!product) continue;
+
+      if (item.packageOptionId) {
+        const option = product.packageOptions.find(opt => opt._id.toString() === item.packageOptionId);
+        if (option && product.trackInventory && option.stock <= product.lowStockAlert) {
+          await Notification.create({
+            type: 'low_stock',
+            title: 'Low Stock Alert',
+            message: `${product.name} (${option.name}) has only ${option.stock} units left.`,
+            refModel: 'Product',
+            refId: product._id,
+            forAdmin: true,
+          });
+        }
+      } else {
+        if (product.trackInventory && product.stock <= product.lowStockAlert) {
+          await Notification.create({
+            type: 'low_stock',
+            title: 'Low Stock Alert',
+            message: `${product.name} has only ${product.stock} units left.`,
+            refModel: 'Product',
+            refId: product._id,
+            forAdmin: true,
+          });
+        }
       }
     }
 
@@ -299,11 +351,42 @@ export const getAdminOrderById = async (req, res, next) => {
 // Update Order Status (Admin)
 export const updateOrderStatus = async (req, res, next) => {
   try {
-    const { status, trackingNumber, courierName, estimatedDelivery, adminNotes } = req.body;
+    const {
+      status,
+      trackingNumber,
+      courierName,
+      estimatedDelivery,
+      trackingUrl,
+      dispatchDate,
+      deliveryStatus,
+      adminNotes
+    } = req.body;
+
     const order = await Order.findById(req.params.id);
 
     if (!order) {
       throw ApiError.notFound('Order not found.');
+    }
+
+    // Backend validations (Step 8)
+    const nextStatus = status || order.status;
+    if (nextStatus === 'shipped') {
+      const finalTrackingNumber = trackingNumber !== undefined ? trackingNumber : order.trackingNumber;
+      const finalCourierName = courierName !== undefined ? courierName : order.courierName;
+      if (!finalTrackingNumber || !finalTrackingNumber.trim()) {
+        throw ApiError.badRequest('Tracking ID is required when status is Shipped.');
+      }
+      if (!finalCourierName || !finalCourierName.trim()) {
+        throw ApiError.badRequest('Courier Service Name is required when status is Shipped.');
+      }
+    }
+
+    if (trackingUrl) {
+      try {
+        new URL(trackingUrl);
+      } catch (err) {
+        throw ApiError.badRequest('Tracking URL must be a valid URL.');
+      }
     }
 
     if (status) {
@@ -317,6 +400,10 @@ export const updateOrderStatus = async (req, res, next) => {
       if (status === 'delivered') {
         order.deliveredAt = new Date();
         order.paymentStatus = 'paid';
+        order.deliveryStatus = 'delivered';
+      }
+      if (status === 'shipped') {
+        order.deliveryStatus = 'shipped';
       }
       if (status === 'cancelled') {
         order.cancelledAt = new Date();
@@ -329,18 +416,21 @@ export const updateOrderStatus = async (req, res, next) => {
       }
     }
 
-    if (trackingNumber) order.trackingNumber = trackingNumber;
-    if (courierName) order.courierName = courierName;
-    if (estimatedDelivery) order.estimatedDelivery = estimatedDelivery;
-    if (adminNotes) order.adminNotes = adminNotes;
+    if (trackingNumber !== undefined) order.trackingNumber = trackingNumber;
+    if (courierName !== undefined) order.courierName = courierName;
+    if (estimatedDelivery !== undefined) order.estimatedDelivery = estimatedDelivery;
+    if (trackingUrl !== undefined) order.trackingUrl = trackingUrl;
+    if (dispatchDate !== undefined) order.dispatchDate = dispatchDate;
+    if (deliveryStatus !== undefined) order.deliveryStatus = deliveryStatus;
+    if (adminNotes !== undefined) order.adminNotes = adminNotes;
 
     await order.save();
 
     // Create user notification
     await Notification.create({
       type: 'order_status',
-      title: `Order ${status}`,
-      message: `Your order #${order.orderNumber} has been ${status}.`,
+      title: `Order ${order.status}`,
+      message: `Your order #${order.orderNumber} has been ${order.status}.`,
       refModel: 'Order',
       refId: order._id,
       forAdmin: false,
@@ -348,6 +438,25 @@ export const updateOrderStatus = async (req, res, next) => {
     });
 
     res.json({ success: true, message: 'Order updated.', data: order });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Stream PDF Invoice Publicly (Step 5 & 6)
+export const getOrderInvoicePdf = async (req, res, next) => {
+  try {
+    const { orderNumber } = req.params;
+    const order = await Order.findOne({ orderNumber }).populate('user');
+    
+    if (!order) {
+      return res.status(404).send('Invoice not found.');
+    }
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename="invoice-${order.orderNumber}.pdf"`);
+
+    generateInvoicePDF(order, res);
   } catch (error) {
     next(error);
   }

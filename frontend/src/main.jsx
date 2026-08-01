@@ -31,7 +31,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                 closeOnClick
                 rtl={false}
                 pauseOnFocusLoss
-                draggable
+                draggable={false}
                 pauseOnHover
                 theme="light"
               />

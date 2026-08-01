@@ -60,32 +60,46 @@ const Products = () => {
       <section className="py-6 md:py-10 bg-white">
         <div className="container-custom">
           {/* Filters */}
-          <div className="flex flex-col md:flex-row gap-4 mb-10 items-start md:items-center justify-between">
-            <div className="relative flex-1 max-w-md">
-              <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input type="text" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} placeholder="Search products..." className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition-all font-inter" />
+          <div className="flex flex-row gap-2 mb-8 items-center justify-between">
+            <div className="relative flex-1 min-w-0">
+              <FiSearch className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 md:w-5 md:h-5" />
+              <input 
+                type="text" 
+                value={search} 
+                onChange={(e) => { setSearch(e.target.value); setPage(1); }} 
+                placeholder="Search..." 
+                className="w-full pl-9 md:pl-12 pr-2 md:pr-4 py-2.5 md:py-3 text-xs md:text-sm input-premium" 
+              />
             </div>
-            <div className="flex gap-3 flex-wrap w-full md:w-auto">
-              <select value={category} onChange={(e) => { setCategory(e.target.value); setPage(1); }} className="w-full sm:w-auto px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 outline-none font-inter text-sm bg-white">
-                <option value="">All Categories</option>
+            <div className="flex gap-1.5 w-auto shrink-0">
+              <select 
+                value={category} 
+                onChange={(e) => { setCategory(e.target.value); setPage(1); }} 
+                className="w-[90px] sm:w-auto px-1.5 md:px-4 py-2.5 md:py-3 text-xs md:text-sm input-premium bg-white cursor-pointer min-w-0"
+              >
+                <option value="">Category</option>
                 {categories.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
               </select>
-              <select value={`${sortBy}-${sortOrder}`} onChange={(e) => { const [f, o] = e.target.value.split('-'); setSortBy(f); setSortOrder(o); setPage(1); }} className="w-full sm:w-auto px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 outline-none font-inter text-sm bg-white">
-                <option value="createdAt-desc">Newest First</option>
-                <option value="createdAt-asc">Oldest First</option>
-                <option value="name-asc">Name A–Z</option>
-                <option value="name-desc">Name Z–A</option>
-                <option value="views-desc">Most Popular</option>
+              <select 
+                value={`${sortBy}-${sortOrder}`} 
+                onChange={(e) => { const [f, o] = e.target.value.split('-'); setSortBy(f); setSortOrder(o); setPage(1); }} 
+                className="w-[78px] sm:w-auto px-1.5 md:px-4 py-2.5 md:py-3 text-xs md:text-sm input-premium bg-white cursor-pointer min-w-0"
+              >
+                <option value="createdAt-desc">Newest</option>
+                <option value="createdAt-asc">Oldest</option>
+                <option value="name-asc">A–Z</option>
+                <option value="name-desc">Z–A</option>
+                <option value="views-desc">Popular</option>
               </select>
             </div>
           </div>
 
           {/* Product Grid */}
           {loading ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {[...Array(8)].map((_, i) => (
                 <div key={i} className="card-premium">
-                  <div className="w-full aspect-[4/5] skeleton rounded-xl mb-4" />
+                  <div className="product-image-container skeleton rounded-xl mb-4" />
                   <div className="h-5 skeleton w-3/4 mb-3" />
                   <div className="h-4 skeleton w-full mb-4" />
                   <div className="h-4 skeleton w-1/2" />
@@ -98,34 +112,53 @@ const Products = () => {
               <p className="text-gray-500 font-inter text-sm">Try adjusting your search or filter criteria.</p>
             </div>
           ) : (
-            <div className={`grid gap-6 ${products.length === 1 ? 'grid-cols-1 max-w-sm mx-auto' : 'md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'}`}>
-              {products.map((product, i) => (
-                <motion.div key={product._id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-                  <Link to={`/products/${product.slug}`} className="card-premium group text-center block h-full">
-                    <div className="w-full aspect-[4/5] overflow-hidden rounded-xl mb-6 bg-gray-50 relative">
-                      {product.isUpcoming && (
-                        <span className="absolute top-3 left-3 z-10 bg-[#7BA639] text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-sm font-poppins">
-                          Upcoming
-                        </span>
-                      )}
-                      <img src={getImageUrl(product.thumbnail)} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-                    </div>
-                    <p className="text-[11px] uppercase tracking-wider text-gray-400 font-semibold mb-2">{product.category?.name || 'Product'}</p>
-                    <h3 className="font-poppins font-semibold text-dark text-lg mb-2 group-hover:text-primary-500 transition-colors line-clamp-1">{product.name}</h3>
-                    <p className="text-sm text-gray-500 font-inter mb-4 line-clamp-2">{product.shortDescription}</p>
+            <div className={`grid gap-6 ${products.length === 1 ? 'grid-cols-1 max-w-sm mx-auto' : 'grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'}`}>
+              {products.map((product, i) => {
+                const hasOptions = product.packageOptions && product.packageOptions.length > 0;
+                const trackInventory = product.trackInventory !== false;
+                const isOutOfStock = trackInventory
+                  ? (hasOptions
+                      ? product.packageOptions.every(opt => (opt.stock ?? 0) <= 0 || opt.status === 'disabled')
+                      : ((product.stock ?? 0) <= 0)
+                    )
+                  : false;
+                return (
+                  <motion.div key={product._id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+                    <Link to={`/products/${product.slug}`} className="card-premium group text-center block h-full !p-3 md:!p-6">
+                      <div className="product-image-container rounded-xl mb-3 md:mb-6 relative">
+                        {product.isUpcoming && (
+                          <span className="hidden md:inline-block absolute top-3 left-3 z-10 bg-[#7BA639] text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-sm font-poppins">
+                            Upcoming
+                          </span>
+                        )}
+                        {isOutOfStock && !product.isUpcoming && (
+                          <span className="hidden md:inline-block absolute top-3 right-3 z-10 bg-red-600 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-sm font-poppins">
+                            Sold Out
+                          </span>
+                        )}
+                        <img 
+                          src={getImageUrl(product.thumbnail)} 
+                          alt={product.name} 
+                          className={`product-image group-hover:scale-105 ${isOutOfStock && !product.isUpcoming ? 'opacity-50 grayscale-[40%]' : ''}`} 
+                          loading="lazy" 
+                        />
+                      </div>
+                    <p className="hidden md:block text-[11px] uppercase tracking-wider text-gray-400 font-semibold mb-2">{product.category?.name || 'Product'}</p>
+                    <h3 className="font-poppins font-semibold text-dark text-sm md:text-lg mb-1 md:mb-2 group-hover:text-primary-500 transition-colors line-clamp-2 md:line-clamp-1">{product.name}</h3>
+                    <p className="hidden md:block text-sm text-gray-500 font-inter mb-4 line-clamp-2">{product.shortDescription}</p>
                     
                     {/* Catalog Price */}
-                    <div className="flex items-center justify-center gap-2 mb-4">
-                      <span className="font-poppins font-bold text-dark text-base">₹{product.sellingPrice || product.mrp}</span>
+                    <div className="flex items-center justify-center gap-2 mb-1 md:mb-4">
+                      <span className="font-poppins font-bold text-dark text-sm md:text-base">₹{product.sellingPrice || product.mrp}</span>
                       {product.mrp > product.sellingPrice && (
                         <span className="text-xs text-gray-400 line-through font-inter">₹{product.mrp}</span>
                       )}
                     </div>
 
-                    <span className="mt-auto text-sm font-poppins font-semibold text-primary-500">View Details →</span>
+                    <span className="hidden md:block mt-auto text-sm font-poppins font-semibold text-primary-500">View Details →</span>
                   </Link>
                 </motion.div>
-              ))}
+              )})}
             </div>
           )}
 

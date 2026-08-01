@@ -28,7 +28,7 @@ const settingsSchema = new mongoose.Schema(
     },
     address: {
       type: String,
-      default: '',
+      default: 'JUICETAP GLOBAL PRIVATE LIMITED Plot 13-14, Nandini Farm, Tata Motors Lane, Bhatpore, Hazira, Surat, Gujarat 394510',
     },
     whatsapp: {
       type: String,
@@ -58,6 +58,20 @@ const settingsSchema = new mongoose.Schema(
       port: { type: Number, default: 587 },
       user: { type: String, default: '' },
       pass: { type: String, default: '' },
+    },
+    shippingCharge: {
+      type: Number,
+      default: 49,
+    },
+    freeShippingMinAmount: {
+      type: Number,
+      default: 499,
+    },
+    stats: {
+      happyCustomers: { type: String, default: '10000+' },
+      productsCount: { type: String, default: '50+' },
+      peelsRecycled: { type: String, default: '500T' },
+      averageRating: { type: String, default: '4.9/5' },
     },
   },
   {
