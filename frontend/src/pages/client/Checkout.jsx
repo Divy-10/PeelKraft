@@ -335,18 +335,18 @@ const Checkout = () => {
                 <h2 className="text-lg font-poppins font-bold text-dark mb-4">Order Summary</h2>
                 <div className="space-y-3 mb-4">
                   {items.map((item) => (
-                    <div key={item._id} className="flex items-center gap-3">
-                      <div className="w-12 h-12 shrink-0 product-image-container rounded-lg overflow-hidden">
+                    <div key={item._id} className="flex items-start gap-3">
+                      <div className="w-12 h-12 shrink-0 product-image-container rounded-lg overflow-hidden mt-0.5">
                         <img src={item.image} alt={item.name} className="product-image" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-dark line-clamp-1 font-inter">{item.name}</p>
                         {item.packageName && (
-                          <p className="text-xs text-primary-600 font-semibold font-poppins mt-0.5">{item.packageName}</p>
+                          <p className="text-xs text-primary-600 font-semibold font-poppins mt-0.5 whitespace-normal break-words">{item.packageName}</p>
                         )}
-                        <p className="text-xs text-gray-500 font-inter">Qty: {item.quantity}</p>
+                        <p className="text-xs text-gray-500 font-inter mt-0.5">Qty: {item.quantity}</p>
                       </div>
-                      <span className="text-sm font-bold text-dark font-poppins">₹{item.price * item.quantity}</span>
+                      <span className="text-sm font-bold text-dark font-poppins shrink-0 whitespace-nowrap text-right pl-2 pt-0.5">₹{item.price * item.quantity}</span>
                     </div>
                   ))}
                 </div>
