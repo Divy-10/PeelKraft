@@ -69,7 +69,7 @@ const Search = () => {
                   <div className="grid md:grid-cols-3 gap-4">
                     {results.products.map(p => (
                       <Link key={p._id} to={`/products/${p.slug}`} className="card-premium flex gap-4 group overflow-hidden">
-                        <div className="w-20 h-20 shrink-0 product-image-container rounded-lg overflow-hidden"><img src={getImageUrl(p.thumbnail)} alt={p.name} className="product-image" /></div>
+                        <div className="!w-20 !h-20 shrink-0 product-image-container rounded-lg overflow-hidden"><img src={getImageUrl(p.thumbnail)} alt={p.name} className="product-image" /></div>
                         <div className="p-3"><h3 className="font-semibold text-sm text-dark group-hover:text-primary-500 transition-colors line-clamp-2">{p.name}</h3><p className="text-xs text-gray-400 mt-1">{p.category?.name}</p></div>
                       </Link>
                     ))}

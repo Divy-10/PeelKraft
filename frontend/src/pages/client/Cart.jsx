@@ -102,7 +102,7 @@ const Cart = () => {
                   animate={{ opacity: 1, y: 0 }}
                   className="bg-white rounded-2xl border border-gray-100 p-4 md:p-6 flex gap-4 md:gap-6 items-center shadow-sm"
                 >
-                  <Link to={`/products/${item.slug}`} className="shrink-0 w-20 h-20 md:w-24 md:h-24 product-image-container rounded-xl overflow-hidden">
+                  <Link to={`/products/${item.slug}`} className="shrink-0 !w-20 !h-20 md:!w-24 md:!h-24 product-image-container rounded-xl overflow-hidden">
                     <img src={item.image} alt={item.name} className="product-image" />
                   </Link>
                   <div className="flex-1 min-w-0">
