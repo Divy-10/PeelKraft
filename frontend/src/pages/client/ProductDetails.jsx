@@ -519,7 +519,11 @@ const ProductDetails = () => {
                           key={opt._id}
                           onClick={() => {
                             if (!isOptOutOfStock) {
-                              setSelectedPackage(opt);
+                              if (selectedPackage?._id === opt._id) {
+                                setSelectedPackage(null);
+                              } else {
+                                setSelectedPackage(opt);
+                              }
                             }
                           }}
                           className={`relative p-3 sm:p-5 rounded-2xl border-2 transition-all duration-300 flex flex-col justify-between h-auto min-h-[130px] w-full ${
