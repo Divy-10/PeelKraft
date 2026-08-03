@@ -8,7 +8,7 @@ import { FaLeaf as FiLeaf } from 'react-icons/fa';
 import SEOHead from '../../components/seo/SEOHead';
 import WriteReviewModal from '../../components/common/WriteReviewModal';
 import { productApi, blogApi, faqApi, testimonialApi } from '../../api';
-import { formatDate, truncateText, stripHtml, getImageUrl } from '../../utils';
+import { formatDate, truncateText, stripHtml, getImageUrl, getInitials } from '../../utils';
 import { useSettings } from '../../context/SettingsContext';
 
 // Animated Counter Component
@@ -184,12 +184,12 @@ const Home = () => {
   const displayAvatars = totalTestimonials > 0
     ? testimonials.slice(0, 3).map((item) => ({
         name: item.name,
-        url: item.avatar?.url || `https://ui-avatars.com/api/?name=${encodeURIComponent(item.name)}&background=random`,
+        url: item.avatar?.url || '',
       }))
     : [
-        { name: 'Alice', url: 'https://ui-avatars.com/api/?name=Alice&background=random' },
-        { name: 'Bob', url: 'https://ui-avatars.com/api/?name=Bob&background=random' },
-        { name: 'Carol', url: 'https://ui-avatars.com/api/?name=Carol&background=random' },
+        { name: 'Alice', url: '' },
+        { name: 'Bob', url: '' },
+        { name: 'Carol', url: '' },
       ];
 
   return (
@@ -254,10 +254,14 @@ const Home = () => {
                   {displayAvatars.map((avatar, idx) => (
                     <div 
                       key={idx} 
-                      className="w-10 h-10 rounded-full bg-gray-200 border-2 border-white overflow-hidden shadow-sm"
+                      className="w-10 h-10 rounded-full bg-gray-50 border-2 border-white overflow-hidden shadow-sm flex items-center justify-center shrink-0"
                       title={avatar.name}
                     >
-                      <img src={avatar.url} alt={avatar.name} className="w-full h-full object-cover" />
+                      {avatar.url ? (
+                        <img src={avatar.url} alt={avatar.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-dark font-bold text-xs">{getInitials(avatar.name)}</span>
+                      )}
                     </div>
                   ))}
                 </div>
