@@ -20,7 +20,7 @@ export const getTestimonials = asyncHandler(async (req, res) => {
     company: r.product ? `Product: ${r.product.name}` : 'Brand Experience',
     content: r.comment || '',
     avatar: {
-      url: r.profilePhoto || '/images/logo.png',
+      url: r.profilePhoto || '',
       publicId: '',
     },
     rating: r.rating || 5,
