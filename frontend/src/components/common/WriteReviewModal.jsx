@@ -229,35 +229,6 @@ const WriteReviewModal = ({ isOpen, onClose, productId = null, productName = nul
             />
           </div>
 
-          {/* Profile avatar upload */}
-          <div>
-            <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase">Profile Photo (Optional)</label>
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-full border border-gray-200 overflow-hidden shrink-0 flex items-center justify-center bg-gray-50">
-                {form.profilePhoto ? (
-                  <img src={form.profilePhoto} alt="" className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-gray-300 font-bold text-lg">{form.customerName?.[0]?.toUpperCase() || '?'}</span>
-                )}
-              </div>
-              <div className="relative border-2 border-dashed border-gray-200 hover:border-primary-400 p-3 text-center rounded-xl cursor-pointer flex-1 transition-colors">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleAvatarUpload}
-                  className="absolute inset-0 opacity-0 cursor-pointer"
-                />
-                {uploadingAvatar ? (
-                  <span className="text-xs text-gray-400">Uploading photo...</span>
-                ) : (
-                  <span className="text-xs text-gray-500 flex items-center justify-center gap-1.5 font-semibold">
-                    <FiUploadCloud /> Upload Avatar
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-
           {/* Gallery images upload */}
           <div>
             <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase">Upload Review Images (Optional)</label>

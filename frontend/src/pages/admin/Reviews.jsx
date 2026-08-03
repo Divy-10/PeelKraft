@@ -5,6 +5,7 @@ import {
 } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import { reviewApi } from '../../api';
+import { getInitials } from '../../utils';
 
 const Reviews = () => {
   const [reviews, setReviews] = useState([]);
@@ -167,7 +168,7 @@ const Reviews = () => {
                           {review.profilePhoto ? (
                             <img src={review.profilePhoto} alt="" className="w-full h-full object-cover" />
                           ) : (
-                            <FiUser className="text-gray-400 w-4 h-4" />
+                            <span className="text-gray-600 font-bold text-xs">{getInitials(review.customerName)}</span>
                           )}
                         </div>
                         <div>

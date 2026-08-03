@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import SEOHead from '../../components/seo/SEOHead';
 import Breadcrumbs from '../../components/seo/Breadcrumbs';
 import { productApi, reviewApi, wishlistApi } from '../../api';
-import { getImageUrl } from '../../utils';
+import { getImageUrl, getInitials } from '../../utils';
 import { useCart } from '../../context/CartContext';
 import { useUser } from '../../context/UserContext';
 import WriteReviewModal from '../../components/common/WriteReviewModal';
@@ -338,7 +338,7 @@ const ProductDetails = () => {
                               {rev.profilePhoto ? (
                                 <img src={rev.profilePhoto} alt="" className="w-full h-full object-cover" />
                               ) : (
-                                <span className="text-dark font-bold text-sm">{rev.customerName?.[0]}</span>
+                                <span className="text-dark font-bold text-sm">{getInitials(rev.customerName)}</span>
                               )}
                             </div>
                             <div>
