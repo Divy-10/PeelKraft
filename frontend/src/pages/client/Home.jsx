@@ -683,13 +683,6 @@ const Home = () => {
                     </div>
                     <p className="text-gray-500 font-inter italic mb-6 line-clamp-4 text-sm">"{t.content}"</p>
                     <div className="flex items-center gap-3 mt-auto">
-                      <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-200 flex items-center justify-center shrink-0">
-                        {t.avatar?.url ? (
-                          <img src={t.avatar.url} alt="" className="w-full h-full object-cover" />
-                        ) : (
-                          <span className="text-dark font-bold text-sm">{t.name?.[0]}</span>
-                        )}
-                      </div>
                       <div>
                         <p className="font-semibold text-sm text-dark font-poppins">{t.name}</p>
                         <p className="text-xs text-gray-400 font-inter">{t.designation || 'Verified Reviewer'}</p>
