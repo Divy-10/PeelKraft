@@ -2,8 +2,8 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 const addressSchema = new mongoose.Schema({
-  fullName: { type: String, required: true, trim: true },
-  phone: { type: String, required: true, trim: true },
+  fullName: { type: String, trim: true },
+  phone: { type: String, trim: true },
   whatsapp: { type: String, default: '', trim: true },
   addressLine1: { type: String, required: true, trim: true },
   addressLine2: { type: String, default: '', trim: true },
@@ -50,6 +50,26 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String,
       default: '',
+    },
+    mobileNumber: {
+      type: String,
+      unique: true,
+      sparse: true,
+      trim: true,
+    },
+    phoneDetails: {
+      country: { type: String, trim: true },
+      countryName: { type: String, trim: true },
+      dialCode: { type: String, trim: true },
+      nationalNumber: { type: String, trim: true },
+      internationalNumber: { type: String, trim: true },
+    },
+    gender: {
+      type: String,
+      enum: ['Male', 'Female', 'Other', 'Prefer not to say'],
+    },
+    birthDate: {
+      type: Date,
     },
     addresses: [addressSchema],
     status: {

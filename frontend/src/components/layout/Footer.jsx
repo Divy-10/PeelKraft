@@ -57,11 +57,11 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-white border-t border-gray-100 text-dark pt-16">
+    <footer className="bg-white border-t border-gray-100 text-dark pt-10 md:pt-12 lg:pt-14">
 
       {/* Newsletter Section */}
       <div className="border-b border-gray-100">
-        <div className="container-custom pb-16">
+        <div className="container-custom pb-10 md:pb-12">
           <div className="max-w-2xl mx-auto text-center">
             <motion.h3
               initial={{ opacity: 0, y: 20 }}

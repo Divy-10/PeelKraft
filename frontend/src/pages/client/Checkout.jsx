@@ -17,11 +17,12 @@ const Checkout = () => {
   const navigate = useNavigate();
 
   const [address, setAddress] = useState({
-    fullName: user?.firstName ? `${user.firstName} ${user.lastName}` : '',
-    phone: user?.phone || '',
-    whatsapp: user?.phone || '',
+    fullName: '',
+    phone: '',
+    whatsapp: '',
     addressLine1: '', addressLine2: '', city: '', state: '', pincode: '', country: 'India',
   });
+  const [selectedAddressId, setSelectedAddressId] = useState('');
   const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0);
   const [appliedCoupon, setAppliedCoupon] = useState('');
@@ -33,20 +34,39 @@ const Checkout = () => {
   const [couponsLoading, setCouponsLoading] = useState(true);
 
   useEffect(() => {
-    if (user && user.addresses && user.addresses.length > 0) {
-      const defaultAddr = user.addresses.find((addr) => addr.isDefault) || user.addresses[0];
-      if (defaultAddr) {
-        setAddress({
-          fullName: defaultAddr.fullName || '',
-          phone: defaultAddr.phone || '',
-          whatsapp: defaultAddr.whatsapp || defaultAddr.phone || user.phone || '',
-          addressLine1: defaultAddr.addressLine1 || '',
-          addressLine2: defaultAddr.addressLine2 || '',
-          city: defaultAddr.city || '',
-          state: defaultAddr.state || '',
-          pincode: defaultAddr.pincode || '',
-          country: defaultAddr.country || 'India',
-        });
+    if (user) {
+      const userFullName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
+      const userPhone = user.mobileNumber || user.phone || '';
+      
+      const baseAddr = {
+        fullName: userFullName,
+        phone: userPhone,
+        whatsapp: userPhone,
+        addressLine1: '',
+        addressLine2: '',
+        city: '',
+        state: '',
+        pincode: '',
+        country: 'India',
+      };
+
+      if (user.addresses && user.addresses.length > 0) {
+        const defaultAddr = user.addresses.find((addr) => addr.isDefault) || user.addresses[0];
+        if (defaultAddr) {
+          setSelectedAddressId(defaultAddr._id);
+          setAddress({
+            ...baseAddr,
+            addressLine1: defaultAddr.addressLine1 || '',
+            addressLine2: defaultAddr.addressLine2 || '',
+            city: defaultAddr.city || '',
+            state: defaultAddr.state || '',
+            pincode: defaultAddr.pincode || '',
+            country: defaultAddr.country || 'India',
+          });
+        }
+      } else {
+        setSelectedAddressId('new');
+        setAddress(baseAddr);
       }
     }
   }, [user]);
@@ -121,13 +141,50 @@ const Checkout = () => {
     });
   };
 
+  const handleSelectSavedAddress = (addr) => {
+    setSelectedAddressId(addr._id);
+    const userFullName = `${user?.firstName || ''} ${user?.lastName || ''}`.trim();
+    const userPhone = user?.mobileNumber || user?.phone || '';
+    setAddress({
+      fullName: userFullName,
+      phone: userPhone,
+      whatsapp: userPhone,
+      addressLine1: addr.addressLine1 || '',
+      addressLine2: addr.addressLine2 || '',
+      city: addr.city || '',
+      state: addr.state || '',
+      pincode: addr.pincode || '',
+      country: addr.country || 'India',
+    });
+  };
+
+  const handleSelectNewAddress = () => {
+    setSelectedAddressId('new');
+    const userFullName = `${user?.firstName || ''} ${user?.lastName || ''}`.trim();
+    const userPhone = user?.mobileNumber || user?.phone || '';
+    setAddress({
+      fullName: userFullName,
+      phone: userPhone,
+      whatsapp: userPhone,
+      addressLine1: '',
+      addressLine2: '',
+      city: '',
+      state: '',
+      pincode: '',
+      country: 'India',
+    });
+  };
+
   const placeOrder = async () => {
-    if (!address.fullName || !address.phone || !address.whatsapp || !address.addressLine1 || !address.city || !address.state || !address.pincode) {
+    const userFullName = `${user?.firstName || ''} ${user?.lastName || ''}`.trim();
+    const userPhone = user?.mobileNumber || user?.phone || '';
+    
+    address.fullName = userFullName;
+    address.phone = userPhone;
+    address.whatsapp = userPhone;
+
+    if (!address.addressLine1 || !address.city || !address.state || !address.pincode) {
       return toast.error('Please fill all address fields.');
-    }
-    const cleanWhatsApp = address.whatsapp.replace(/\D/g, '');
-    if (cleanWhatsApp.length < 10) {
-      return toast.error('Please enter a valid WhatsApp number (at least 10 digits).');
     }
     if (!agreeTerms) return toast.error('Please agree to the terms and conditions.');
 
@@ -297,15 +354,57 @@ const Checkout = () => {
               {/* Shipping Address */}
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
                 <h2 className="text-lg font-poppins font-bold text-dark mb-4 flex items-center gap-2"><FiMapPin className="text-primary-500" /> Shipping Address</h2>
+                
+                {/* Customer Details Summary (Source of Truth) */}
+                <div className="p-4 bg-gray-50 border border-gray-100 rounded-xl mb-6 font-inter text-sm text-gray-600 space-y-1">
+                  <p className="text-xs font-bold text-gray-400 font-poppins uppercase tracking-wider">Customer Details</p>
+                  <p className="font-semibold text-dark text-base mt-1">{`${user?.firstName || ''} ${user?.lastName || ''}`.trim()}</p>
+                  <p>Mobile: {user?.phoneDetails?.dialCode ? `${user.phoneDetails.dialCode} ` : ''}{user?.phoneDetails?.nationalNumber || user?.mobileNumber || user?.phone}</p>
+                  <p>Email: {user?.email}</p>
+                </div>
+
+                {/* Saved Address Selector */}
+                {user?.addresses && user.addresses.length > 0 && (
+                  <div className="mb-6">
+                    <p className="text-xs font-bold text-gray-400 font-poppins uppercase tracking-wider mb-3">Ship to Saved Address</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {user.addresses.map((addr) => (
+                        <div
+                          key={addr._id}
+                          onClick={() => handleSelectSavedAddress(addr)}
+                          className={`p-4 rounded-xl border-2 cursor-pointer transition font-inter text-xs space-y-1 ${
+                            selectedAddressId === addr._id
+                              ? 'border-primary-500 bg-primary-50/10'
+                              : 'border-gray-100 hover:border-gray-200 bg-white'
+                          }`}
+                        >
+                          <div className="flex justify-between items-center">
+                            <span className="font-semibold text-dark capitalize">{addr.label}</span>
+                            {selectedAddressId === addr._id && <span className="text-primary-500 font-bold">✓ Selected</span>}
+                          </div>
+                          <p className="text-gray-500 truncate">{addr.addressLine1}, {addr.city}</p>
+                        </div>
+                      ))}
+                      <div
+                        onClick={handleSelectNewAddress}
+                        className={`p-4 rounded-xl border-2 border-dashed cursor-pointer transition font-inter text-xs flex items-center justify-center gap-1.5 ${
+                          selectedAddressId === 'new'
+                            ? 'border-primary-500 bg-primary-50/10 text-primary-600 font-semibold'
+                            : 'border-gray-200 hover:border-gray-300 text-gray-500 bg-white'
+                        }`}
+                      >
+                        <span>+ Ship to New Address</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div><label className="block text-xs font-medium text-gray-500 mb-1 font-inter">Full Name *</label><input name="fullName" value={address.fullName} onChange={handleAddressChange} required className={inputCls} /></div>
-                  <div><label className="block text-xs font-medium text-gray-500 mb-1 font-inter">Phone *</label><input name="phone" value={address.phone} onChange={handleAddressChange} required className={inputCls} /></div>
-                  <div><label className="block text-xs font-medium text-gray-500 mb-1 font-inter">WhatsApp Number *</label><input name="whatsapp" type="tel" value={address.whatsapp} onChange={handleAddressChange} required className={inputCls} placeholder="+91 9876543210" pattern="[\d\s+\-()]*" /></div>
-                  <div><label className="block text-xs font-medium text-gray-500 mb-1 font-inter">Country</label><input name="country" value={address.country} onChange={handleAddressChange} className={inputCls} /></div>
                   <div className="md:col-span-2"><label className="block text-xs font-medium text-gray-500 mb-1 font-inter">Address Line 1 *</label><input name="addressLine1" value={address.addressLine1} onChange={handleAddressChange} required className={inputCls} /></div>
                   <div className="md:col-span-2"><label className="block text-xs font-medium text-gray-500 mb-1 font-inter">Address Line 2</label><input name="addressLine2" value={address.addressLine2} onChange={handleAddressChange} className={inputCls} /></div>
                   <div><label className="block text-xs font-medium text-gray-500 mb-1 font-inter">City *</label><input name="city" value={address.city} onChange={handleAddressChange} required className={inputCls} /></div>
                   <div><label className="block text-xs font-medium text-gray-500 mb-1 font-inter">State *</label><input name="state" value={address.state} onChange={handleAddressChange} required className={inputCls} /></div>
+                  <div><label className="block text-xs font-medium text-gray-500 mb-1 font-inter">Country *</label><input name="country" value={address.country} onChange={handleAddressChange} required className={inputCls} /></div>
                   <div><label className="block text-xs font-medium text-gray-500 mb-1 font-inter">Pincode *</label><input name="pincode" value={address.pincode} onChange={handleAddressChange} required className={inputCls} /></div>
                 </div>
                 <div className="mt-4">

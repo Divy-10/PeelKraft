@@ -20,6 +20,24 @@ const pendingUserSchema = new mongoose.Schema(
       default: '',
       trim: true,
     },
+    mobileNumber: {
+      type: String,
+      trim: true,
+    },
+    phoneDetails: {
+      country: { type: String, trim: true },
+      countryName: { type: String, trim: true },
+      dialCode: { type: String, trim: true },
+      nationalNumber: { type: String, trim: true },
+      internationalNumber: { type: String, trim: true },
+    },
+    gender: {
+      type: String,
+      enum: ['Male', 'Female', 'Other', 'Prefer not to say'],
+    },
+    birthDate: {
+      type: Date,
+    },
     passwordHash: {
       type: String,
       required: [true, 'Password hash is required'],

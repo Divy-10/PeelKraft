@@ -52,7 +52,7 @@ const SectionHeading = ({ badge, title, subtitle, center = true, light = false }
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
     transition={{ duration: 0.6 }}
-    className={`mb-12 md:mb-16 ${center ? 'text-center' : ''}`}
+    className={`mb-8 md:mb-10 ${center ? 'text-center' : ''}`}
   >
     {badge && (
       <span className="inline-block px-4 py-1.5 bg-primary-50 text-primary-500 font-poppins font-semibold text-sm rounded-full mb-4">
@@ -105,7 +105,7 @@ const Home = () => {
     name: 'PeelKraft',
     description: 'Premium sustainable food products from orange peels',
     url: import.meta.env.VITE_SITE_URL,
-    logo: `${import.meta.env.VITE_SITE_URL}/favicon.svg`,
+    logo: `${import.meta.env.VITE_SITE_URL}/favicon.png`,
     parentOrganization: { '@type': 'Organization', name: 'JuiceTap Global Pvt Ltd' },
     sameAs: ['https://facebook.com/peelkraft', 'https://instagram.com/peelkraft'],
   };
@@ -202,7 +202,7 @@ const Home = () => {
       />
 
       {/* ===== HERO SECTION ===== */}
-      <section className="relative min-h-[92vh] flex items-center bg-cream-50 pt-24 pb-20 overflow-hidden">
+      <section className="relative min-h-[75vh] lg:min-h-[80vh] flex items-center bg-cream-50 pt-24 pb-12 lg:pb-16 overflow-hidden">
         {/* Background decorative elements */}
         <div className="absolute top-20 left-10 w-64 h-64 bg-primary-100/50 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-10 w-80 h-80 bg-amber-100/40 rounded-full blur-3xl" />
@@ -311,7 +311,7 @@ const Home = () => {
       </section>
 
       {/* ===== FEATURED PRODUCTS (Live & Wild Harvest) ===== */}
-      <section className="section-padding bg-white border-b border-gray-100 overflow-hidden">
+      <section className="pt-12 md:pt-16 lg:pt-20 pb-8 md:pb-10 lg:pb-12 bg-white border-b border-gray-100 overflow-hidden">
         <div className="container-custom">
           <SectionHeading
             badge="Our Products"
@@ -448,7 +448,7 @@ const Home = () => {
                           />
                         </div>
                         <h3 className="font-poppins font-semibold text-dark text-sm md:text-lg mb-1 md:mb-2 group-hover:text-primary-500 transition-colors line-clamp-2 md:line-clamp-1">
-                          {product.name}
+                           {product.name}
                         </h3>
                         
                         {/* Price section */}
@@ -489,7 +489,7 @@ const Home = () => {
           </div>
         )}
 
-        <div className="container-custom mt-12 text-center">
+        <div className="container-custom mt-8 text-center">
           <Link
             to="/products"
             className="btn-outline"
@@ -503,9 +503,9 @@ const Home = () => {
 
 
       {/* ===== OUR STORY ===== */}
-      <section className="section-padding bg-cream-50">
+      <section className="pt-8 md:pt-10 lg:pt-12 pb-8 md:pb-10 lg:pb-12 bg-cream-50">
         <div className="container-custom">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-12 items-center">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -538,7 +538,7 @@ const Home = () => {
               <p className="text-gray-500 font-inter leading-relaxed mb-6">
                 PeelKraft, powered by JuiceTap Global Pvt. Ltd., transforms orange peels collected from our fully automatic Valencia orange juice machines into premium natural products. Instead of creating waste, we give every peel a second life through Orange Peel Candy, Peel Powder, and Orange Tea—promoting sustainability, innovation, and a cleaner future.
               </p>
-              <p className="text-gray-500 font-inter leading-relaxed mb-10">
+              <p className="text-gray-500 font-inter leading-relaxed mb-6">
                 Today, PeelKraft transforms hundreds of kilograms of orange peels into delicious, nutritious products that are loved by health-conscious consumers across India.
               </p>
               <Link to="/about" className="btn-secondary">
@@ -550,7 +550,7 @@ const Home = () => {
       </section>
 
       {/* ===== WHY PEELKRAFT ===== */}
-      <section className="section-padding bg-white border-t border-gray-100">
+      <section className="pt-8 md:pt-10 lg:pt-12 pb-8 md:pb-10 lg:pb-12 bg-white border-t border-gray-100">
         <div className="container-custom">
           <SectionHeading
             badge="Why PeelKraft"
@@ -583,7 +583,7 @@ const Home = () => {
       </section>
 
       {/* ===== MANUFACTURING PROCESS ===== */}
-      <section className="section-padding bg-gray-50 relative overflow-hidden">
+      <section className="pt-8 md:pt-10 lg:pt-12 pb-8 md:pb-10 lg:pb-12 bg-gray-50 relative overflow-hidden">
         <div className="container-custom relative z-10">
           <SectionHeading
             badge="Our Process"
@@ -591,7 +591,7 @@ const Home = () => {
             subtitle="Every PeelKraft product goes through a meticulous 5-step process"
           />
 
-          <div className="flex flex-wrap justify-center gap-6 lg:gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
             {processSteps.map((step, i) => (
               <motion.div
                 key={i}
@@ -599,16 +599,18 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="relative w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)] card-premium p-8 hover:border-primary-500/20"
+                className="relative card-premium p-8 hover:border-primary-500/20 flex flex-col h-full"
               >
                 <span className="text-5xl font-poppins font-bold text-gray-100 absolute top-4 right-6 transition-colors group-hover:text-primary-50">
                   {step.num}
                 </span>
-                <h3 className="font-poppins font-semibold text-dark text-xl mb-1 relative z-10">{step.title}</h3>
-                {step.subtitle && (
-                  <p className="text-xs text-primary-500 font-semibold font-poppins mb-3 relative z-10 uppercase tracking-wider">{step.subtitle}</p>
-                )}
-                <p className="text-gray-500 font-inter text-sm relative z-10 leading-relaxed">{step.desc}</p>
+                <div className="flex-1">
+                  <h3 className="font-poppins font-semibold text-dark text-xl mb-1 relative z-10">{step.title}</h3>
+                  {step.subtitle && (
+                    <p className="text-xs text-primary-500 font-semibold font-poppins mb-3 relative z-10 uppercase tracking-wider">{step.subtitle}</p>
+                  )}
+                  <p className="text-gray-500 font-inter text-sm relative z-10 leading-relaxed mt-2">{step.desc}</p>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -616,9 +618,9 @@ const Home = () => {
       </section>
 
       {/* ===== STATISTICS ===== */}
-      <section className="section-padding bg-white border-y border-gray-100">
+      <section className="py-6 md:py-8 lg:py-10 bg-white border-y border-gray-100">
         <div className="container-custom">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {(() => {
               const parseStat = (val, defaultVal, defaultSuffix) => {
                 if (!val) return { end: defaultVal, suffix: defaultSuffix };
@@ -628,13 +630,11 @@ const Home = () => {
                 return { end, suffix };
               };
               const happy = parseStat(settings?.stats?.happyCustomers, 10000, '+');
-              const prod = parseStat(settings?.stats?.productsCount, 50, '+');
               const peels = parseStat(settings?.stats?.peelsRecycled, 500, 'T');
               const rating = parseStat(settings?.stats?.averageRating, 4.9, '/5');
               return (
                 <>
                   <Counter end={happy.end} suffix={happy.suffix} label="Happy Customers" />
-                  <Counter end={prod.end} suffix={prod.suffix} label="Products" />
                   <Counter end={peels.end} suffix={peels.suffix} label="Peels Recycled" />
                   <Counter end={rating.end} suffix={rating.suffix} label="Average Rating" />
                 </>
@@ -645,7 +645,7 @@ const Home = () => {
       </section>
 
       {/* ===== TESTIMONIALS ===== */}
-      <section className="section-padding bg-gray-50">
+      <section className="pt-8 md:pt-10 lg:pt-12 pb-6 md:pb-8 lg:pb-10 bg-gray-50">
         <div className="container-custom">
           <SectionHeading
             badge="Testimonials"
@@ -675,7 +675,7 @@ const Home = () => {
                 768: { slidesPerView: 2 },
                 1024: { slidesPerView: 3 },
               }}
-              className="pb-14"
+              className="pb-8"
             >
               {testimonials.map((t, i) => (
                 <SwiperSlide key={t._id || i}>
@@ -714,7 +714,7 @@ const Home = () => {
       </section>
 
       {/* ===== LATEST BLOGS ===== */}
-      <section className="section-padding bg-white border-t border-gray-100">
+      <section className="pt-6 md:pt-8 lg:pt-10 pb-8 md:pb-10 lg:pb-12 bg-white border-t border-gray-100">
         <div className="container-custom">
           <SectionHeading
             badge="From Our Blog"
@@ -757,7 +757,7 @@ const Home = () => {
             ))}
           </div>
 
-          <div className="text-center mt-10">
+          <div className="text-center mt-8">
             <Link to="/blogs" className="btn-outline">
               Read All Articles <FiArrowRight />
             </Link>
@@ -766,7 +766,7 @@ const Home = () => {
       </section>
 
       {/* ===== FAQ ===== */}
-      <section className="section-padding bg-cream-50 border-t border-gray-100">
+      <section className="py-12 md:py-16 lg:py-20 bg-cream-50 border-t border-gray-100">
         <div className="container-custom max-w-3xl">
           <SectionHeading
             badge="FAQ"
@@ -804,7 +804,7 @@ const Home = () => {
             ))}
           </div>
 
-          <div className="text-center mt-12">
+          <div className="text-center mt-8">
             <Link to="/faq" className="btn-secondary">
               View All FAQs
             </Link>
@@ -813,7 +813,7 @@ const Home = () => {
       </section>
 
       {/* ===== AMAZON STORE SHOWCASE SECTION ===== */}
-      <section className="py-20 bg-dark text-white relative overflow-hidden">
+      <section className="py-12 md:py-16 lg:py-20 bg-dark text-white relative overflow-hidden">
         <div className="container-custom relative z-10">
           <div className="grid lg:grid-cols-12 gap-16 items-center">
             {/* Left Column: Heading & Branding */}

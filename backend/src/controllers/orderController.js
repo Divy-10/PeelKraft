@@ -18,6 +18,21 @@ export const createOrder = async (req, res, next) => {
       throw ApiError.badRequest('No items in order.');
     }
 
+    if (!shippingAddress) {
+      throw ApiError.badRequest('Shipping address is required.');
+    }
+
+    const userDoc = req.user;
+    shippingAddress.fullName = `${userDoc.firstName || ''} ${userDoc.lastName || ''}`.trim();
+    shippingAddress.phone = userDoc.mobileNumber || userDoc.phone || '';
+    shippingAddress.whatsapp = userDoc.mobileNumber || userDoc.phone || '';
+
+    if (billingAddress) {
+      billingAddress.fullName = `${userDoc.firstName || ''} ${userDoc.lastName || ''}`.trim();
+      billingAddress.phone = userDoc.mobileNumber || userDoc.phone || '';
+      billingAddress.whatsapp = userDoc.mobileNumber || userDoc.phone || '';
+    }
+
     // Validate products and calculate totals
     let subtotal = 0;
     const orderItems = [];

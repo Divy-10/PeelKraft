@@ -288,14 +288,10 @@ const Settings = () => {
         {/* Company Impact Statistics */}
         <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-card space-y-6">
           <h3 className="font-poppins font-bold text-dark border-b border-gray-100 pb-3">Impact Statistics</h3>
-          <div className="grid md:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-3 gap-6">
             <div>
               <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Happy Customers</label>
               <input type="text" {...register('stats.happyCustomers')} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none text-sm" placeholder="10000+" />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Products Count</label>
-              <input type="text" {...register('stats.productsCount')} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none text-sm" placeholder="50+" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Peels Recycled</label>

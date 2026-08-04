@@ -96,7 +96,7 @@ const Products = () => {
 
           {/* Product Grid */}
           {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
               {[...Array(8)].map((_, i) => (
                 <div key={i} className="card-premium">
                   <div className="product-image-container skeleton rounded-xl mb-4" />
@@ -112,7 +112,7 @@ const Products = () => {
               <p className="text-gray-500 font-inter text-sm">Try adjusting your search or filter criteria.</p>
             </div>
           ) : (
-            <div className={`grid gap-6 ${products.length === 1 ? 'grid-cols-1 max-w-sm mx-auto' : 'grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'}`}>
+            <div className={products.length === 1 ? 'grid grid-cols-1 max-w-[380px] mx-auto gap-6' : products.length === 2 ? 'grid grid-cols-1 sm:grid-cols-2 max-w-[780px] mx-auto gap-6' : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto gap-6'}>
               {products.map((product, i) => {
                 const hasOptions = product.packageOptions && product.packageOptions.length > 0;
                 const trackInventory = product.trackInventory !== false;

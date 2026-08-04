@@ -62,10 +62,12 @@ const runTests = async () => {
     // ==========================================
     console.log('\n🧪 Test 1: User Registration');
     const registerMock = createMockReqRes({
-      firstName: 'Test',
-      lastName: 'User',
+      fullName: 'Test User',
       email: testEmail,
-      phone: '9999988888',
+      mobileNumber: '9999988888',
+      country: 'IN',
+      gender: 'Male',
+      birthDate: '1995-05-15',
       password: 'SecurePassword123'
     });
 
@@ -93,10 +95,12 @@ const runTests = async () => {
     console.log('\n🧪 Test 2: Duplicate Email Check in Pending');
     // Registering again for same email should clear previous pending user and make new one
     const registerMock2 = createMockReqRes({
-      firstName: 'Test',
-      lastName: 'User Updated',
+      fullName: 'Test User Updated',
       email: testEmail,
-      phone: '9999988888',
+      mobileNumber: '9999988888',
+      country: 'IN',
+      gender: 'Male',
+      birthDate: '1995-05-15',
       password: 'SecurePassword123'
     });
 
@@ -176,10 +180,13 @@ const runTests = async () => {
     if (!verifiedUser || !verifiedUser.isVerified) {
       throw new Error('User was not created or isVerified is not true.');
     }
-    if (verifiedUser.phone !== '9999988888') {
-      throw new Error(`Phone number mismatch. Expected '9999988888', got '${verifiedUser.phone}'`);
+    if (verifiedUser.mobileNumber !== '+919999988888') {
+      throw new Error(`Mobile number mismatch. Expected '+919999988888', got '${verifiedUser.mobileNumber}'`);
     }
-    console.log('👉 Verified User saved in main collection with correct phone number.');
+    if (!verifiedUser.phoneDetails || verifiedUser.phoneDetails.country !== 'IN') {
+      throw new Error('phoneDetails country mismatch or missing.');
+    }
+    console.log('👉 Verified User saved in main collection with correct normalized mobile number and details.');
 
     // ==========================================
     // TEST 6: Login After Verification

@@ -13,6 +13,15 @@ import {
   getForgotPasswordTemplate, 
   getPasswordResetConfirmationTemplate 
 } from '../services/emailService.js';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
+
+const getCountryName = (countryCode) => {
+  try {
+    return new Intl.DisplayNames(['en'], { type: 'region' }).of(countryCode) || countryCode;
+  } catch {
+    return countryCode;
+  }
+};
 
 const generateToken = (user) => {
   return jwt.sign({ id: user._id, role: 'user' }, config.jwtSecret, { expiresIn: config.jwtExpiresIn });
@@ -21,15 +30,49 @@ const generateToken = (user) => {
 // Register
 export const registerUser = async (req, res, next) => {
   try {
-    const { firstName, lastName, email, password, phone } = req.body;
+    const { fullName, email, password, mobileNumber, country, gender, birthDate } = req.body;
 
-    if (!firstName || !lastName || !email || !password) {
-      throw ApiError.badRequest('First name, last name, email, and password are required.');
+    if (!fullName || !email || !password || !mobileNumber || !country || !gender || !birthDate) {
+      throw ApiError.badRequest('Full Name, email, password, mobile number, country, gender, and birth date are required.');
     }
 
-    const existing = await User.findOne({ email: email.toLowerCase() });
-    if (existing) {
+    // Validate and parse phone number using country code
+    const phoneNumberObj = parsePhoneNumberFromString(mobileNumber, country.toUpperCase());
+    if (!phoneNumberObj || !phoneNumberObj.isValid()) {
+      throw ApiError.badRequest('Please enter a valid phone number.');
+    }
+
+    const normalizedNumber = phoneNumberObj.number; // e.g. "+919876543210"
+
+    // Validate gender
+    const allowedGenders = ['Male', 'Female', 'Other', 'Prefer not to say'];
+    if (!allowedGenders.includes(gender)) {
+      throw ApiError.badRequest('Please select a valid gender.');
+    }
+
+    // Validate birthDate
+    const bDate = new Date(birthDate);
+    if (isNaN(bDate.getTime())) {
+      throw ApiError.badRequest('Please enter a valid birth date.');
+    }
+    if (bDate > new Date()) {
+      throw ApiError.badRequest('Birth date cannot be in the future.');
+    }
+
+    const existingEmail = await User.findOne({ email: email.toLowerCase() });
+    if (existingEmail) {
       throw ApiError.badRequest('An account with this email already exists.');
+    }
+
+    // Check duplicate mobile (check normalized format AND raw national format for backward compatibility)
+    const existingMobile = await User.findOne({
+      $or: [
+        { mobileNumber: normalizedNumber },
+        { mobileNumber: phoneNumberObj.nationalNumber }
+      ]
+    });
+    if (existingMobile) {
+      throw ApiError.badRequest('This phone number is already registered.');
     }
 
     // Clear any previous pending registration for the same email
@@ -44,11 +87,23 @@ export const registerUser = async (req, res, next) => {
     const otpHash = hashOTP(otp);
     const otpExpiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
 
+    const countryName = getCountryName(country.toUpperCase());
+    const phoneDetails = {
+      country: country.toUpperCase(),
+      countryName,
+      dialCode: `+${phoneNumberObj.countryCallingCode}`,
+      nationalNumber: phoneNumberObj.nationalNumber,
+      internationalNumber: normalizedNumber
+    };
+
     // Create Pending User
     await PendingUser.create({
-      name: `${firstName} ${lastName}`.trim(),
+      name: fullName.trim(),
       email: email.toLowerCase(),
-      phone: phone || '',
+      mobileNumber: normalizedNumber,
+      phoneDetails,
+      gender,
+      birthDate: bDate,
       passwordHash,
       otpHash,
       otpExpiresAt,
@@ -108,6 +163,10 @@ export const verifyEmail = async (req, res, next) => {
       email: pendingUser.email,
       password: pendingUser.passwordHash,
       phone: pendingUser.phone || '',
+      mobileNumber: pendingUser.mobileNumber || '',
+      phoneDetails: pendingUser.phoneDetails,
+      gender: pendingUser.gender,
+      birthDate: pendingUser.birthDate,
       isVerified: true,
     });
 
@@ -133,6 +192,10 @@ export const verifyEmail = async (req, res, next) => {
         lastName: user.lastName,
         email: user.email,
         phone: user.phone,
+        mobileNumber: user.mobileNumber,
+        phoneDetails: user.phoneDetails,
+        gender: user.gender,
+        birthDate: user.birthDate,
       },
     });
   } catch (error) {
@@ -250,6 +313,10 @@ export const loginUser = async (req, res, next) => {
         lastName: user.lastName,
         email: user.email,
         phone: user.phone,
+        mobileNumber: user.mobileNumber,
+        phoneDetails: user.phoneDetails,
+        gender: user.gender,
+        birthDate: user.birthDate,
         addresses: user.addresses,
       },
     });
@@ -271,12 +338,74 @@ export const getUserProfile = async (req, res, next) => {
 // Update Profile
 export const updateUserProfile = async (req, res, next) => {
   try {
-    const { firstName, lastName, phone } = req.body;
-    const user = await User.findByIdAndUpdate(
-      req.user._id,
-      { firstName, lastName, phone },
-      { new: true, runValidators: true }
-    );
+    const { fullName, mobileNumber, country, gender, birthDate } = req.body;
+
+    if (!fullName || !mobileNumber || !country || !gender || !birthDate) {
+      throw ApiError.badRequest('Full Name, mobile number, country, gender, and birth date are required.');
+    }
+
+    // Validate using libphonenumber-js
+    const phoneNumberObj = parsePhoneNumberFromString(mobileNumber, country.toUpperCase());
+    if (!phoneNumberObj || !phoneNumberObj.isValid()) {
+      throw ApiError.badRequest('Please enter a valid phone number.');
+    }
+
+    const normalizedNumber = phoneNumberObj.number;
+
+    // Validate gender
+    const allowedGenders = ['Male', 'Female', 'Other', 'Prefer not to say'];
+    if (!allowedGenders.includes(gender)) {
+      throw ApiError.badRequest('Please select a valid gender.');
+    }
+
+    // Validate birthDate
+    const bDate = new Date(birthDate);
+    if (isNaN(bDate.getTime())) {
+      throw ApiError.badRequest('Please enter a valid birth date.');
+    }
+    if (bDate > new Date()) {
+      throw ApiError.badRequest('Birth date cannot be in the future.');
+    }
+
+    // Check if new mobile number is already registered to someone else (normalized OR national for legacy)
+    const existing = await User.findOne({
+      _id: { $ne: req.user._id },
+      $or: [
+        { mobileNumber: normalizedNumber },
+        { mobileNumber: phoneNumberObj.nationalNumber }
+      ]
+    });
+    if (existing) {
+      throw ApiError.badRequest('This phone number is already registered.');
+    }
+
+    // Split fullName
+    const nameParts = fullName.trim().split(' ');
+    const firstName = nameParts[0] || '';
+    const lastName = nameParts.slice(1).join(' ') || '';
+
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      throw ApiError.notFound('User not found.');
+    }
+
+    const countryName = getCountryName(country.toUpperCase());
+
+    user.firstName = firstName;
+    user.lastName = lastName;
+    user.mobileNumber = normalizedNumber;
+    user.phoneDetails = {
+      country: country.toUpperCase(),
+      countryName,
+      dialCode: `+${phoneNumberObj.countryCallingCode}`,
+      nationalNumber: phoneNumberObj.nationalNumber,
+      internationalNumber: normalizedNumber
+    };
+    user.gender = gender;
+    user.birthDate = bDate;
+
+    await user.save();
+
     res.json({ success: true, data: user, message: 'Profile updated.' });
   } catch (error) {
     next(error);
