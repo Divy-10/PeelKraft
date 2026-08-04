@@ -9,7 +9,7 @@ import createTransporter from '../config/email.js';
  * @param {string} options.html HTML body content
  */
 export const sendEmail = async ({ to, subject, html }) => {
-  const from = config.emailFrom || 'onboarding@resend.dev';
+  const from = config.emailFrom || 'PeelKraft <support@juicetap.in>';
 
   // Check that required env variables are present
   const configErrors = [];
@@ -32,7 +32,7 @@ export const sendEmail = async ({ to, subject, html }) => {
     
     console.log('Attempting to send email...');
     const mailOptions = {
-      from: `"${from}" <${config.smtp.user}>`,
+      from: from,
       to,
       subject,
       html,

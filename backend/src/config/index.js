@@ -26,7 +26,7 @@ const config = {
     keySecret: process.env.RAZORPAY_KEY_SECRET || '',
   },
   resendApiKey: process.env.RESEND_API_KEY,
-  emailFrom: process.env.EMAIL_FROM || 'onboarding@resend.dev',
+  emailFrom: process.env.EMAIL_FROM || 'PeelKraft <support@juicetap.in>',
 };
 
 export default config;
