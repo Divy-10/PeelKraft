@@ -195,7 +195,7 @@ const baseTemplate = (contentTitle, bodyHtml) => `
   <div class="wrapper">
     <div class="container">
       <div class="header">
-        <div class="logo">Peel<span>Kraft</span></div>
+        <img src="https://peelkraft.in/images/logo.png" alt="PeelKraft" style="width: 200px; height: auto; display: block; margin: 0 auto;" />
       </div>
       <div class="content">
         ${bodyHtml}
