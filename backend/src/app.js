@@ -53,16 +53,32 @@ app.use(helmet({
 }));
 
 // CORS Configuration
-const allowedOrigins = config.frontendUrl 
-  ? [config.frontendUrl, 'http://localhost:5173', 'http://localhost:3000']
-  : ['http://localhost:5173', 'http://localhost:3000'];
+const baseAllowedOrigins = [
+  'https://peelkraft.in',
+  'https://www.peelkraft.in',
+  'http://localhost:5173',
+  'http://localhost:3000'
+];
+
+if (config.frontendUrl) {
+  const normalizedFrontendUrl = config.frontendUrl.replace(/\/$/, '');
+  if (!baseAllowedOrigins.includes(normalizedFrontendUrl)) {
+    baseAllowedOrigins.push(normalizedFrontendUrl);
+  }
+}
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+    if (!origin) {
+      callback(null, true);
+      return;
+    }
+    const normalizedOrigin = origin.replace(/\/$/, '');
+    if (baseAllowedOrigins.includes(normalizedOrigin)) {
       callback(null, true);
     } else {
-      callback(new Error('Blocked by CORS policy'));
+      console.warn(`[CORS Blocked] Origin: ${origin}`);
+      callback(new Error(`Blocked by CORS policy: Origin ${origin} not allowed`));
     }
   },
   credentials: true,
