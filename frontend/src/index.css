@@ -251,8 +251,6 @@
 /* Custom styles for the single-product coverflow carousel */
 .single-product-swiper {
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
   padding-top: 20px;
   padding-bottom: 50px;
 }
@@ -260,8 +258,8 @@
 .single-product-swiper .swiper-slide {
   background-position: center;
   background-size: cover;
-  width: 100%;
-  height: auto;
+  width: 460px;
+  height: 580px;
   border-radius: 2rem;
   overflow: hidden;
   transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
@@ -270,9 +268,17 @@
   opacity: 0.6 !important;
 }
 
+@media (max-width: 1024px) {
+  .single-product-swiper .swiper-slide {
+    width: 360px;
+    height: 460px;
+  }
+}
+
 @media (max-width: 640px) {
-  .single-product-swiper {
-    max-width: 320px;
+  .single-product-swiper .swiper-slide {
+    width: 280px;
+    height: 360px;
   }
 }
 
