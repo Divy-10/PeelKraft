@@ -320,10 +320,10 @@ const Home = () => {
           />
         </div>
 
-        {products.length > 0 ? (
-          products.length >= 1 ? (
+        {(products.length > 0 || (settings?.homeCarousel && settings.homeCarousel.length > 0)) ? (
+          (products.length > 0 || (settings?.homeCarousel && settings.homeCarousel.length > 0)) ? (
             (() => {
-              const singleProduct = products[0];
+              const singleProduct = products[0] || null;
               const rawImages = settings?.homeCarousel && settings.homeCarousel.length > 0
                 ? settings.homeCarousel
                 : getProductImages(singleProduct);
@@ -365,11 +365,11 @@ const Home = () => {
                           <div className="w-full aspect-square relative group rounded-3xl overflow-hidden bg-transparent">
                             <img
                               src={getImageUrl(img)}
-                              alt={singleProduct.name}
+                              alt={singleProduct?.name || 'PeelKraft'}
                               className="w-full h-full object-cover"
                               loading="lazy"
                             />
-                            {singleProduct.isUpcoming && (
+                            {singleProduct?.isUpcoming && (
                               <span className="absolute top-4 left-4 z-10 bg-[#7BA639] text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-sm font-poppins">
                                 Upcoming
                               </span>
@@ -388,16 +388,16 @@ const Home = () => {
                       className="text-center mt-4 max-w-xl mx-auto"
                     >
                       <span className="text-xs font-semibold uppercase tracking-wider text-primary-500 font-poppins mb-2 block">
-                        {singleProduct.category && typeof singleProduct.category === 'object' ? singleProduct.category.name : 'Orange Peel Snacks'}
+                        {(singleProduct?.category && typeof singleProduct.category === 'object') ? singleProduct.category.name : 'Orange Peel Snacks'}
                       </span>
                       <h3 className="font-poppins font-bold text-dark text-2xl md:text-3xl mb-3">
-                        {singleProduct.name}
+                        {singleProduct?.name || 'Our Premium Selection'}
                       </h3>
                       <p className="text-sm md:text-base text-gray-500 font-inter mb-6 leading-relaxed">
-                        {singleProduct.shortDescription || 'Pure, organic orange peel product carefully processed for health.'}
+                        {singleProduct?.shortDescription || 'Discover our range of premium organic food products made from carefully selected orange peels.'}
                       </p>
                       <Link
-                        to={`/products/${singleProduct.slug}`}
+                        to={singleProduct ? `/products/${singleProduct.slug}` : '/products'}
                         className="btn-primary px-8 py-3"
                       >
                         View Details →
