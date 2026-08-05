@@ -118,35 +118,35 @@ const Home = () => {
   ];
 
   const processSteps = [
-    { 
-      num: '01', 
-      title: 'Fresh Juice Extraction', 
+    {
+      num: '01',
+      title: 'Fresh Juice Extraction',
       subtitle: 'At JuiceTap Vending Machines',
-      desc: 'Premium Valencia oranges are freshly squeezed in JuiceTap vending machines, and the fresh orange peels are collected immediately after every juice is served.' 
+      desc: 'Premium Valencia oranges are freshly squeezed in JuiceTap vending machines, and the fresh orange peels are collected immediately after every juice is served.'
     },
-    { 
-      num: '02', 
-      title: 'Peel Collection', 
+    {
+      num: '02',
+      title: 'Peel Collection',
       subtitle: 'Collected with Care',
-      desc: 'The freshly generated peels are hygienically collected from JuiceTap machines and transported to our processing facility.' 
+      desc: 'The freshly generated peels are hygienically collected from JuiceTap machines and transported to our processing facility.'
     },
-    { 
-      num: '03', 
-      title: 'Cleaning & Processing', 
+    {
+      num: '03',
+      title: 'Cleaning & Processing',
       subtitle: 'Prepared Naturally',
-      desc: 'The peels are thoroughly washed, sanitized, and gently dehydrated to preserve their natural goodness and citrus aroma.' 
+      desc: 'The peels are thoroughly washed, sanitized, and gently dehydrated to preserve their natural goodness and citrus aroma.'
     },
-    { 
-      num: '04', 
-      title: 'Crafted into Products', 
+    {
+      num: '04',
+      title: 'Crafted into Products',
       subtitle: 'From Peel to Premium',
-      desc: 'Processed orange peels are carefully crafted into Zest Mint Orange Peels, Orangettes, and Orange Peel Powder, bringing new value to every peel.' 
+      desc: 'Processed orange peels are carefully crafted into Zest Mint Orange Peels, Orangettes, and Orange Peel Powder, bringing new value to every peel.'
     },
-    { 
-      num: '05', 
-      title: 'Packed & Delivered', 
+    {
+      num: '05',
+      title: 'Packed & Delivered',
       subtitle: 'Freshness in Every Pack',
-      desc: 'Every product is hygienically packed and quality-checked to ensure it reaches you fresh, safe, and ready to enjoy.' 
+      desc: 'Every product is hygienically packed and quality-checked to ensure it reaches you fresh, safe, and ready to enjoy.'
     },
   ];
 
@@ -159,7 +159,7 @@ const Home = () => {
         if (img && img.url) images.push(img);
       });
     }
-    
+
     // Deduplicate based on URL
     const uniqueImages = [];
     const urls = new Set();
@@ -183,14 +183,14 @@ const Home = () => {
 
   const displayAvatars = totalTestimonials > 0
     ? testimonials.slice(0, 3).map((item) => ({
-        name: item.name,
-        url: item.avatar?.url || '',
-      }))
+      name: item.name,
+      url: item.avatar?.url || '',
+    }))
     : [
-        { name: 'Alice', url: '' },
-        { name: 'Bob', url: '' },
-        { name: 'Carol', url: '' },
-      ];
+      { name: 'Alice', url: '' },
+      { name: 'Bob', url: '' },
+      { name: 'Carol', url: '' },
+    ];
 
   return (
     <>
@@ -252,8 +252,8 @@ const Home = () => {
               <div className="mt-12 flex items-center gap-6 border-t border-gray-200/60 pt-8">
                 <div className="flex -space-x-3">
                   {displayAvatars.map((avatar, idx) => (
-                    <div 
-                      key={idx} 
+                    <div
+                      key={idx}
                       className="w-10 h-10 rounded-full bg-gray-50 border-2 border-white overflow-hidden shadow-sm flex items-center justify-center shrink-0"
                       title={avatar.name}
                     >
@@ -275,8 +275,8 @@ const Home = () => {
                     </div>
                   </div>
                   <p className="text-xs text-gray-500 font-medium">
-                    {totalTestimonials > 0 
-                      ? `Based on ${totalTestimonials} verified reviews` 
+                    {totalTestimonials > 0
+                      ? `Based on ${totalTestimonials} verified reviews`
                       : 'Loved by 10,000+ customers'}
                   </p>
                 </div>
@@ -297,7 +297,7 @@ const Home = () => {
                   muted
                   playsInline
                   preload="auto"
-                  poster="/images/peelkraft-hero-oranges.jpg"
+                  poster=""
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 >
                   <source src="/videos/hero-video.mp4" type="video/mp4" />
@@ -356,7 +356,7 @@ const Home = () => {
                         depth: 160,
                         modifier: 1,
                         slideShadows: false,
-                       }}
+                      }}
                       pagination={{ clickable: true }}
                       className="single-product-swiper"
                     >
@@ -379,9 +379,9 @@ const Home = () => {
                       ))}
                     </Swiper>
                   </div>
-                  
+
                   <div className="container-custom">
-                    <motion.div 
+                    <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
@@ -415,9 +415,9 @@ const Home = () => {
                   const trackInventory = product.trackInventory !== false;
                   const isOutOfStock = trackInventory
                     ? (hasOptions
-                        ? product.packageOptions.every(opt => (opt.stock ?? 0) <= 0 || opt.status === 'disabled')
-                        : ((product.stock ?? 0) <= 0)
-                      )
+                      ? product.packageOptions.every(opt => (opt.stock ?? 0) <= 0 || opt.status === 'disabled')
+                      : ((product.stock ?? 0) <= 0)
+                    )
                     : false;
                   return (
                     <motion.div
@@ -450,9 +450,9 @@ const Home = () => {
                           />
                         </div>
                         <h3 className="font-poppins font-semibold text-dark text-sm md:text-lg mb-1 md:mb-2 group-hover:text-primary-500 transition-colors line-clamp-2 md:line-clamp-1">
-                           {product.name}
+                          {product.name}
                         </h3>
-                        
+
                         {/* Price section */}
                         <div className="flex items-center justify-center gap-2 mb-1 md:mb-4">
                           <span className="font-poppins font-bold text-dark text-sm md:text-base">₹{product.sellingPrice || product.mrp}</span>
