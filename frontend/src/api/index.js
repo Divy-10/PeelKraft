@@ -124,6 +124,7 @@ export const orderApi = {
   getAll: (params) => api.get('/orders/admin', { params }),
   getAdminById: (id) => api.get(`/orders/admin/${id}`),
   updateStatus: (id, data) => api.put(`/orders/admin/${id}`, data),
+  exportExcel: (params) => api.get('/orders/admin/export', { params, responseType: 'blob' }),
 };
 
 // Payments

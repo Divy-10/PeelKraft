@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+import ExcelJS from 'exceljs';
 import Order from '../models/Order.js';
 import Product from '../models/Product.js';
 import Coupon from '../models/Coupon.js';
@@ -310,30 +312,183 @@ export const cancelOrder = async (req, res, next) => {
 // ========== ADMIN ORDER MANAGEMENT ==========
 
 // Get All Orders (Admin)
+const getISTDateDetails = (date) => {
+  const offset = 5.5 * 60 * 60 * 1000; // 5.5 hours in ms for IST
+  const istDate = new Date(date.getTime() + offset);
+  
+  const year = istDate.getUTCFullYear();
+  const monthIdx = istDate.getUTCMonth(); // 0-11
+  const day = istDate.getUTCDate();
+  const hours = istDate.getUTCHours();
+  const minutes = istDate.getUTCMinutes();
+  
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  
+  const monthName = months[monthIdx];
+  const pad = (n) => String(n).padStart(2, '0');
+  
+  const dateString = `${pad(day)}/${pad(monthIdx + 1)}/${year}`;
+  const displayDateString = `${pad(day)} ${monthName} ${year}`;
+  const timeString = `${pad(hours)}:${pad(minutes)}`;
+  
+  return {
+    year,
+    monthNum: monthIdx + 1,
+    monthName,
+    day,
+    dateString,
+    displayDateString,
+    timeString
+  };
+};
+
+const getMonthNumber = (m) => {
+  if (!m) return null;
+  const num = parseInt(m);
+  if (!isNaN(num)) return num;
+  const months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+  const idx = months.indexOf(m.toLowerCase());
+  return idx !== -1 ? idx + 1 : null;
+};
+
+const buildDateFilter = (query) => {
+  const { fromDate, toDate, month, year } = query;
+  let start, end;
+
+  if (fromDate || toDate) {
+    if (fromDate) {
+      start = new Date(`${fromDate}T00:00:00+05:30`);
+    }
+    if (toDate) {
+      end = new Date(`${toDate}T23:59:59.999+05:30`);
+    }
+  } else if (month && year) {
+    const yearNum = parseInt(year);
+    const monthNum = getMonthNumber(month);
+    if (yearNum && monthNum) {
+      const pad = (n) => String(n).padStart(2, '0');
+      const lastDay = new Date(yearNum, monthNum, 0).getDate();
+      start = new Date(`${yearNum}-${pad(monthNum)}-01T00:00:00+05:30`);
+      end = new Date(`${yearNum}-${pad(monthNum)}-${pad(lastDay)}T23:59:59.999+05:30`);
+    }
+  } else if (year) {
+    const yearNum = parseInt(year);
+    if (yearNum) {
+      start = new Date(`${yearNum}-01-01T00:00:00+05:30`);
+      end = new Date(`${yearNum}-12-31T23:59:59.999+05:30`);
+    }
+  }
+
+  if (start || end) {
+    const dateQuery = {};
+    if (start) dateQuery.$gte = start;
+    if (end) dateQuery.$lte = end;
+    return dateQuery;
+  }
+  return null;
+};
+
+// Get All Orders (Admin)
 export const getAllOrders = async (req, res, next) => {
   try {
-    const { page = 1, limit = 20, status, search, sort = '-createdAt' } = req.query;
+    const { page = 1, limit = 20, status, search, sort = '-createdAt', fromDate, toDate, month, year } = req.query;
     const skip = (page - 1) * limit;
 
     const filter = {};
     if (status) filter.status = status;
+    
     if (search) {
+      const users = await mongoose.model('User').find({
+        $or: [
+          { firstName: { $regex: search, $options: 'i' } },
+          { lastName: { $regex: search, $options: 'i' } },
+          { email: { $regex: search, $options: 'i' } },
+          { phone: { $regex: search, $options: 'i' } },
+          { mobileNumber: { $regex: search, $options: 'i' } },
+        ]
+      }).select('_id');
+      const userIds = users.map(u => u._id);
+
       filter.$or = [
         { orderNumber: { $regex: search, $options: 'i' } },
+        { user: { $in: userIds } },
+        { 'shippingAddress.fullName': { $regex: search, $options: 'i' } },
+        { 'shippingAddress.phone': { $regex: search, $options: 'i' } },
       ];
+    }
+
+    const dateQuery = buildDateFilter({ fromDate, toDate, month, year });
+    if (dateQuery) {
+      filter.createdAt = dateQuery;
+    }
+
+    let mongoSort = { createdAt: -1 };
+    if (sort === 'createdAt' || sort === 'oldest') {
+      mongoSort = { createdAt: 1 };
+    } else if (sort === '-createdAt' || sort === 'newest') {
+      mongoSort = { createdAt: -1 };
     }
 
     const orders = await Order.find(filter)
       .populate('user', 'firstName lastName email phone')
-      .sort(sort)
+      .sort(mongoSort)
       .skip(skip)
       .limit(parseInt(limit));
 
     const total = await Order.countDocuments(filter);
 
+    // Calculate summary dynamically based on the same filter
+    const summaryData = await Order.aggregate([
+      { $match: filter },
+      {
+        $group: {
+          _id: null,
+          totalOrders: { $sum: 1 },
+          totalSales: {
+            $sum: {
+              $cond: [
+                { $eq: ['$status', 'cancelled'] },
+                0,
+                '$grandTotal'
+              ]
+            }
+          },
+          paidOrders: {
+            $sum: {
+              $cond: [{ $eq: ['$paymentStatus', 'paid'] }, 1, 0]
+            }
+          },
+          cancelledOrders: {
+            $sum: {
+              $cond: [{ $eq: ['$status', 'cancelled'] }, 1, 0]
+            }
+          }
+        }
+      }
+    ]);
+
+    const summaryRaw = summaryData[0] || {
+      totalOrders: 0,
+      totalSales: 0,
+      paidOrders: 0,
+      cancelledOrders: 0
+    };
+
+    const summary = {
+      totalOrders: summaryRaw.totalOrders,
+      totalSales: summaryRaw.totalSales,
+      paidOrders: summaryRaw.paidOrders,
+      cancelledOrders: summaryRaw.cancelledOrders,
+      pendingOrders: summaryRaw.totalOrders - summaryRaw.paidOrders - summaryRaw.cancelledOrders
+    };
+
     res.json({
       success: true,
       data: orders,
+      summary,
       pagination: {
         page: parseInt(page),
         limit: parseInt(limit),
@@ -341,6 +496,248 @@ export const getAllOrders = async (req, res, next) => {
         pages: Math.ceil(total / limit),
       },
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Export Orders to Excel (Admin)
+export const exportOrdersExcel = async (req, res, next) => {
+  try {
+    const { status, search, sort = '-createdAt', fromDate, toDate, month, year } = req.query;
+
+    const filter = {};
+    if (status) filter.status = status;
+    
+    if (search) {
+      const users = await mongoose.model('User').find({
+        $or: [
+          { firstName: { $regex: search, $options: 'i' } },
+          { lastName: { $regex: search, $options: 'i' } },
+          { email: { $regex: search, $options: 'i' } },
+          { phone: { $regex: search, $options: 'i' } },
+          { mobileNumber: { $regex: search, $options: 'i' } },
+        ]
+      }).select('_id');
+      const userIds = users.map(u => u._id);
+
+      filter.$or = [
+        { orderNumber: { $regex: search, $options: 'i' } },
+        { user: { $in: userIds } },
+        { 'shippingAddress.fullName': { $regex: search, $options: 'i' } },
+        { 'shippingAddress.phone': { $regex: search, $options: 'i' } },
+      ];
+    }
+
+    const dateQuery = buildDateFilter({ fromDate, toDate, month, year });
+    if (dateQuery) {
+      filter.createdAt = dateQuery;
+    }
+
+    let mongoSort = { createdAt: -1 };
+    if (sort === 'createdAt' || sort === 'oldest') {
+      mongoSort = { createdAt: 1 };
+    } else if (sort === '-createdAt' || sort === 'newest') {
+      mongoSort = { createdAt: -1 };
+    }
+
+    const orders = await Order.find(filter)
+      .populate('user', 'firstName lastName email phone')
+      .sort(mongoSort);
+
+    const workbook = new ExcelJS.Workbook();
+    
+    // Worksheet 1: Orders
+    const ordersSheet = workbook.addWorksheet('Orders');
+    
+    ordersSheet.columns = [
+      { header: 'Order ID', key: 'orderId', width: 20 },
+      { header: 'Order Date', key: 'orderDate', width: 15 },
+      { header: 'Order Time', key: 'orderTime', width: 12 },
+      { header: 'Month', key: 'month', width: 15 },
+      { header: 'Year', key: 'year', width: 10 },
+      { header: 'Customer Name', key: 'customerName', width: 25 },
+      { header: 'Customer Email', key: 'customerEmail', width: 25 },
+      { header: 'Customer Mobile', key: 'customerMobile', width: 15 },
+      { header: 'Product Name', key: 'productName', width: 30 },
+      { header: 'Package Name', key: 'packageName', width: 20 },
+      { header: 'Package Quantity', key: 'packageQuantity', width: 18 },
+      { header: 'Product Quantity', key: 'productQuantity', width: 18 },
+      { header: 'Unit Price', key: 'unitPrice', width: 12 },
+      { header: 'Total Amount', key: 'totalAmount', width: 15 },
+      { header: 'Payment Status', key: 'paymentStatus', width: 15 },
+      { header: 'Order Status', key: 'orderStatus', width: 15 },
+      { header: 'Shipping Address', key: 'shippingAddress', width: 40 },
+      { header: 'City', key: 'city', width: 15 },
+      { header: 'State', key: 'state', width: 15 },
+      { header: 'Pincode', key: 'pincode', width: 12 },
+      { header: 'Created At', key: 'createdAt', width: 25 },
+    ];
+
+    ordersSheet.getRow(1).font = { bold: true };
+    ordersSheet.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFE0E0E0' }
+    };
+
+    const monthlySummary = {};
+    const dailySummary = {};
+
+    orders.forEach(order => {
+      const ist = getISTDateDetails(order.createdAt);
+      const mKey = `${ist.monthName} ${ist.year}`;
+      const dKey = ist.dateString;
+
+      if (!monthlySummary[mKey]) {
+        monthlySummary[mKey] = {
+          month: ist.monthName,
+          year: ist.year,
+          totalOrders: 0,
+          paidOrders: 0,
+          pendingOrders: 0,
+          cancelledOrders: 0,
+          totalSales: 0,
+          orderIds: new Set()
+        };
+      }
+
+      if (!dailySummary[dKey]) {
+        dailySummary[dKey] = {
+          date: ist.dateString,
+          totalOrders: 0,
+          paidOrders: 0,
+          cancelledOrders: 0,
+          totalSales: 0,
+          orderIds: new Set()
+        };
+      }
+
+      if (!monthlySummary[mKey].orderIds.has(order._id.toString())) {
+        monthlySummary[mKey].orderIds.add(order._id.toString());
+        monthlySummary[mKey].totalOrders += 1;
+        if (order.paymentStatus === 'paid') monthlySummary[mKey].paidOrders += 1;
+        else if (order.status === 'cancelled') monthlySummary[mKey].cancelledOrders += 1;
+        else monthlySummary[mKey].pendingOrders += 1;
+
+        if (order.status !== 'cancelled') {
+          monthlySummary[mKey].totalSales += order.grandTotal;
+        }
+      }
+
+      if (!dailySummary[dKey].orderIds.has(order._id.toString())) {
+        dailySummary[dKey].orderIds.add(order._id.toString());
+        dailySummary[dKey].totalOrders += 1;
+        if (order.paymentStatus === 'paid') dailySummary[dKey].paidOrders += 1;
+        if (order.status === 'cancelled') dailySummary[dKey].cancelledOrders += 1;
+
+        if (order.status !== 'cancelled') {
+          dailySummary[dKey].totalSales += order.grandTotal;
+        }
+      }
+
+      (order.items || []).forEach(item => {
+        ordersSheet.addRow({
+          orderId: order.orderNumber,
+          orderDate: ist.displayDateString,
+          orderTime: ist.timeString,
+          month: ist.monthName,
+          year: ist.year,
+          customerName: order.shippingAddress?.fullName || `${order.user?.firstName || ''} ${order.user?.lastName || ''}`.trim(),
+          customerEmail: order.user?.email || '',
+          customerMobile: order.shippingAddress?.phone || order.user?.phone || '',
+          productName: item.name,
+          packageName: item.packageName || 'None',
+          packageQuantity: item.packageName ? item.quantity : '',
+          productQuantity: item.packageName ? '' : item.quantity,
+          unitPrice: item.price,
+          totalAmount: order.grandTotal,
+          paymentStatus: order.paymentStatus,
+          orderStatus: order.status,
+          shippingAddress: `${order.shippingAddress?.addressLine1 || ''} ${order.shippingAddress?.addressLine2 || ''}`.trim(),
+          city: order.shippingAddress?.city || '',
+          state: order.shippingAddress?.state || '',
+          pincode: order.shippingAddress?.pincode || '',
+          createdAt: order.createdAt.toISOString(),
+        });
+      });
+    });
+
+    // Worksheet 2: Monthly Summary
+    const monthlySheet = workbook.addWorksheet('Monthly Summary');
+    monthlySheet.columns = [
+      { header: 'Month', key: 'month', width: 15 },
+      { header: 'Year', key: 'year', width: 10 },
+      { header: 'Total Orders', key: 'orders', width: 15 },
+      { header: 'Paid Orders', key: 'paid', width: 15 },
+      { header: 'Pending Orders', key: 'pending', width: 15 },
+      { header: 'Cancelled Orders', key: 'cancelled', width: 18 },
+      { header: 'Total Sales', key: 'sales', width: 18 },
+    ];
+
+    monthlySheet.getRow(1).font = { bold: true };
+    monthlySheet.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFE0E0E0' }
+    };
+
+    Object.keys(monthlySummary).forEach(key => {
+      const ms = monthlySummary[key];
+      monthlySheet.addRow({
+        month: ms.month,
+        year: ms.year,
+        orders: ms.totalOrders,
+        paid: ms.paidOrders,
+        pending: ms.pendingOrders,
+        cancelled: ms.cancelledOrders,
+        sales: ms.totalSales
+      });
+    });
+
+    // Worksheet 3: Daily Summary
+    const dailySheet = workbook.addWorksheet('Daily Summary');
+    dailySheet.columns = [
+      { header: 'Date', key: 'date', width: 15 },
+      { header: 'Total Orders', key: 'orders', width: 15 },
+      { header: 'Paid Orders', key: 'paid', width: 15 },
+      { header: 'Cancelled Orders', key: 'cancelled', width: 18 },
+      { header: 'Total Sales', key: 'sales', width: 18 },
+    ];
+
+    dailySheet.getRow(1).font = { bold: true };
+    dailySheet.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFE0E0E0' }
+    };
+
+    Object.keys(dailySummary).forEach(key => {
+      const ds = dailySummary[key];
+      dailySheet.addRow({
+        date: ds.date,
+        orders: ds.totalOrders,
+        paid: ds.paidOrders,
+        cancelled: ds.cancelledOrders,
+        sales: ds.totalSales
+      });
+    });
+
+    let filename = 'PeelKraft_Orders_All';
+    if (fromDate && toDate) {
+      filename = `PeelKraft_Orders_${fromDate}_to_${toDate}`;
+    } else if (month && year) {
+      filename = `PeelKraft_Orders_${month}_${year}`;
+    } else if (year) {
+      filename = `PeelKraft_Orders_${year}`;
+    }
+    filename = filename.replace(/[^a-zA-Z0-9-_]/g, '_') + '.xlsx';
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+
+    await workbook.xlsx.write(res);
+    res.end();
   } catch (error) {
     next(error);
   }
