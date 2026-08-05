@@ -1,6 +1,6 @@
-import { Outlet } from 'react-router-dom';
+import { useLocation, useOutlet } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useLocation } from 'react-router-dom';
+import { useRef } from 'react';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import WhatsAppButton from '../common/WhatsAppButton';
@@ -19,8 +19,14 @@ const pageTransition = {
   duration: 0.4,
 };
 
+const FrozenRoute = ({ children }) => {
+  const context = useRef(children);
+  return context.current;
+};
+
 const ClientLayout = () => {
   const location = useLocation();
+  const element = useOutlet();
   useScrollTop();
 
   return (
@@ -28,16 +34,20 @@ const ClientLayout = () => {
       <Navbar />
       <main className="flex-1">
         <AnimatePresence mode="wait">
-          <motion.div
-            key={location.pathname}
-            initial="initial"
-            animate="in"
-            exit="out"
-            variants={pageVariants}
-            transition={pageTransition}
-          >
-            <Outlet />
-          </motion.div>
+          {element && (
+            <motion.div
+              key={location.pathname}
+              initial="initial"
+              animate="in"
+              exit="out"
+              variants={pageVariants}
+              transition={pageTransition}
+            >
+              <FrozenRoute key={location.pathname}>
+                {element}
+              </FrozenRoute>
+            </motion.div>
+          )}
         </AnimatePresence>
       </main>
       <Footer />

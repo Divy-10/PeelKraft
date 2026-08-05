@@ -141,6 +141,62 @@ export const createOrder = async (req, res, next) => {
     const gst = 0; // Can be calculated if needed
     const grandTotal = subtotal - discount + shippingCharge + gst;
 
+    // Reduce inventory atomicly with check before creating order
+    const updatedItems = [];
+    try {
+      for (const item of orderItems) {
+        const prod = await Product.findById(item.product);
+        if (!prod) {
+          throw new Error(`Product not found: ${item.name}`);
+        }
+        if (prod.trackInventory !== false) {
+          if (item.packageOptionId) {
+            const result = await Product.updateOne(
+              {
+                _id: item.product,
+                'packageOptions._id': item.packageOptionId,
+                'packageOptions.stock': { $gte: item.quantity }
+              },
+              { $inc: { 'packageOptions.$.stock': -item.quantity } }
+            );
+            if (result.modifiedCount === 0) {
+              const opt = prod.packageOptions.find(o => o._id.toString() === item.packageOptionId);
+              throw new Error(`Only ${opt ? opt.stock : 0} units of ${item.name} (${item.packageName || 'Selected Option'}) are currently available.`);
+            }
+            updatedItems.push({ product: item.product, packageOptionId: item.packageOptionId, quantity: item.quantity });
+          } else {
+            const result = await Product.updateOne(
+              {
+                _id: item.product,
+                stock: { $gte: item.quantity }
+              },
+              { $inc: { stock: -item.quantity } }
+            );
+            if (result.modifiedCount === 0) {
+              throw new Error(`Only ${prod.stock} units of ${item.name} are currently available.`);
+            }
+            updatedItems.push({ product: item.product, quantity: item.quantity });
+          }
+        }
+      }
+    } catch (error) {
+      // Rollback already decremented stock
+      for (const rolledBack of updatedItems) {
+        if (rolledBack.packageOptionId) {
+          await Product.updateOne(
+            { _id: rolledBack.product, 'packageOptions._id': rolledBack.packageOptionId },
+            { $inc: { 'packageOptions.$.stock': rolledBack.quantity } }
+          );
+        } else {
+          await Product.updateOne(
+            { _id: rolledBack.product },
+            { $inc: { stock: rolledBack.quantity } }
+          );
+        }
+      }
+      throw ApiError.badRequest(error.message);
+    }
+
     const order = await Order.create({
       user: req.user._id,
       items: orderItems,
@@ -161,20 +217,6 @@ export const createOrder = async (req, res, next) => {
       status: 'pending',
       statusHistory: [{ status: 'pending', timestamp: new Date(), note: 'Order placed' }],
     });
-
-    // Reduce inventory
-    for (const item of orderItems) {
-      if (item.packageOptionId) {
-        await Product.updateOne(
-          { _id: item.product, 'packageOptions._id': item.packageOptionId },
-          { $inc: { 'packageOptions.$.stock': -item.quantity } }
-        );
-      } else {
-        await Product.findByIdAndUpdate(item.product, {
-          $inc: { stock: -item.quantity },
-        });
-      }
-    }
 
     // Check for low stock and create notifications
     for (const item of orderItems) {
@@ -298,9 +340,16 @@ export const cancelOrder = async (req, res, next) => {
 
     // Restore inventory
     for (const item of order.items) {
-      await Product.findByIdAndUpdate(item.product, {
-        $inc: { stock: item.quantity },
-      });
+      if (item.packageOptionId) {
+        await Product.updateOne(
+          { _id: item.product, 'packageOptions._id': item.packageOptionId },
+          { $inc: { 'packageOptions.$.stock': item.quantity } }
+        );
+      } else {
+        await Product.findByIdAndUpdate(item.product, {
+          $inc: { stock: item.quantity },
+        });
+      }
     }
 
     res.json({ success: true, message: 'Order cancelled.', data: order });
@@ -821,9 +870,16 @@ export const updateOrderStatus = async (req, res, next) => {
         order.cancelledAt = new Date();
         // Restore inventory
         for (const item of order.items) {
-          await Product.findByIdAndUpdate(item.product, {
-            $inc: { stock: item.quantity },
-          });
+          if (item.packageOptionId) {
+            await Product.updateOne(
+              { _id: item.product, 'packageOptions._id': item.packageOptionId },
+              { $inc: { 'packageOptions.$.stock': item.quantity } }
+            );
+          } else {
+            await Product.findByIdAndUpdate(item.product, {
+              $inc: { stock: item.quantity },
+            });
+          }
         }
       }
     }

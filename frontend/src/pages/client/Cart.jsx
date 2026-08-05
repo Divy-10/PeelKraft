@@ -9,7 +9,7 @@ import SEOHead from '../../components/seo/SEOHead';
 import Breadcrumbs from '../../components/seo/Breadcrumbs';
 
 const Cart = () => {
-  const { items, removeFromCart, updateQuantity, getSubtotal, getItemCount } = useCart();
+  const { items, removeFromCart, updateQuantity, updateCartStocks, getSubtotal, getItemCount } = useCart();
   const { settings } = useSettings();
   const [freshStocks, setFreshStocks] = useState({});
   const [checkingStock, setCheckingStock] = useState(true);
@@ -28,6 +28,7 @@ const Cart = () => {
           stockMap[id] = fresh;
         });
         setFreshStocks(stockMap);
+        updateCartStocks(stockMap);
       } catch (err) {
         console.error('Error checking stock:', err);
       } finally {
@@ -39,19 +40,23 @@ const Cart = () => {
     } else {
       setCheckingStock(false);
     }
-  }, [items]);
+  }, []);
 
-  const getIsItemOutOfStock = (item) => {
+  const getMaxAvailableStock = (item) => {
     const fresh = freshStocks[item._id];
-    if (!fresh) return false;
+    if (!fresh) return item.stock || 999;
     const trackInventory = fresh.trackInventory !== false;
-    if (!trackInventory) return false;
+    if (!trackInventory) return 999;
     if (item.packageOptionId && fresh.packageOptions && fresh.packageOptions.length > 0) {
       const opt = fresh.packageOptions.find(o => o._id.toString() === item.packageOptionId);
-      if (!opt) return true;
-      return (opt.stock ?? 0) < item.quantity || opt.status === 'disabled';
+      return opt ? (opt.stock ?? 0) : 0;
     }
-    return (fresh.stock ?? 0) < item.quantity;
+    return fresh.stock ?? 0;
+  };
+
+  const getIsItemOutOfStock = (item) => {
+    const maxStock = getMaxAvailableStock(item);
+    return maxStock <= 0 || item.quantity > maxStock;
   };
 
   const hasOutOfStockItems = items.some(item => getIsItemOutOfStock(item));
@@ -110,9 +115,11 @@ const Cart = () => {
                     {item.packageName && (
                       <p className="text-xs text-primary-600 font-semibold font-poppins mt-0.5">{item.packageName}</p>
                     )}
-                    {getIsItemOutOfStock(item) && (
-                      <p className="text-xs text-red-500 font-semibold font-poppins mt-1">This product is currently out of stock.</p>
-                    )}
+                    {getMaxAvailableStock(item) <= 0 ? (
+                      <p className="text-xs text-red-500 font-semibold font-poppins mt-1">This product is sold out.</p>
+                    ) : getMaxAvailableStock(item) < item.quantity ? (
+                      <p className="text-xs text-red-500 font-semibold font-poppins mt-1">Only {getMaxAvailableStock(item)} available.</p>
+                    ) : null}
                     <div className="flex items-center gap-2 mt-1">
                       <span className="text-lg font-bold text-dark font-poppins">₹{item.price}</span>
                       {item.mrp > item.price && (
@@ -125,7 +132,11 @@ const Cart = () => {
                           <FiMinus className="w-4 h-4" />
                         </button>
                         <span className="px-3 py-1.5 font-semibold text-sm font-inter border-x border-gray-200 min-w-[40px] text-center">{item.quantity}</span>
-                        <button onClick={() => updateQuantity(item._id, item.quantity + 1)} className="px-2.5 py-1.5 hover:bg-gray-50 transition">
+                        <button 
+                          onClick={() => updateQuantity(item._id, item.quantity + 1)} 
+                          disabled={item.quantity >= getMaxAvailableStock(item)}
+                          className="px-2.5 py-1.5 hover:bg-gray-50 disabled:opacity-30 transition"
+                        >
                           <FiPlus className="w-4 h-4" />
                         </button>
                       </div>
