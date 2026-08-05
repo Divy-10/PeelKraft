@@ -43,7 +43,8 @@ const Settings = () => {
         productsCount: '50+',
         peelsRecycled: '500T',
         averageRating: '4.9/5'
-      }
+      },
+      homeCarousel: []
     }
   });
 
@@ -83,6 +84,40 @@ const Settings = () => {
     } finally {
       setUploading(false);
     }
+  };
+
+  const handleCarouselUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+
+    setUploading(true);
+    const uploadedImages = [];
+
+    for (const file of files) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('folder', 'settings');
+      try {
+        const res = await mediaApi.upload(formData);
+        uploadedImages.push({ url: res.data.url, publicId: res.data.publicId });
+      } catch (err) {
+        toast.error(`Failed to upload ${file.name}`);
+      }
+    }
+
+    if (uploadedImages.length > 0) {
+      const currentCarousel = watch('homeCarousel') || [];
+      setValue('homeCarousel', [...currentCarousel, ...uploadedImages]);
+      toast.success('Carousel images uploaded successfully');
+    }
+    setUploading(false);
+  };
+
+  const handleRemoveCarouselImage = (indexToRemove) => {
+    const currentCarousel = watch('homeCarousel') || [];
+    const updatedCarousel = currentCarousel.filter((_, i) => i !== indexToRemove);
+    setValue('homeCarousel', updatedCarousel);
+    toast.success('Carousel image removed');
   };
 
   const onSubmit = async (data) => {
@@ -283,6 +318,60 @@ const Settings = () => {
             <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Sender Password / App Key</label>
             <input type="password" {...register('smtp.pass')} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none text-sm" placeholder="••••••••" />
           </div>
+        </div>
+
+        {/* Home Page Carousel Section */}
+        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-card space-y-6">
+          <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+            <h3 className="font-poppins font-bold text-dark">Home Page Carousel Images</h3>
+            <span className="text-xs text-gray-500 font-medium">
+              {(watch('homeCarousel') || []).length} {(watch('homeCarousel') || []).length === 1 ? 'image' : 'images'} uploaded
+            </span>
+          </div>
+
+          {/* Upload Dropzone */}
+          <div className="border-2 border-dashed border-gray-200 rounded-2xl p-6 text-center hover:border-primary-500 transition-colors relative bg-gray-50/50">
+            <div className="space-y-3">
+              <FiUploadCloud className="w-10 h-10 mx-auto text-[#7BA639]" />
+              <div>
+                <p className="text-sm font-semibold text-gray-700">Click to select & upload Carousel Image(s)</p>
+                <p className="text-xs text-gray-400 mt-1">Select one or multiple images (PNG, JPG, WEBP)</p>
+              </div>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleCarouselUpload}
+                className="absolute inset-0 opacity-0 cursor-pointer"
+                disabled={uploading}
+              />
+            </div>
+          </div>
+
+          {/* Uploaded Images Grid */}
+          {(watch('homeCarousel') || []).length > 0 && (
+            <div className="space-y-3">
+              <p className="text-xs font-semibold text-gray-500 uppercase font-poppins">Uploaded Carousel Images</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                {(watch('homeCarousel') || []).map((img, idx) => {
+                  const imgUrl = typeof img === 'string' ? img : img.url;
+                  return (
+                    <div key={idx} className="relative group rounded-xl overflow-hidden border border-gray-200 aspect-square bg-white shadow-sm">
+                      <img src={imgUrl} alt={`Carousel ${idx + 1}`} className="w-full h-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveCarouselImage(idx)}
+                        className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full hover:bg-red-600 shadow-md opacity-90 hover:opacity-100 transition-opacity"
+                        title="Remove Image"
+                      >
+                        <FiTrash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Company Impact Statistics */}

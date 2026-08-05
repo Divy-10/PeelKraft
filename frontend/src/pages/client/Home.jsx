@@ -324,7 +324,9 @@ const Home = () => {
           products.length >= 1 ? (
             (() => {
               const singleProduct = products[0];
-              const rawImages = getProductImages(singleProduct);
+              const rawImages = settings?.homeCarousel && settings.homeCarousel.length > 0
+                ? settings.homeCarousel
+                : getProductImages(singleProduct);
               let slides = [...rawImages];
               if (slides.length > 0) {
                 while (slides.length < 6) {

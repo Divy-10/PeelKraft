@@ -73,6 +73,12 @@ const settingsSchema = new mongoose.Schema(
       peelsRecycled: { type: String, default: '500T' },
       averageRating: { type: String, default: '4.9/5' },
     },
+    homeCarousel: [
+      {
+        url: { type: String, default: '' },
+        publicId: { type: String, default: '' },
+      }
+    ],
   },
   {
     timestamps: true,
