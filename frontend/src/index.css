@@ -259,7 +259,7 @@
   background-position: center;
   background-size: cover;
   width: 460px;
-  height: 580px;
+  height: 460px;
   border-radius: 2rem;
   overflow: hidden;
   transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
@@ -271,14 +271,14 @@
 @media (max-width: 1024px) {
   .single-product-swiper .swiper-slide {
     width: 360px;
-    height: 460px;
+    height: 360px;
   }
 }
 
 @media (max-width: 640px) {
   .single-product-swiper .swiper-slide {
     width: 280px;
-    height: 360px;
+    height: 280px;
   }
 }
 
