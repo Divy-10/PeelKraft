@@ -321,7 +321,7 @@ const Home = () => {
         </div>
 
         {products.length > 0 ? (
-          products.length === 1 ? (
+          products.length >= 1 ? (
             (() => {
               const singleProduct = products[0];
               const rawImages = getProductImages(singleProduct);
