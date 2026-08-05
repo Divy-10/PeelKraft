@@ -369,11 +369,6 @@ const Home = () => {
                               className="w-full h-full object-cover"
                               loading="lazy"
                             />
-                            {singleProduct?.isUpcoming && (
-                              <span className="absolute top-4 left-4 z-10 bg-[#7BA639] text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-sm font-poppins">
-                                Upcoming
-                              </span>
-                            )}
                           </div>
                         </SwiperSlide>
                       ))}
