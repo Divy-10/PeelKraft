@@ -362,7 +362,7 @@ const Home = () => {
                     >
                       {slides.map((img, index) => (
                         <SwiperSlide key={index}>
-                          <div className="w-full aspect-square relative group rounded-3xl overflow-hidden bg-transparent">
+                          <div className="w-full h-full relative group rounded-3xl overflow-hidden">
                             <img
                               src={getImageUrl(img)}
                               alt={singleProduct?.name || 'PeelKraft'}
