@@ -311,7 +311,7 @@ const Home = () => {
       </section>
 
       {/* ===== FEATURED PRODUCTS (Live & Wild Harvest) ===== */}
-      <section className="pt-12 md:pt-16 lg:pt-20 pb-8 md:pb-10 lg:pb-12 bg-white border-b border-gray-100 overflow-hidden">
+      <section className="pt-12 md:pt-16 lg:pt-20 pb-8 md:pb-10 lg:pb-12 border-b border-gray-100 overflow-hidden">
         <div className="container-custom">
           <SectionHeading
             badge="Our Products"

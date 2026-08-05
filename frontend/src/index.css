@@ -253,9 +253,15 @@
   width: 100%;
   padding-top: 20px;
   padding-bottom: 50px;
+  background: transparent;
+}
+
+.single-product-swiper .swiper-wrapper {
+  background: transparent;
 }
 
 .single-product-swiper .swiper-slide {
+  background: transparent;
   background-position: center;
   background-size: cover;
   width: 460px;
@@ -324,7 +330,6 @@
 .product-image-container {
   aspect-ratio: 1 / 1;
   overflow: hidden;
-  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
