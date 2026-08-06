@@ -125,6 +125,10 @@ const ProductDetails = () => {
       navigate('/login', { state: { from: `/products/${slug}` } });
       return;
     }
+    if (hasOptions && !selectedPackage) {
+      toast.warning('Please select a package option first.');
+      return;
+    }
     if (isOutOfStock) return;
     addToCart(product, selectedPackage, quantity);
     toast.success(`${product.name}${selectedPackage ? ` (${selectedPackage.name})` : ''} added to cart!`);
@@ -134,6 +138,10 @@ const ProductDetails = () => {
     if (!isAuthenticated) {
       toast.info('Please login to purchase products.');
       navigate('/login', { state: { from: `/products/${slug}` } });
+      return;
+    }
+    if (hasOptions && !selectedPackage) {
+      toast.warning('Please select a package option first.');
       return;
     }
     if (isOutOfStock) return;
@@ -519,7 +527,7 @@ const ProductDetails = () => {
                           key={opt._id}
                           onClick={() => {
                             if (!isOptOutOfStock) {
-                              setSelectedPackage(opt);
+                              setSelectedPackage(prev => prev?._id === opt._id ? null : opt);
                             }
                           }}
                           className={`relative p-3 sm:p-5 rounded-2xl border-2 transition-all duration-300 flex flex-col justify-between h-auto min-h-[130px] w-full ${
@@ -594,7 +602,7 @@ const ProductDetails = () => {
                   <div className="flex justify-between items-start text-dark font-semibold text-xs sm:text-sm gap-3 flex-wrap">
                     <span className="shrink-0">Selected Option:</span>
                     <span className="font-poppins text-primary-600 text-xs sm:text-sm font-bold text-right break-all sm:break-normal max-w-[60%] sm:max-w-none">
-                      {selectedPackage ? selectedPackage.name : 'Standard Product (Single)'}
+                      {selectedPackage ? selectedPackage.name : 'None (Please select a package)'}
                     </span>
                   </div>
                   <div className="flex justify-between items-center text-xs sm:text-sm gap-2">
