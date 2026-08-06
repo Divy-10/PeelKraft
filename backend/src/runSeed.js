@@ -2,6 +2,10 @@ import connectDB from './config/db.js';
 import { seedDatabase } from './seed.js';
 
 const run = async () => {
+  if (process.env.NODE_ENV === 'production') {
+    console.error('❌ Database seeding is disabled in production.');
+    process.exit(1);
+  }
   try {
     await connectDB();
     await seedDatabase(true);

@@ -16,6 +16,14 @@ import SEO from './models/SEO.js';
 import Coupon from './models/Coupon.js';
 
 export const seedDatabase = async (isCli = false) => {
+  if (process.env.NODE_ENV === 'production') {
+    console.error('❌ Database seeding is disabled in production.');
+    if (isCli) {
+      process.exit(1);
+    } else {
+      throw new Error('Database seeding is disabled in production.');
+    }
+  }
   try {
     console.log('🌱 Starting database seed...\n');
 
@@ -301,6 +309,10 @@ const isDirectRun = process.argv[1] && (path.resolve(process.argv[1]) === path.r
 
 if (isDirectRun) {
   const startCliSeed = async () => {
+    if (process.env.NODE_ENV === 'production') {
+      console.error('❌ Database seeding is disabled in production.');
+      process.exit(1);
+    }
     try {
       await connectDB();
       await seedDatabase(true);

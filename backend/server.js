@@ -24,8 +24,12 @@ const startServer = async () => {
     const adminCount = await Admin.countDocuments();
     
     if (adminCount === 0) {
-      console.log('⚠️ Database is empty. Running automatic seed...');
-      await seedDatabase(false);
+      if (process.env.NODE_ENV === 'production') {
+        console.log('⚠️ Database is empty, but automatic seeding is disabled in production.');
+      } else {
+        console.log('⚠️ Database is empty. Running automatic seed...');
+        await seedDatabase(false);
+      }
     } else {
       console.log('✅ Database is already initialized.');
     }
