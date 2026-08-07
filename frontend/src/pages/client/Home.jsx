@@ -215,7 +215,7 @@ const Home = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="lg:col-span-7 max-w-2xl order-2 lg:order-1"
+              className="lg:col-span-6 max-w-2xl order-2 lg:order-1"
             >
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-cream-200/50 shadow-sm mb-6">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-800 animate-pulse" />
@@ -289,9 +289,9 @@ const Home = () => {
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, delay: 0.2 }}
-              className="lg:col-span-5 flex justify-center lg:justify-end order-1 lg:order-2"
+              className="lg:col-span-6 flex justify-center lg:justify-end order-1 lg:order-2"
             >
-              <div className="relative w-full max-w-md aspect-[4/3] rounded-3xl overflow-hidden group bg-transparent border-4 border-white shadow-premium">
+              <div className="relative w-full max-w-xl aspect-[4/3] rounded-3xl overflow-hidden group bg-transparent border-4 border-white shadow-premium">
                 <video
                   autoPlay
                   loop
