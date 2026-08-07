@@ -311,7 +311,7 @@ const Home = () => {
 
 
       {/* ===== FEATURED PRODUCTS (Live & Wild Harvest) ===== */}
-      <section className="py-20 border-b border-cream-200/40 bg-white overflow-hidden">
+      <section className="py-12 md:py-16 bg-white overflow-hidden">
         <div className="container-custom">
           <SectionHeading
             badge="Our Collection"
@@ -500,7 +500,7 @@ const Home = () => {
 
 
       {/* ===== OUR STORY ===== */}
-      <section className="py-20 md:py-28 bg-cream-50">
+      <section className="py-12 md:py-16 bg-cream-50">
         <div className="container-custom">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <motion.div
@@ -550,7 +550,7 @@ const Home = () => {
       </section>
 
       {/* ===== WHY PEELKRAFT ===== */}
-      <section className="py-20 md:py-28 bg-white border-t border-cream-200/40">
+      <section className="py-12 md:py-16 bg-white border-t border-cream-200/40">
         <div className="container-custom">
           <SectionHeading
             badge="Why PeelKraft"
@@ -583,7 +583,7 @@ const Home = () => {
       </section>
 
       {/* ===== MANUFACTURING PROCESS ===== */}
-      <section className="py-20 md:py-28 bg-cream-50/50 border-t border-cream-200/40 relative overflow-hidden">
+      <section className="py-12 md:py-16 bg-cream-50/50 border-t border-cream-200/40 relative overflow-hidden">
         <div className="container-custom relative z-10">
           <SectionHeading
             badge="Our Process"
@@ -618,7 +618,7 @@ const Home = () => {
       </section>
 
       {/* ===== STATISTICS ===== */}
-      <section className="py-16 md:py-20 bg-white border-y border-cream-200/40">
+      <section className="py-10 md:py-12 bg-white border-y border-cream-200/40">
         <div className="container-custom">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {(() => {
@@ -645,7 +645,7 @@ const Home = () => {
       </section>
 
       {/* ===== TESTIMONIALS ===== */}
-      <section className="py-20 md:py-28 bg-cream-50/50">
+      <section className="py-12 md:py-16 bg-cream-50/50">
         <div className="container-custom">
           <SectionHeading
             badge="Testimonials"
@@ -714,7 +714,7 @@ const Home = () => {
       </section>
 
       {/* ===== LATEST BLOGS ===== */}
-      <section className="py-20 md:py-28 bg-white border-t border-cream-200/40">
+      <section className="py-12 md:py-16 bg-white border-t border-cream-200/40">
         <div className="container-custom">
           <SectionHeading
             badge="From Our Blog"
@@ -765,7 +765,7 @@ const Home = () => {
       </section>
 
       {/* ===== FAQ ===== */}
-      <section className="py-20 md:py-28 bg-cream-50/30 border-t border-cream-200/40">
+      <section className="py-12 md:py-16 bg-cream-50/30 border-t border-cream-200/40">
         <div className="container-custom max-w-3xl">
           <SectionHeading
             badge="FAQ"
@@ -812,7 +812,7 @@ const Home = () => {
       </section>
 
       {/* ===== AMAZON STORE SHOWCASE SECTION ===== */}
-      <section className="py-20 bg-dark text-white relative overflow-hidden">
+      <section className="py-12 md:py-16 bg-dark text-white relative overflow-hidden">
         <div className="container-custom relative z-10">
           <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             {/* Left Column: Heading & Branding */}

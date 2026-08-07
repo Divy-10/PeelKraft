@@ -23,7 +23,7 @@ export default {
         }
       },
       fontFamily: {
-        serif: ['Lora', 'serif'], // Elegant editorial headlines
+        serif: ['Cormorant Garamond', 'serif'], // Elegant editorial headlines
         sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'], // Premium UI font
         poppins: ['Poppins', 'sans-serif'],
         inter: ['Inter', 'sans-serif'],
