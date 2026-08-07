@@ -883,8 +883,22 @@ const Home = () => {
                   );
                 }
                 return (
-                  <div className="text-center p-8 bg-white/5 rounded-2xl border border-white/10">
-                    <p className="text-gray-400 font-sans text-xs md:text-sm">Explore all PeelKraft products on Amazon</p>
+                  <div className="text-center p-8 md:p-12 bg-white/5 border border-white/10 rounded-3xl backdrop-blur-sm max-w-md mx-auto">
+                    <div className="w-12 h-12 rounded-full bg-primary-500/10 flex items-center justify-center mx-auto mb-6">
+                      <FiShoppingCart className="w-5 h-5 text-primary-500" />
+                    </div>
+                    <h3 className="font-serif text-lg text-white mb-2">Explore the Full Collection</h3>
+                    <p className="text-gray-400 font-sans text-xs leading-relaxed mb-6">
+                      Our premium range of organic orange peel products is available with fast Prime delivery on Amazon India.
+                    </p>
+                    <a
+                      href={settings?.amazonStoreUrl || "https://www.amazon.in"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 bg-white hover:bg-cream-100 text-dark rounded-full px-6 py-2.5 text-xs font-semibold font-sans tracking-wider uppercase transition shadow-md"
+                    >
+                      Browse Amazon Catalog
+                    </a>
                   </div>
                 );
               })()}
