@@ -232,10 +232,10 @@ const ProductDetails = () => {
   const renderTabsAndDetails = () => (
     <>
       {/* Tabs */}
-      <div className="border-b border-gray-100 mb-6 w-full max-w-full overflow-hidden">
+      <div className="border-b border-cream-200/40 mb-8 w-full max-w-full overflow-hidden">
         <div className="flex gap-1 overflow-x-auto scrollbar-hide w-full max-w-full pb-1">
           {tabs.map(tab => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`px-3.5 py-2.5 sm:px-5 sm:py-3 font-inter font-medium text-sm border-b-2 transition-all whitespace-nowrap ${activeTab === tab.id ? 'border-primary-500 text-primary-500' : 'border-transparent text-gray-500 hover:text-dark'}`}>
+            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`px-4 py-2.5 font-sans font-semibold text-[11px] uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${activeTab === tab.id ? 'border-primary-500 text-dark' : 'border-transparent text-gray-400 hover:text-dark'}`}>
               {tab.label}
             </button>
           ))}
@@ -245,59 +245,59 @@ const ProductDetails = () => {
       {/* Tab Content */}
       <div className="min-h-[200px]">
         {activeTab === 'description' && (
-          <div className="prose-content font-inter text-gray-600 leading-relaxed overflow-x-auto break-words w-full max-w-full" dangerouslySetInnerHTML={{ __html: product.description }} />
+          <div className="prose-content font-sans text-xs md:text-sm text-gray-600 leading-relaxed tracking-wide overflow-x-auto break-words w-full max-w-full" dangerouslySetInnerHTML={{ __html: product.description }} />
         )}
         {activeTab === 'ingredients' && (
-          <ul className="space-y-3 font-inter">{product.ingredients?.map((ing, i) => (
-            <li key={i} className="flex items-center gap-3 text-gray-600"><FiCheck className="text-green-500 shrink-0" />{ing}</li>
+          <ul className="space-y-3 font-sans text-xs md:text-sm">{product.ingredients?.map((ing, i) => (
+            <li key={i} className="flex items-center gap-3 text-gray-600"><FiCheck className="text-green-800 shrink-0" />{ing}</li>
           ))}</ul>
         )}
         {activeTab === 'nutrition' && product.nutrition && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {Object.entries(product.nutrition).filter(([_, v]) => v).map(([key, val]) => (
-              <div key={key} className="p-3.5 sm:p-5 bg-gray-50 rounded-xl border border-gray-100 shadow-sm">
-                <p className="text-xs text-gray-400 capitalize font-inter">{key.replace(/([A-Z])/g, ' $1')}</p>
-                <p className="font-semibold text-dark font-poppins text-sm sm:text-base mt-1">{val}</p>
+              <div key={key} className="p-4 bg-white rounded-xl border border-cream-200/60 shadow-sm">
+                <p className="text-[10px] text-gray-400 uppercase tracking-wider font-sans">{key.replace(/([A-Z])/g, ' $1')}</p>
+                <p className="font-sans font-bold text-dark text-xs sm:text-sm mt-1">{val}</p>
               </div>
             ))}
           </div>
         )}
         {activeTab === 'benefits' && (
-          <ul className="space-y-3 font-inter">{product.benefits?.map((ben, i) => (
-            <li key={i} className="flex items-start gap-3 text-gray-600"><span className="w-6 h-6 shrink-0 rounded-full bg-green-100 flex items-center justify-center mt-0.5"><FiCheck className="w-3.5 h-3.5 text-green-600" /></span>{ben}</li>
+          <ul className="space-y-3 font-sans text-xs md:text-sm">{product.benefits?.map((ben, i) => (
+            <li key={i} className="flex items-start gap-3 text-gray-600"><span className="w-5 h-5 shrink-0 rounded-full bg-green-50 flex items-center justify-center mt-0.5"><FiCheck className="w-3 h-3 text-green-800" /></span>{ben}</li>
           ))}</ul>
         )}
         {activeTab === 'reviews' && (
-          <div className="space-y-8 font-inter">
+          <div className="space-y-8 font-sans text-xs md:text-sm">
             <div className="grid grid-cols-1 gap-6">
               {/* Left: Overall Rating stats & breakdown */}
-              <div className="space-y-4 bg-gray-50/50 p-6 rounded-2xl border border-gray-100 h-fit">
-                <h4 className="font-poppins font-bold text-dark text-base">Customer Reviews</h4>
+              <div className="space-y-4 bg-cream-50/40 p-6 rounded-2xl border border-cream-200/60 h-fit">
+                <h4 className="font-serif text-dark text-base">Customer Reviews</h4>
                 {reviewStats ? (
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
-                      <span className="font-poppins font-bold text-4xl text-dark">
+                      <span className="font-sans font-bold text-4xl text-dark">
                         {reviewStats.averageRating || '0.0'}
                       </span>
                       <div>
-                        <div className="flex items-center text-amber-400">
+                        <div className="flex items-center text-amber-500">
                           {Array.from({ length: 5 }).map((_, i) => (
-                            <FiStar key={i} className={`w-4 h-4 ${i < Math.round(reviewStats.averageRating || 0) ? 'fill-amber-400 text-amber-400' : 'text-gray-200'}`} />
+                            <FiStar key={i} className={`w-3.5 h-3.5 ${i < Math.round(reviewStats.averageRating || 0) ? 'fill-amber-500 text-amber-500' : 'text-gray-200'}`} />
                           ))}
                         </div>
-                        <span className="text-xs text-gray-500 font-medium">
+                        <span className="text-[10px] text-gray-500 font-semibold uppercase tracking-wider">
                           {reviewStats.totalReviews} total ratings
                         </span>
                       </div>
                     </div>
                   </div>
                 ) : (
-                  <p className="text-xs text-gray-400">Loading breakdown metrics...</p>
+                  <p className="text-[10px] text-gray-400">Loading breakdown metrics...</p>
                 )}
 
                 <button
                   onClick={() => setReviewModalOpen(true)}
-                  className="w-full mt-4 py-3 bg-primary-500 hover:bg-primary-600 text-white font-poppins font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md shadow-primary-500/10 active:scale-98"
+                  className="w-full mt-4 py-3 bg-dark hover:bg-green-800 text-white font-sans font-semibold text-[10px] uppercase tracking-widest rounded-full transition shadow-premium"
                 >
                   Write a Review
                 </button>
@@ -306,14 +306,14 @@ const ProductDetails = () => {
               {/* Right: Reviews List with sorting */}
               <div className="space-y-6">
                 {/* Sort bar */}
-                <div className="flex justify-between items-center border-b border-gray-100 pb-4">
-                  <h4 className="font-poppins font-bold text-dark text-base">Reviews ({reviews.length})</h4>
-                  <div className="flex items-center gap-2 text-xs">
+                <div className="flex justify-between items-center border-b border-cream-200/40 pb-4">
+                  <h4 className="font-serif text-dark text-base">Reviews ({reviews.length})</h4>
+                  <div className="flex items-center gap-2 text-[10px] font-sans">
                     <span className="text-gray-400 font-semibold uppercase tracking-wider">Sort by:</span>
                     <select
                       value={sortBy}
                       onChange={(e) => setSortBy(e.target.value)}
-                      className="bg-gray-50 border border-gray-200 rounded-lg px-2.5 py-1.5 font-bold text-dark outline-none focus:border-primary-500 transition-colors"
+                      className="bg-white border border-cream-200 rounded-full px-3 py-1 font-semibold text-dark outline-none focus:border-primary-500 transition-colors cursor-pointer"
                     >
                       <option value="newest">Newest</option>
                       <option value="oldest">Oldest</option>
@@ -327,56 +327,56 @@ const ProductDetails = () => {
                 {/* Individual Review cards */}
                 <div className="space-y-6">
                   {reviews.length === 0 ? (
-                    <div className="text-center py-12 bg-gray-50/30 rounded-2xl border border-gray-100">
-                      <p className="text-gray-400 text-sm">No reviews yet. Be the first to share your thoughts!</p>
+                    <div className="text-center py-12 bg-cream-50/20 rounded-2xl border border-cream-200/50">
+                      <p className="text-gray-400 text-xs md:text-sm">No reviews yet. Be the first to share your thoughts!</p>
                       <button
                         onClick={() => setReviewModalOpen(true)}
-                        className="mt-4 px-4 py-2 bg-white hover:bg-gray-50 text-gray-600 border border-gray-200 font-poppins font-semibold text-xs rounded-xl transition"
+                        className="mt-4 px-6 py-2.5 bg-white hover:bg-cream-50 text-dark border border-cream-200 font-sans font-semibold text-[10px] uppercase tracking-widest rounded-full transition"
                       >
                         Write a Review
                       </button>
                     </div>
                   ) : (
                     reviews.map((rev) => (
-                      <div key={rev._id} className="border-b border-gray-100 pb-6 last:border-0 last:pb-0 space-y-3">
+                      <div key={rev._id} className="border-b border-cream-200/30 pb-6 last:border-0 last:pb-0 space-y-3">
                         {/* Profile Name & verified */}
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-full overflow-hidden border border-gray-200 flex items-center justify-center shrink-0 bg-gray-50">
+                            <div className="w-8 h-8 rounded-full overflow-hidden border border-cream-200 flex items-center justify-center shrink-0 bg-white">
                               {rev.profilePhoto ? (
                                 <img src={rev.profilePhoto} alt="" className="w-full h-full object-cover" />
                               ) : (
-                                <span className="text-dark font-bold text-sm">{getInitials(rev.customerName)}</span>
+                                <span className="text-dark font-bold text-xs">{getInitials(rev.customerName)}</span>
                               )}
                             </div>
                             <div>
-                              <span className="font-poppins font-bold block text-sm text-dark">{rev.customerName}</span>
-                              <span className="text-[10px] text-gray-400 font-inter block">{new Date(rev.createdAt).toLocaleDateString()}</span>
+                              <span className="font-serif block text-sm text-dark">{rev.customerName}</span>
+                              <span className="text-[9px] text-gray-400 font-sans block">{new Date(rev.createdAt).toLocaleDateString()}</span>
                             </div>
                           </div>
                           {rev.isVerifiedPurchase && (
-                            <span className="text-[9px] bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider border border-emerald-100">
+                            <span className="text-[8px] bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded-full font-bold uppercase tracking-widest border border-emerald-100">
                               ✓ Verified Purchase
                             </span>
                           )}
                         </div>
 
                         {/* Stars */}
-                        <div className="flex items-center gap-1.5 text-amber-400">
+                        <div className="flex items-center gap-1.5 text-amber-500">
                           {Array.from({ length: 5 }).map((_, i) => (
-                            <FiStar key={i} className={`w-3.5 h-3.5 ${i < rev.rating ? 'fill-amber-400 text-amber-400' : 'text-gray-200'}`} />
+                            <FiStar key={i} className={`w-3.5 h-3.5 ${i < rev.rating ? 'fill-amber-500 text-amber-500' : 'text-gray-200'}`} />
                           ))}
-                          <span className="text-dark font-semibold text-xs mt-0.5 ml-1">{rev.title}</span>
+                          <span className="text-dark font-semibold text-xs ml-1">{rev.title}</span>
                         </div>
 
                         {/* Message */}
-                        <p className="text-gray-500 text-sm leading-relaxed font-inter">{rev.comment}</p>
+                        <p className="text-gray-500 text-xs md:text-sm leading-relaxed font-sans">{rev.comment}</p>
 
                         {/* Gallery images list */}
                         {rev.images && rev.images.length > 0 && (
                           <div className="flex gap-2 pt-1 flex-wrap">
                             {rev.images.map((img, idx) => (
-                              <a key={idx} href={img} target="_blank" rel="noopener noreferrer" className="w-14 h-14 rounded-lg overflow-hidden border border-gray-100 block shrink-0">
+                              <a key={idx} href={img} target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-lg overflow-hidden border border-cream-200 block shrink-0">
                                 <img src={img} alt="" className="w-full h-full object-cover hover:opacity-95 transition" />
                               </a>
                             ))}
@@ -384,10 +384,10 @@ const ProductDetails = () => {
                         )}
 
                         {/* Helpful count button */}
-                        <div className="flex items-center gap-2 pt-2 text-xs">
+                        <div className="flex items-center gap-2 pt-2 text-[10px] font-sans">
                           <button
                             onClick={() => handleMarkHelpful(rev._id)}
-                            className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 rounded-lg border border-gray-200 text-gray-600 font-bold transition flex items-center gap-1 active:scale-98"
+                            className="px-3 py-1.5 bg-cream-50 hover:bg-cream-100 rounded-full border border-cream-200/60 text-gray-600 font-semibold transition flex items-center gap-1"
                           >
                             Helpful ({rev.helpfulCount || 0})
                           </button>
@@ -404,9 +404,9 @@ const ProductDetails = () => {
 
       {/* Storage */}
       {product.storage && (
-        <div className="mt-8 p-6 bg-gray-50 border border-gray-100 rounded-2xl font-inter">
-          <h4 className="font-poppins font-semibold text-dark mb-2">Storage Instructions</h4>
-          <p className="text-gray-500 text-sm leading-relaxed">{product.storage}</p>
+        <div className="mt-8 p-6 bg-cream-50/40 border border-cream-200/60 rounded-2xl font-sans text-xs md:text-sm">
+          <h4 className="font-serif text-dark text-base mb-2">Storage Instructions</h4>
+          <p className="text-gray-500 leading-relaxed">{product.storage}</p>
         </div>
       )}
     </>
@@ -416,50 +416,50 @@ const ProductDetails = () => {
     <>
       <SEOHead title={product.seoTitle || product.name} description={product.seoDescription || product.shortDescription} canonicalUrl={`/products/${product.slug}`} ogImage={mediaList[0]?.url} />
 
-      <section className="pt-16 pb-8 md:pt-32 md:pb-24 bg-white overflow-hidden max-w-full">
+      <section className="pt-32 pb-16 bg-white overflow-hidden max-w-full">
         <div className="container-custom">
           <Breadcrumbs items={[{ label: 'Products', path: '/products' }, { label: product.name }]} />
 
-          <div className="grid lg:grid-cols-2 gap-6 lg:gap-16">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 mt-8">
             {/* Gallery */}
             <motion.div className="w-full text-center lg:text-left" initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
               <div className="w-full max-w-md mx-auto lg:mx-0">
-                <div className="w-full max-h-[460px] aspect-square rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 mb-4 relative flex items-center justify-center shadow-sm">
+                <div className="w-full aspect-square rounded-3xl overflow-hidden bg-cream-50 border border-cream-200/65 mb-4 relative flex items-center justify-center p-6 shadow-sm">
                   {mediaList[selectedImage]?.type === 'video' ? (
                     <video 
                       src={mediaList[selectedImage].url} 
                       controls 
-                      className="w-full h-full object-contain bg-black" 
+                      className="w-full h-full object-contain bg-black rounded-2xl" 
                     />
                   ) : (
                     <img 
                       src={getImageUrl(mediaList[selectedImage])} 
                       alt={mediaList[selectedImage]?.alt || product.name} 
-                      className="w-full h-full object-contain p-2 sm:p-6 mix-blend-multiply" 
+                      className="max-h-full max-w-full object-contain transition-transform duration-500" 
                     />
                   )}
                 </div>
                 {mediaList.length > 0 && (
-                  <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin justify-start sm:justify-center lg:justify-start">
+                  <div className="flex gap-2.5 overflow-x-auto pb-2 scrollbar-thin justify-start sm:justify-center lg:justify-start">
                     {mediaList.map((item, i) => (
                       <button 
                         key={i} 
                         onClick={() => setSelectedImage(i)} 
-                        className={`shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 transition-all p-1 bg-gray-50 relative ${
+                        className={`shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 transition-all p-1 bg-cream-50 relative ${
                           selectedImage === i 
-                            ? 'border-primary-500 shadow-md ring-2 ring-primary-100' 
-                            : 'border-transparent opacity-75 hover:opacity-100 hover:border-gray-200'
+                            ? 'border-primary-500 ring-2 ring-primary-100 shadow-sm' 
+                            : 'border-cream-200/60 opacity-80 hover:opacity-100 hover:border-gray-400'
                         }`}
                       >
                         {item.type === 'video' ? (
                           <div className="w-full h-full flex items-center justify-center bg-black relative">
-                            <span className="absolute z-10 w-6.5 h-6.5 rounded-full bg-primary-500 text-white flex items-center justify-center shadow-md text-[10px] font-bold pl-0.5">
+                            <span className="absolute z-10 w-6 h-6 rounded-full bg-primary-500 text-white flex items-center justify-center shadow-md text-[8px] font-bold pl-0.5 animate-pulse">
                               ▶
                             </span>
                             <video src={item.url} className="w-full h-full object-cover opacity-60" />
                           </div>
                         ) : (
-                          <img src={getImageUrl(item)} alt="" className="w-full h-full object-contain mix-blend-multiply" />
+                          <img src={getImageUrl(item)} alt="" className="w-full h-full object-contain" />
                         )}
                       </button>
                     ))}
@@ -468,41 +468,41 @@ const ProductDetails = () => {
               </div>
 
               {/* Tabs for desktop (laptop) - aligned right below the gallery */}
-              <div className="hidden lg:block mt-8 w-full max-w-md mx-auto lg:mx-0">
+              <div className="hidden lg:block mt-12 w-full max-w-md mx-auto lg:mx-0">
                 {renderTabsAndDetails()}
               </div>
             </motion.div>
 
             {/* Product Info */}
             <motion.div className="w-full min-w-0 max-w-full lg:pr-4" initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}>
-              <div className="flex gap-2 items-center mb-3">
+              <div className="flex gap-2 items-center mb-4">
                 {product.category?.name && (
-                  <span className="inline-block px-3 py-1 bg-primary-50 text-primary-500 text-sm font-semibold rounded-full">{product.category.name}</span>
+                  <span className="inline-block px-4 py-1 bg-cream-100 border border-cream-200 text-primary-500 text-[10px] font-bold uppercase tracking-wider rounded-full font-sans">{product.category.name}</span>
                 )}
                 {product.isUpcoming && (
-                  <span className="inline-block px-3 py-1 bg-green-900 text-white text-sm font-semibold rounded-full uppercase tracking-wider font-poppins">Upcoming</span>
+                  <span className="inline-block px-4 py-1 bg-green-800 text-white text-[10px] font-bold uppercase tracking-wider rounded-full font-sans">Upcoming</span>
                 )}
               </div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-poppins font-bold text-dark mb-2">{product.name}</h1>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif text-dark mb-4 leading-tight">{product.name}</h1>
               
               {/* Ratings preview */}
-              <div className="flex items-center gap-1.5 mb-4 flex-wrap">
-                <div className="flex text-amber-400">
+              <div className="flex items-center gap-1.5 mb-6 flex-wrap font-sans text-xs">
+                <div className="flex text-amber-500">
                   {[...Array(5)].map((_, i) => (
-                    <FiStar key={i} className={`w-4 h-4 ${i < Math.round(product.avgRating || 0) ? 'fill-current' : ''}`} />
+                    <FiStar key={i} className={`w-3.5 h-3.5 ${i < Math.round(product.avgRating || 0) ? 'fill-current' : ''}`} />
                   ))}
                 </div>
-                <span className="text-sm font-semibold text-dark font-poppins mt-0.5">{product.avgRating || 0}</span>
-                <span className="text-xs text-gray-400 font-inter">({reviews.length} customer reviews)</span>
+                <span className="font-bold text-dark mt-0.5">{product.avgRating || 0}</span>
+                <span className="text-gray-400 font-medium">({reviews.length} customer reviews)</span>
               </div>
 
               {/* Product Price */}
-              <div className="flex items-baseline gap-2 sm:gap-3 mb-5 sm:mb-6 flex-wrap">
-                <span className="text-2xl sm:text-3xl font-poppins font-bold text-dark">₹{price}</span>
+              <div className="flex items-baseline gap-2.5 sm:gap-3.5 mb-6 flex-wrap">
+                <span className="text-2xl sm:text-3xl font-sans font-bold text-dark">₹{price}</span>
                 {mrp > price && (
                   <>
-                    <span className="text-base sm:text-lg text-gray-400 line-through font-inter">₹{mrp}</span>
-                    <span className="text-xs sm:text-sm font-bold text-green-600 bg-green-50 px-1.5 sm:px-2 py-0.5 rounded-md font-poppins">
+                    <span className="text-base sm:text-lg text-gray-400 line-through font-sans">₹{mrp}</span>
+                    <span className="text-[10px] font-bold text-green-700 bg-green-50/80 px-2 py-0.5 rounded-full font-sans border border-green-100 uppercase tracking-wide">
                       {discountPercent || Math.round(((mrp - price)/mrp)*100)}% OFF
                     </span>
                   </>
@@ -512,10 +512,10 @@ const ProductDetails = () => {
               {/* Choose Package (Amazon & D2C Style Selection Grid) */}
               {hasOptions && (
                 <div className="mb-6 w-full">
-                  <h3 className="text-xs font-bold text-gray-500 font-poppins uppercase tracking-wider mb-3">
+                  <h3 className="text-[10px] font-bold text-gray-400 font-sans uppercase tracking-widest mb-3">
                     Choose Your Package
                   </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 pt-1 w-full">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 w-full font-sans">
                     {product.packageOptions.map((opt) => {
                       const isOptSelected = selectedPackage?._id === opt._id;
                       const isOptOutOfStock = opt.stock <= 0 || opt.status === 'disabled';
@@ -530,51 +530,51 @@ const ProductDetails = () => {
                               setSelectedPackage(prev => prev?._id === opt._id ? null : opt);
                             }
                           }}
-                          className={`relative p-3 sm:p-5 rounded-2xl border-2 transition-all duration-300 flex flex-col justify-between h-auto min-h-[130px] w-full ${
+                          className={`relative p-4 rounded-2xl border-2 transition-all duration-300 flex flex-col justify-between h-auto min-h-[120px] w-full ${
                             isOptOutOfStock
-                              ? 'border-gray-100 bg-gray-50/50 opacity-40 cursor-not-allowed shadow-none'
+                              ? 'border-cream-100 bg-cream-50/30 opacity-45 cursor-not-allowed shadow-none'
                               : isOptSelected
-                                ? 'border-primary-500 bg-primary-50/15 shadow-md shadow-primary-500/5 translate-y-[-4px]'
-                                : 'border-gray-200 hover:border-gray-300 hover:translate-y-[-2px] cursor-pointer bg-white shadow-sm'
+                                ? 'border-primary-500 bg-cream-50 shadow-sm translate-y-[-2px]'
+                                : 'border-cream-200 bg-white hover:border-gray-400 hover:translate-y-[-1px] cursor-pointer shadow-sm'
                           }`}
                         >
                           {/* Badge Tag */}
                           {opt.badge && (
-                            <span className="absolute -top-2.5 left-4 px-2.5 py-0.5 bg-primary-500 text-white text-[10px] font-bold rounded-full font-poppins shadow-sm">
+                            <span className="absolute -top-2.5 left-4 px-2.5 py-0.5 bg-primary-500 text-white text-[9px] font-bold rounded-full font-sans tracking-wide uppercase shadow-sm">
                               {opt.badge}
                             </span>
                           )}
 
                           {/* Top part: Name & Selection Indicator */}
                           <div className="flex justify-between items-start gap-1">
-                            <span className="font-bold text-xs sm:text-sm text-dark font-poppins line-clamp-2 leading-snug">{opt.name}</span>
+                            <span className="font-semibold text-xs text-dark line-clamp-2 leading-snug">{opt.name}</span>
                             {isOptSelected ? (
-                              <span className="w-4.5 h-4.5 rounded-full bg-primary-500 text-white flex items-center justify-center shrink-0">
-                                <FiCheck className="w-3.5 h-3.5" />
+                              <span className="w-4 h-4 rounded-full bg-primary-500 text-white flex items-center justify-center shrink-0">
+                                <FiCheck className="w-3 h-3" />
                               </span>
                             ) : (
                               !isOptOutOfStock && (
-                                <span className="w-4.5 h-4.5 rounded-full border-2 border-gray-200 bg-transparent shrink-0" />
+                                <span className="w-4 h-4 rounded-full border border-cream-200 bg-transparent shrink-0" />
                               )
                             )}
                           </div>
 
                           {/* Pricing details */}
-                          <div className="mt-2">
+                          <div className="mt-3">
                             <div className="flex items-baseline gap-1.5 flex-wrap">
-                              <span className="text-lg sm:text-xl font-bold text-dark font-poppins">₹{opt.sellingPrice}</span>
+                              <span className="text-base sm:text-lg font-bold text-dark">₹{opt.sellingPrice}</span>
                               {opt.mrp > opt.sellingPrice && (
-                                <span className="text-[10px] sm:text-xs text-gray-400 line-through font-inter">₹{opt.mrp}</span>
+                                <span className="text-[10px] text-gray-400 line-through">₹{opt.mrp}</span>
                               )}
                             </div>
                             <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
                               {optDiscount > 0 && (
-                                <span className="text-[9px] sm:text-[10px] font-bold text-green-600 bg-green-50 px-1 py-0.5 rounded font-poppins">
+                                <span className="text-[9px] font-bold text-green-700 bg-green-50 px-1.5 py-0.5 rounded font-sans">
                                   {optDiscount}% OFF
                                 </span>
                               )}
                               {amountSaved > 0 && (
-                                <span className="text-[9px] sm:text-[10px] font-semibold text-gray-500 font-inter">
+                                <span className="text-[9px] font-medium text-gray-500">
                                   Save ₹{amountSaved}!
                                 </span>
                               )}
@@ -582,11 +582,11 @@ const ProductDetails = () => {
                           </div>
 
                           {/* Stock status indicator */}
-                          <div className="text-[9px] sm:text-[10px] font-semibold font-inter mt-1.5 border-t border-gray-550 pt-1.5">
+                          <div className="text-[9px] font-semibold mt-2 border-t border-cream-100 pt-2">
                             {isOptOutOfStock ? (
                               <span className="text-red-500 flex items-center gap-1"><FiAlertCircle /> Sold Out</span>
                             ) : (
-                              <span className="text-green-600 flex items-center gap-1"><FiCheck className="w-3 h-3 text-green-600" /> In Stock</span>
+                              <span className="text-green-800 flex items-center gap-1"><FiCheck className="w-2.5 h-2.5 text-green-800" /> In Stock</span>
                             )}
                           </div>
                         </div>
@@ -598,70 +598,70 @@ const ProductDetails = () => {
 
               {/* Pricing & Delivery Summary Card (Dynamic updates based on chosen variant) */}
               {hasOptions && (
-                <div className="bg-cream-50/50 rounded-2xl border border-gray-100 p-3.5 sm:p-5 mb-6 space-y-3 font-inter text-xs sm:text-sm text-gray-600">
-                  <div className="flex justify-between items-start text-dark font-semibold text-xs sm:text-sm gap-3 flex-wrap">
+                <div className="bg-cream-50/50 rounded-2xl border border-cream-200/50 p-5 mb-6 space-y-3 font-sans text-xs md:text-sm text-gray-600 shadow-sm">
+                  <div className="flex justify-between items-start text-dark font-semibold text-xs md:text-sm gap-3 flex-wrap">
                     <span className="shrink-0">Selected Option:</span>
-                    <span className="font-poppins text-primary-600 text-xs sm:text-sm font-bold text-right break-all sm:break-normal max-w-[60%] sm:max-w-none">
+                    <span className="font-serif text-primary-600 text-xs md:text-sm font-bold text-right break-all sm:break-normal max-w-[60%] sm:max-w-none">
                       {selectedPackage ? selectedPackage.name : 'None (Please select a package)'}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center text-xs sm:text-sm gap-2">
+                  <div className="flex justify-between items-center text-xs md:text-sm gap-2">
                     <span>Unit Price:</span>
-                    <span className="font-poppins font-bold text-dark text-sm sm:text-base">₹{price}</span>
+                    <span className="font-bold text-dark text-sm sm:text-base">₹{price}</span>
                   </div>
                   {mrp > price && (
                     <>
-                      <div className="flex justify-between items-center text-xs sm:text-sm gap-2">
+                      <div className="flex justify-between items-center text-xs md:text-sm gap-2">
                         <span>Original Price (MRP):</span>
-                        <span className="line-through text-gray-400 font-poppins">₹{mrp}</span>
+                        <span className="line-through text-gray-400">₹{mrp}</span>
                       </div>
-                      <div className="flex justify-between items-start text-green-600 font-semibold text-xs sm:text-sm gap-3 flex-wrap">
+                      <div className="flex justify-between items-start text-green-700 font-semibold text-xs md:text-sm gap-3 flex-wrap">
                         <span className="shrink-0">Discount / Savings:</span>
-                        <span className="text-right font-poppins font-bold">₹{mrp - price} ({discountPercent || Math.round(((mrp - price)/mrp)*100)}% OFF)</span>
+                        <span className="text-right font-bold">₹{mrp - price} ({discountPercent || Math.round(((mrp - price)/mrp)*100)}% OFF)</span>
                       </div>
                     </>
                   )}
-                  <div className="flex justify-between items-center text-xs sm:text-sm gap-2">
+                  <div className="flex justify-between items-center text-xs md:text-sm gap-2">
                     <span>Inventory Stock:</span>
                     <span className="text-right">
                       {isOutOfStock ? (
                         <span className="text-red-500 font-bold">Sold Out</span>
                       ) : (
-                        <span className="text-green-600 font-bold">In Stock</span>
+                        <span className="text-green-800 font-bold">In Stock</span>
                       )}
                     </span>
                   </div>
-                  <div className="flex justify-between items-start text-[10px] sm:text-xs text-gray-400 border-t border-gray-100 pt-3 gap-3 flex-wrap">
+                  <div className="flex justify-between items-start text-[10px] text-gray-400 border-t border-cream-200/40 pt-3 gap-3 flex-wrap">
                     <span className="shrink-0">Estimated Delivery:</span>
                     <span className="font-semibold text-gray-600 text-right max-w-[65%] sm:max-w-none">Standard Delivery (3-5 days)</span>
                   </div>
-                  <div className="flex justify-between items-center border-t border-gray-100 pt-3 text-dark font-bold text-sm sm:text-base gap-2">
+                  <div className="flex justify-between items-center border-t border-cream-200/40 pt-3 text-dark font-bold text-sm sm:text-base gap-2">
                     <span>Subtotal:</span>
-                    <span className="font-poppins text-base sm:text-lg text-primary-600 font-bold">₹{price * quantity}</span>
+                    <span className="text-base sm:text-lg text-primary-600 font-bold">₹{price * quantity}</span>
                   </div>
                 </div>
               )}
 
-              <p className="text-gray-600 text-base leading-relaxed mb-6 font-inter">{product.shortDescription}</p>
+              <p className="text-gray-500 text-xs md:text-sm leading-relaxed mb-6 font-sans tracking-wide">{product.shortDescription}</p>
 
               {/* Stock Status */}
-              <div className="space-y-2 mb-8 font-inter text-sm">
+              <div className="space-y-2 mb-8 font-sans text-xs md:text-sm">
                 {!hasOptions && (
                   <div className="flex items-center gap-2">
                     <span className="text-gray-400">Availability:</span>
                     {isOutOfStock ? (
                       <span className="text-red-500 font-semibold flex items-center gap-1"><FiAlertCircle /> Sold Out</span>
                     ) : (
-                      <span className="text-green-600 font-semibold">In Stock</span>
+                      <span className="text-green-800 font-semibold">In Stock</span>
                     )}
                   </div>
                 )}
               </div>
 
               {/* Quick Info */}
-              <div className="flex flex-wrap gap-4 mb-8">
-                {product.weight && <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-xl text-sm font-inter"><FiBox className="text-primary-500" />{product.weight}</div>}
-                {product.shelfLife && <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-xl text-sm font-inter"><FiClock className="text-primary-500" />{product.shelfLife}</div>}
+              <div className="flex flex-wrap gap-3 mb-8">
+                {product.weight && <div className="flex items-center gap-1.5 px-4 py-2 bg-cream-50 rounded-full text-xs font-semibold font-sans tracking-wide text-dark"><FiBox className="text-primary-500" />{product.weight}</div>}
+                {product.shelfLife && <div className="flex items-center gap-1.5 px-4 py-2 bg-cream-50 rounded-full text-xs font-semibold font-sans tracking-wide text-dark"><FiClock className="text-primary-500" />{product.shelfLife}</div>}
               </div>
 
               {/* Purchase Flow */}
@@ -670,14 +670,14 @@ const ProductDetails = () => {
                   {/* Stepper & Wishlist Row */}
                   <div className="flex items-center gap-3 w-full">
                     {!isOutOfStock && (
-                      <div className="flex items-center border border-gray-200 rounded-xl bg-gray-50 justify-between p-1 select-none shrink-0 w-32">
+                      <div className="flex items-center border border-cream-200 rounded-full bg-cream-50 p-1 select-none shrink-0 w-32">
                         <button
                           onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                          className="p-2.5 text-gray-500 hover:text-dark transition"
+                          className="p-2 text-gray-500 hover:text-dark transition text-xs font-bold"
                         >
                           -
                         </button>
-                        <span className="font-semibold text-dark font-poppins">{quantity}</span>
+                        <span className="font-semibold text-dark font-sans text-xs w-8 text-center">{quantity}</span>
                         <button
                           onClick={() => {
                             if (quantity >= stock) {
@@ -686,7 +686,7 @@ const ProductDetails = () => {
                               setQuantity(quantity + 1);
                             }
                           }}
-                          className="p-2.5 text-gray-500 hover:text-dark transition"
+                          className="p-2 text-gray-500 hover:text-dark transition text-xs font-bold"
                         >
                           +
                         </button>
@@ -696,31 +696,31 @@ const ProductDetails = () => {
                     {/* Wishlist Button inline */}
                     <button
                       onClick={handleWishlistToggle}
-                      className={`p-3.5 rounded-xl border transition flex items-center justify-center shrink-0 ${
-                        wishlisted ? 'border-red-200 bg-red-50 text-red-500' : 'border-gray-200 hover:bg-gray-50 text-gray-400'
+                      className={`p-3 rounded-full border transition flex items-center justify-center shrink-0 ${
+                        wishlisted ? 'border-red-200 bg-red-50 text-red-500' : 'border-cream-200 hover:bg-cream-50 text-gray-400'
                       }`}
                     >
-                      <FiHeart className={`w-5 h-5 ${wishlisted ? 'fill-current' : ''}`} />
+                      <FiHeart className={`w-4 h-4 ${wishlisted ? 'fill-current' : ''}`} />
                     </button>
                   </div>
 
                   {/* Actions Row */}
                   <div className="flex flex-col sm:flex-row gap-3 w-full">
                     {isOutOfStock ? (
-                      <button disabled className="w-full py-3.5 bg-gray-200 text-gray-400 font-semibold rounded-xl cursor-not-allowed font-poppins">
+                      <button disabled className="w-full py-3.5 bg-cream-100 text-gray-400 font-semibold rounded-full cursor-not-allowed font-sans text-xs tracking-widest uppercase">
                         Sold Out
                       </button>
                     ) : (
                       <>
                         <button
                           onClick={handleAddToCart}
-                          className="btn-outline !rounded-xl w-full sm:flex-1 py-3.5 text-sm font-semibold"
+                          className="px-8 py-3.5 bg-transparent border border-cream-200 hover:border-dark rounded-full text-xs font-semibold font-sans tracking-widest uppercase transition w-full sm:flex-1"
                         >
                           Add to Cart
                         </button>
                         <button
                           onClick={handleBuyNow}
-                          className="btn-primary !rounded-xl w-full sm:flex-1 py-3.5 text-sm font-semibold"
+                          className="px-8 py-3.5 bg-dark text-white hover:bg-green-800 rounded-full text-xs font-semibold font-sans tracking-widest uppercase transition w-full sm:flex-1 shadow-premium"
                         >
                           Buy Now
                         </button>
@@ -733,28 +733,28 @@ const ProductDetails = () => {
           </div>
 
           {/* Product Tabs & Details - Mobile only (hidden on desktop/laptop where it renders under the gallery) */}
-          <div className="lg:hidden mt-8 pt-8 border-t border-gray-100 w-full">
+          <div className="lg:hidden mt-12 pt-8 border-t border-cream-200/40 w-full">
             {renderTabsAndDetails()}
           </div>
 
           {/* Related Products */}
           {relatedProducts.length > 0 && (
-            <div className="mt-24 border-t border-gray-100 pt-16">
-              <h2 className="text-2xl font-poppins font-bold text-dark mb-8">Related <span className="text-primary-500">Products</span></h2>
-              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="mt-24 border-t border-cream-200/40 pt-16">
+              <h2 className="text-2xl font-serif text-dark mb-8">Related <span className="text-primary-500 italic font-normal">Products</span></h2>
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 {relatedProducts.slice(0, 4).map((p) => (
-                  <Link key={p._id} to={`/products/${p.slug}`} className="card-premium group text-center block h-full">
-                    <div className="product-image-container rounded-xl mb-4 relative">
+                  <Link key={p._id} to={`/products/${p.slug}`} className="group block h-full bg-cream-50/30 border border-cream-200/50 rounded-2xl p-4 transition-all duration-500 hover:shadow-premium hover:-translate-y-1 hover:bg-white">
+                    <div className="aspect-square bg-cream-50 rounded-xl mb-4 relative border border-cream-200/30 flex items-center justify-center p-3 overflow-hidden">
                       {p.isUpcoming && (
-                        <span className="absolute top-2 left-2 z-10 bg-[#7BA639] text-white text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full shadow-sm font-poppins">
+                        <span className="absolute top-2 left-2 z-10 bg-green-800 text-white text-[8px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full shadow-sm font-sans">
                           Upcoming
                         </span>
                       )}
-                      <img src={getImageUrl(p.thumbnail)} alt={p.name} className="product-image group-hover:scale-105" loading="lazy" />
+                      <img src={getImageUrl(p.thumbnail)} alt={p.name} className="max-h-[85%] max-w-[85%] object-contain transition-transform duration-750 group-hover:scale-105" loading="lazy" />
                     </div>
-                    <div className="p-2">
-                      <h3 className="font-poppins font-semibold text-dark group-hover:text-primary-500 transition-colors line-clamp-2">{p.name}</h3>
-                      <p className="font-poppins font-bold text-dark text-sm mt-1">₹{p.sellingPrice || p.mrp}</p>
+                    <div className="p-2 text-center">
+                      <h3 className="font-serif text-dark text-sm group-hover:text-primary-500 transition-colors line-clamp-2">{p.name}</h3>
+                      <p className="font-sans font-bold text-dark text-xs mt-1">₹{p.sellingPrice || p.mrp}</p>
                     </div>
                   </Link>
                 ))}

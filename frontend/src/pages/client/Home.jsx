@@ -36,11 +36,11 @@ const Counter = ({ end, suffix = '', label }) => {
   }, [isInView, end]);
 
   return (
-    <div ref={ref} className="text-center">
-      <p className="text-4xl md:text-5xl font-poppins font-bold gradient-text">
+    <div ref={ref} className="text-center p-6 border border-cream-200/30 rounded-2xl bg-white/40 backdrop-blur-sm">
+      <p className="text-4xl md:text-5xl font-serif text-dark">
         {count}{suffix}
       </p>
-      <p className="text-gray-500 font-inter mt-2">{label}</p>
+      <p className="text-xs uppercase tracking-widest text-gray-500 font-sans mt-3">{label}</p>
     </div>
   );
 };
@@ -52,18 +52,18 @@ const SectionHeading = ({ badge, title, subtitle, center = true, light = false }
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
     transition={{ duration: 0.6 }}
-    className={`mb-8 md:mb-10 ${center ? 'text-center' : ''}`}
+    className={`mb-12 md:mb-16 ${center ? 'text-center' : ''}`}
   >
     {badge && (
-      <span className="inline-block px-4 py-1.5 bg-primary-50 text-primary-500 font-poppins font-semibold text-sm rounded-full mb-4">
+      <span className="inline-block px-4 py-1.5 bg-cream-100 border border-cream-200/50 text-primary-500 font-sans font-semibold text-[10px] uppercase tracking-wider rounded-full mb-4">
         {badge}
       </span>
     )}
-    <h2 className={`text-3xl md:text-4xl lg:text-5xl font-poppins font-bold text-balance ${light ? 'text-white' : 'text-dark'}`}>
+    <h2 className={`text-3xl md:text-4xl lg:text-5xl font-serif leading-tight ${light ? 'text-white' : 'text-dark'}`}>
       {title}
     </h2>
     {subtitle && (
-      <p className={`font-inter mt-4 max-w-2xl mx-auto text-lg ${light ? 'text-gray-400' : 'text-gray-500'}`}>
+      <p className={`font-sans mt-4 max-w-2xl mx-auto text-xs tracking-wider uppercase text-gray-400 ${light ? 'text-gray-400' : 'text-gray-500'}`}>
         {subtitle}
       </p>
     )}
@@ -202,79 +202,78 @@ const Home = () => {
       />
 
       {/* ===== HERO SECTION ===== */}
-      <section className="relative min-h-[75vh] lg:min-h-[80vh] flex items-center bg-cream-50 pt-24 pb-12 lg:pb-16 overflow-hidden">
-        {/* Background decorative elements */}
-        <div className="absolute top-20 left-10 w-64 h-64 bg-primary-100/50 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-80 h-80 bg-amber-100/40 rounded-full blur-3xl" />
+      <section className="relative min-h-[80vh] lg:min-h-[85vh] flex items-center bg-cream-50 pt-28 pb-16 overflow-hidden">
+        {/* Background subtle glowing circles */}
+        <div className="absolute top-1/4 left-1/10 w-96 h-96 bg-primary-100/30 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/10 w-96 h-96 bg-cream-200/40 rounded-full blur-3xl" />
 
         <div className="container-custom relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="max-w-2xl order-2 lg:order-1"
+              className="lg:col-span-7 max-w-2xl order-2 lg:order-1"
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-gray-100 shadow-sm mb-8">
-                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 font-poppins">100% Natural</span>
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-cream-200/50 shadow-sm mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-800 animate-pulse" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500 font-sans">100% Natural Innovation</span>
               </div>
 
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] leading-[1.1] font-poppins font-bold text-dark mb-6 tracking-tight text-balance">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.2rem] leading-[1.1] font-serif text-dark mb-6 tracking-tight text-balance">
                 Nature's <br />
-                <span className="text-primary-500 relative inline-block">
+                <span className="text-primary-500 italic relative inline-block font-normal">
                   Hidden Treasure
-                  <svg className="absolute -bottom-2 left-0 w-full text-primary-200" viewBox="0 0 100 10" preserveAspectRatio="none"><path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="2" fill="transparent" /></svg>
                 </span>
               </h1>
 
-              <p className="text-lg text-gray-500 font-inter mb-10 max-w-lg leading-relaxed">
+              <p className="text-sm md:text-base text-gray-500 font-sans mb-10 max-w-md leading-relaxed tracking-wide">
                 Discover the power of naturally crafted orange peel products made with sustainability, nutrition, and exceptional taste in every bite.
               </p>
 
               <div className="flex flex-wrap gap-4 items-center">
                 <Link
                   to="/products"
-                  className="btn-primary text-base px-8 py-3.5 shadow-xl shadow-primary-500/20 hover:-translate-y-1 transition-all duration-300"
+                  className="flex items-center gap-2 px-8 py-3.5 bg-dark text-white rounded-full text-xs font-semibold font-sans tracking-widest uppercase hover:bg-green-800 hover:-translate-y-0.5 transition-all duration-300 shadow-premium"
                 >
-                  <FiShoppingCart className="w-5 h-5" />
+                  <FiShoppingCart className="w-4 h-4" />
                   Shop Now
                 </Link>
                 <Link
                   to="/about"
-                  className="btn-secondary text-base px-8 py-3.5 bg-white border-gray-200 hover:border-gray-300 hover:bg-gray-50 hover:-translate-y-1 transition-all duration-300 shadow-sm"
+                  className="px-8 py-3.5 bg-transparent border border-cream-200 hover:border-dark hover:bg-cream-50 rounded-full text-xs font-semibold font-sans tracking-widest uppercase hover:-translate-y-0.5 transition-all duration-300"
                 >
                   Our Story
                 </Link>
               </div>
 
               {/* Trust indicators */}
-              <div className="mt-12 flex items-center gap-6 border-t border-gray-200/60 pt-8">
+              <div className="mt-12 flex items-center gap-6 border-t border-cream-200/50 pt-8">
                 <div className="flex -space-x-3">
                   {displayAvatars.map((avatar, idx) => (
                     <div
                       key={idx}
-                      className="w-10 h-10 rounded-full bg-gray-50 border-2 border-white overflow-hidden shadow-sm flex items-center justify-center shrink-0"
+                      className="w-9 h-9 rounded-full bg-white border border-cream-200 overflow-hidden shadow-sm flex items-center justify-center shrink-0"
                       title={avatar.name}
                     >
                       {avatar.url ? (
                         <img src={avatar.url} alt={avatar.name} className="w-full h-full object-cover" />
                       ) : (
-                        <span className="text-dark font-bold text-xs">{getInitials(avatar.name)}</span>
+                        <span className="text-dark font-bold text-[10px]">{getInitials(avatar.name)}</span>
                       )}
                     </div>
                   ))}
                 </div>
                 <div>
-                  <div className="flex items-center gap-1 text-amber-400 text-sm mb-1">
-                    <span className="text-dark font-semibold mr-1.5">{avgRating}/5</span>
-                    <div className="flex text-amber-400">
+                  <div className="flex items-center gap-1.5 text-amber-500 text-xs mb-0.5">
+                    <span className="text-dark font-bold">{avgRating}/5</span>
+                    <div className="flex text-amber-500">
                       {Array.from({ length: 5 }).map((_, i) => (
-                        <span key={i}>{i < roundedStars ? '★' : '☆'}</span>
+                        <span key={i} className="text-sm">{i < roundedStars ? '★' : '☆'}</span>
                       ))}
                     </div>
                   </div>
-                  <p className="text-xs text-gray-500 font-medium">
+                  <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">
                     {totalTestimonials > 0
                       ? `Based on ${totalTestimonials} verified reviews`
                       : 'Loved by 10,000+ customers'}
@@ -285,12 +284,12 @@ const Home = () => {
 
             {/* Premium Product Image */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
+              initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, delay: 0.2 }}
-              className="relative flex justify-center lg:justify-end order-1 lg:order-2"
+              className="lg:col-span-5 flex justify-center lg:justify-end order-1 lg:order-2"
             >
-              <div className="relative w-full max-w-xl aspect-[4/3] lg:aspect-[3/2] rounded-3xl overflow-hidden group bg-transparent">
+              <div className="relative w-full max-w-md aspect-[4/3] rounded-3xl overflow-hidden group bg-transparent border-4 border-white shadow-premium">
                 <video
                   autoPlay
                   loop
@@ -298,23 +297,24 @@ const Home = () => {
                   playsInline
                   preload="auto"
                   poster=""
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-105"
                 >
                   <source src="/videos/hero-video.mp4" type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
-                <div className="absolute inset-0 bg-gradient-to-t from-dark/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-dark/20 via-transparent to-transparent" />
               </div>
             </motion.div>
           </div>
         </div>
       </section>
 
+
       {/* ===== FEATURED PRODUCTS (Live & Wild Harvest) ===== */}
-      <section className="pt-12 md:pt-16 lg:pt-20 pb-8 md:pb-10 lg:pb-12 border-b border-gray-100 overflow-hidden">
+      <section className="py-20 border-b border-cream-200/40 bg-white overflow-hidden">
         <div className="container-custom">
           <SectionHeading
-            badge="Our Products"
+            badge="Our Collection"
             title="Live & Wild Harvest"
             subtitle="Discover our range of premium organic food products made from carefully selected orange peels."
           />
@@ -380,22 +380,22 @@ const Home = () => {
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
-                      className="text-center mt-4 max-w-xl mx-auto"
+                      className="text-center mt-6 max-w-xl mx-auto"
                     >
-                      <span className="text-xs font-semibold uppercase tracking-wider text-primary-500 font-poppins mb-2 block">
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-primary-500 font-sans mb-3 block">
                         {(singleProduct?.category && typeof singleProduct.category === 'object') ? singleProduct.category.name : 'Orange Peel Snacks'}
                       </span>
-                      <h3 className="font-poppins font-bold text-dark text-2xl md:text-3xl mb-3">
+                      <h3 className="font-serif text-dark text-2xl md:text-3xl mb-4">
                         {singleProduct?.name || 'Our Premium Selection'}
                       </h3>
-                      <p className="text-sm md:text-base text-gray-500 font-inter mb-6 leading-relaxed">
+                      <p className="text-xs md:text-sm text-gray-500 font-sans mb-8 leading-relaxed tracking-wide">
                         {singleProduct?.shortDescription || 'Discover our range of premium organic food products made from carefully selected orange peels.'}
                       </p>
                       <Link
                         to={singleProduct ? `/products/${singleProduct.slug}` : '/products'}
-                        className="btn-primary px-8 py-3"
+                        className="inline-flex items-center gap-2 px-8 py-3.5 bg-dark text-white rounded-full text-xs font-semibold font-sans tracking-widest uppercase hover:bg-green-800 transition shadow-premium"
                       >
-                        View Details →
+                        View Details
                       </Link>
                     </motion.div>
                   </div>
@@ -404,7 +404,7 @@ const Home = () => {
             })()
           ) : (
             <div className="container-custom">
-              <div className="grid gap-6 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                 {products.slice(0, 3).map((product, i) => {
                   const hasOptions = product.packageOptions && product.packageOptions.length > 0;
                   const trackInventory = product.trackInventory !== false;
@@ -424,45 +424,45 @@ const Home = () => {
                     >
                       <Link
                         to={`/products/${product.slug}`}
-                        className="card-premium group text-center block h-full !p-3 md:!p-6"
+                        className="group block h-full bg-cream-50/30 border border-cream-200/50 rounded-2xl p-5 transition-all duration-500 hover:shadow-premium hover:-translate-y-1 hover:bg-white"
                       >
-                        <div className="product-image-container rounded-xl mb-3 md:mb-6 relative">
+                        <div className="aspect-square bg-cream-50 rounded-xl mb-6 relative border border-cream-200/30 flex items-center justify-center p-4 overflow-hidden">
                           {product.isUpcoming && (
-                            <span className="hidden md:inline-block absolute top-3 left-3 z-10 bg-[#7BA639] text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-sm font-poppins">
+                            <span className="absolute top-3 left-3 z-10 bg-green-800 text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-sm font-sans">
                               Upcoming
                             </span>
                           )}
                           {isOutOfStock && !product.isUpcoming && (
-                            <span className="hidden md:inline-block absolute top-3 right-3 z-10 bg-red-600 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-sm font-poppins">
+                            <span className="absolute top-3 right-3 z-10 bg-red-600 text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-sm font-sans">
                               Sold Out
                             </span>
                           )}
                           <img
                             src={getImageUrl(product.thumbnail)}
                             alt={product.name}
-                            className={`product-image group-hover:scale-105 ${isOutOfStock && !product.isUpcoming ? 'opacity-50 grayscale-[40%]' : ''}`}
+                            className={`max-h-[85%] max-w-[85%] object-contain transition-transform duration-750 group-hover:scale-105 ${isOutOfStock && !product.isUpcoming ? 'opacity-50 grayscale-[40%]' : ''}`}
                             loading="lazy"
                           />
                         </div>
-                        <h3 className="font-poppins font-semibold text-dark text-sm md:text-lg mb-1 md:mb-2 group-hover:text-primary-500 transition-colors line-clamp-2 md:line-clamp-1">
+                        <h3 className="font-serif text-dark text-base md:text-lg mb-2 group-hover:text-primary-500 transition-colors line-clamp-2 md:line-clamp-1">
                           {product.name}
                         </h3>
 
                         {/* Price section */}
-                        <div className="flex items-center justify-center gap-2 mb-1 md:mb-4">
-                          <span className="font-poppins font-bold text-dark text-sm md:text-base">₹{product.sellingPrice || product.mrp}</span>
+                        <div className="flex items-center justify-center gap-2 mb-4">
+                          <span className="font-sans font-bold text-dark text-sm md:text-base">₹{product.sellingPrice || product.mrp}</span>
                           {product.mrp > product.sellingPrice && (
-                            <span className="text-xs text-gray-400 line-through font-inter">₹{product.mrp}</span>
+                            <span className="text-xs text-gray-400 line-through font-sans">₹{product.mrp}</span>
                           )}
                         </div>
 
-                        <p className="hidden md:block text-sm text-gray-500 font-inter mb-6 line-clamp-2">
+                        <p className="hidden md:block text-xs text-gray-500 font-sans mb-6 line-clamp-2 leading-relaxed tracking-wide">
                           {product.shortDescription || 'Pure, organic orange peel product carefully processed for health.'}
                         </p>
                         <span
-                          className="hidden md:inline-block mt-auto text-sm font-poppins font-semibold text-primary-500 hover:text-dark transition-colors"
+                          className="inline-flex items-center gap-1.5 text-xs font-sans font-semibold text-primary-500 uppercase tracking-widest group-hover:text-dark transition-colors"
                         >
-                          View Details →
+                          View Details
                         </span>
                       </Link>
                     </motion.div>
@@ -475,21 +475,21 @@ const Home = () => {
           <div className="container-custom">
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="card-premium items-center">
-                  <div className="product-image-container skeleton rounded-xl mb-6" />
-                  <div className="h-5 skeleton w-3/4 mb-3" />
-                  <div className="h-4 skeleton w-full mb-6" />
-                  <div className="h-4 skeleton w-1/2 mt-auto" />
+                <div key={i} className="border border-cream-200 bg-cream-50/20 rounded-2xl p-5 flex flex-col items-center">
+                  <div className="aspect-square w-full skeleton rounded-xl mb-6" />
+                  <div className="h-4 skeleton w-3/4 mb-3" />
+                  <div className="h-3 skeleton w-full mb-6" />
+                  <div className="h-3 skeleton w-1/2 mt-auto" />
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        <div className="container-custom mt-8 text-center">
+        <div className="container-custom mt-12 text-center">
           <Link
             to="/products"
-            className="btn-outline"
+            className="inline-flex items-center justify-center px-8 py-3 bg-transparent border border-cream-200 hover:border-dark rounded-full text-xs font-semibold font-sans tracking-widest uppercase transition-colors"
           >
             View All Products
           </Link>
@@ -500,21 +500,21 @@ const Home = () => {
 
 
       {/* ===== OUR STORY ===== */}
-      <section className="pt-8 md:pt-10 lg:pt-12 pb-8 md:pb-10 lg:pb-12 bg-cream-50">
+      <section className="py-20 md:py-28 bg-cream-50">
         <div className="container-custom">
-          <div className="grid lg:grid-cols-2 gap-10 lg:gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              <div className="relative">
+              <div className="relative p-2 bg-white border border-cream-200 rounded-3xl shadow-premium">
                 <img
                   src="/images/peelkraft-waste-to-wonder-orange-peel-story.jpg"
                   alt="PeelKraft JuiceTap Global - From Waste to Wonder Organic Orange Peel Products"
                   title="PeelKraft JuiceTap Global - Sustainable Orange Peel Upcycling"
-                  className="rounded-2xl shadow-sm w-full object-cover border border-gray-100 hover:scale-[1.02] transition-transform duration-700"
+                  className="rounded-2xl w-full object-cover hover:scale-[1.01] transition-transform duration-750"
                   loading="lazy"
                 />
               </div>
@@ -525,37 +525,40 @@ const Home = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
+              className="space-y-6"
             >
-              <span className="inline-block px-3 py-1 bg-primary-50 text-primary-500 font-poppins font-semibold text-xs uppercase tracking-widest rounded-full mb-6">
+              <span className="inline-block px-4 py-1.5 bg-white border border-cream-200 text-primary-500 font-sans font-semibold text-[10px] uppercase tracking-wider rounded-full">
                 Our Story
               </span>
-              <h2 className="text-page font-poppins font-bold text-dark mb-6">
-                From Waste to <span className="text-primary-500">Wonder</span>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-dark leading-tight">
+                From Waste to <span className="text-primary-500 italic">Wonder</span>
               </h2>
-              <p className="text-gray-500 font-inter leading-relaxed mb-6">
+              <p className="text-gray-500 font-sans text-xs md:text-sm leading-relaxed tracking-wide">
                 PeelKraft, powered by JuiceTap Global Pvt. Ltd., transforms orange peels collected from our fully automatic Valencia orange juice machines into premium natural products. Instead of creating waste, we give every peel a second life through Orange Peel Candy, Peel Powder, and Orange Tea—promoting sustainability, innovation, and a cleaner future.
               </p>
-              <p className="text-gray-500 font-inter leading-relaxed mb-6">
+              <p className="text-gray-500 font-sans text-xs md:text-sm leading-relaxed tracking-wide">
                 Today, PeelKraft transforms hundreds of kilograms of orange peels into delicious, nutritious products that are loved by health-conscious consumers across India.
               </p>
-              <Link to="/about" className="btn-secondary">
-                Read Our Story
-              </Link>
+              <div className="pt-4">
+                <Link to="/about" className="inline-flex px-8 py-3.5 bg-dark text-white hover:bg-green-800 rounded-full text-xs font-semibold font-sans tracking-widest uppercase transition">
+                  Read Our Story
+                </Link>
+              </div>
             </motion.div>
           </div>
         </div>
       </section>
 
       {/* ===== WHY PEELKRAFT ===== */}
-      <section className="pt-8 md:pt-10 lg:pt-12 pb-8 md:pb-10 lg:pb-12 bg-white border-t border-gray-100">
+      <section className="py-20 md:py-28 bg-white border-t border-cream-200/40">
         <div className="container-custom">
           <SectionHeading
             badge="Why PeelKraft"
-            title={<>What Makes Us <span className="text-primary-500">Different</span></>}
+            title={<>What Makes Us <span className="text-primary-500 italic font-normal">Different</span></>}
             subtitle="We're not just another food brand. We're building a sustainable food ecosystem."
           />
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {whyItems.map((item, i) => {
               const Icon = item.icon;
               return (
@@ -565,13 +568,13 @@ const Home = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="card-premium group"
+                  className="bg-cream-50/20 border border-cream-200/60 rounded-2xl p-6 transition-all duration-300 hover:shadow-premium hover:-translate-y-1 hover:bg-white group"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-primary-50 flex items-center justify-center mb-6 group-hover:bg-primary-500 transition-colors duration-300">
-                    <Icon className="w-6 h-6 text-primary-500 group-hover:text-white transition-colors duration-300" />
+                  <div className="w-10 h-10 rounded-xl bg-cream-100 flex items-center justify-center mb-6 group-hover:bg-primary-500 transition-colors duration-500">
+                    <Icon className="w-5 h-5 text-primary-500 group-hover:text-white transition-colors duration-500" />
                   </div>
-                  <h3 className="font-poppins font-semibold text-lg text-dark mb-2">{item.title}</h3>
-                  <p className="text-gray-500 font-inter text-sm">{item.desc}</p>
+                  <h3 className="font-serif text-dark text-lg mb-3">{item.title}</h3>
+                  <p className="text-gray-500 font-sans text-xs md:text-sm leading-relaxed tracking-wide">{item.desc}</p>
                 </motion.div>
               );
             })}
@@ -580,15 +583,15 @@ const Home = () => {
       </section>
 
       {/* ===== MANUFACTURING PROCESS ===== */}
-      <section className="pt-8 md:pt-10 lg:pt-12 pb-8 md:pb-10 lg:pb-12 bg-gray-50 relative overflow-hidden">
+      <section className="py-20 md:py-28 bg-cream-50/50 border-t border-cream-200/40 relative overflow-hidden">
         <div className="container-custom relative z-10">
           <SectionHeading
             badge="Our Process"
-            title={<>How We <span className="text-primary-500">Craft</span> Perfection</>}
+            title={<>How We <span className="text-primary-500 italic font-normal">Craft</span> Perfection</>}
             subtitle="Every PeelKraft product goes through a meticulous 5-step process"
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {processSteps.map((step, i) => (
               <motion.div
                 key={i}
@@ -596,17 +599,17 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="relative card-premium p-8 hover:border-primary-500/20 flex flex-col h-full"
+                className="relative bg-white border border-cream-200/50 rounded-2xl p-8 hover:shadow-premium transition-all duration-300 flex flex-col h-full group"
               >
-                <span className="text-5xl font-poppins font-bold text-gray-100 absolute top-4 right-6 transition-colors group-hover:text-primary-50">
+                <span className="text-5xl font-serif text-cream-200/50 absolute top-4 right-6 transition-colors group-hover:text-primary-100/50">
                   {step.num}
                 </span>
                 <div className="flex-1">
-                  <h3 className="font-poppins font-semibold text-dark text-xl mb-1 relative z-10">{step.title}</h3>
+                  <h3 className="font-serif text-dark text-lg mb-1 relative z-10">{step.title}</h3>
                   {step.subtitle && (
-                    <p className="text-xs text-primary-500 font-semibold font-poppins mb-3 relative z-10 uppercase tracking-wider">{step.subtitle}</p>
+                    <p className="text-[10px] text-primary-500 font-semibold font-sans mb-3 relative z-10 uppercase tracking-wider">{step.subtitle}</p>
                   )}
-                  <p className="text-gray-500 font-inter text-sm relative z-10 leading-relaxed mt-2">{step.desc}</p>
+                  <p className="text-gray-500 font-sans text-xs md:text-sm relative z-10 leading-relaxed mt-3">{step.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -615,7 +618,7 @@ const Home = () => {
       </section>
 
       {/* ===== STATISTICS ===== */}
-      <section className="py-6 md:py-8 lg:py-10 bg-white border-y border-gray-100">
+      <section className="py-16 md:py-20 bg-white border-y border-cream-200/40">
         <div className="container-custom">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {(() => {
@@ -642,20 +645,20 @@ const Home = () => {
       </section>
 
       {/* ===== TESTIMONIALS ===== */}
-      <section className="pt-8 md:pt-10 lg:pt-12 pb-6 md:pb-8 lg:pb-10 bg-gray-50">
+      <section className="py-20 md:py-28 bg-cream-50/50">
         <div className="container-custom">
           <SectionHeading
             badge="Testimonials"
-            title={<>What Our Customers <span className="text-primary-500">Say</span></>}
+            title={<>What Our Customers <span className="text-primary-500 italic font-normal">Say</span></>}
           />
 
-          <div className="flex justify-center mt-2 mb-8">
+          <div className="flex justify-center mt-2 mb-10">
             <button
               onClick={() => {
                 console.log('Home: Clicked Write a Review, setting reviewModalOpen to true');
                 setReviewModalOpen(true);
               }}
-              className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-primary-500 hover:bg-primary-600 text-white font-poppins font-bold text-xs uppercase tracking-wider rounded-xl transition shadow-md shadow-primary-500/10 active:scale-98"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-dark hover:bg-green-800 text-white font-sans font-semibold text-xs uppercase tracking-widest rounded-full transition shadow-premium"
             >
               Write a Review
             </button>
@@ -694,14 +697,14 @@ const Home = () => {
               ))}
             </Swiper>
           ) : (
-            <div className="text-center p-12 bg-white rounded-3xl border border-gray-100 max-w-xl mx-auto shadow-sm">
-              <p className="text-gray-400 font-inter text-sm mb-4">No reviews featured yet. Share your experience with us!</p>
+            <div className="text-center p-12 bg-white rounded-3xl border border-cream-200 max-w-xl mx-auto shadow-sm">
+              <p className="text-gray-400 font-sans text-xs md:text-sm mb-6">No reviews featured yet. Share your experience with us!</p>
               <button
                 onClick={() => {
                   console.log('Home (empty): Clicked Write First Review, setting reviewModalOpen to true');
                   setReviewModalOpen(true);
                 }}
-                className="px-4 py-2 bg-gray-50 hover:bg-gray-100 text-gray-600 border border-gray-200 font-poppins font-semibold text-xs rounded-xl transition"
+                className="px-6 py-3 bg-cream-50 hover:bg-cream-100 text-dark border border-cream-200 font-sans font-semibold text-xs uppercase tracking-widest rounded-full transition"
               >
                 Write First Review
               </button>
@@ -711,11 +714,11 @@ const Home = () => {
       </section>
 
       {/* ===== LATEST BLOGS ===== */}
-      <section className="pt-6 md:pt-8 lg:pt-10 pb-8 md:pb-10 lg:pb-12 bg-white border-t border-gray-100">
+      <section className="py-20 md:py-28 bg-white border-t border-cream-200/40">
         <div className="container-custom">
           <SectionHeading
             badge="From Our Blog"
-            title={<>Latest <span className="gradient-text">Insights</span></>}
+            title={<>Latest <span className="text-primary-500 italic font-normal">Insights</span></>}
             subtitle="Stay updated with health tips, recipes, and sustainability stories"
           />
 
@@ -728,24 +731,23 @@ const Home = () => {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
               >
-                <Link to={`/blogs/${blog.slug}`} className="card-premium group block h-full">
+                <Link to={`/blogs/${blog.slug}`} className="group block h-full bg-cream-50/20 border border-cream-200/50 rounded-2xl overflow-hidden hover:shadow-premium transition-all duration-300">
                   <div className="relative overflow-hidden aspect-video">
                     <img
                       src={getImageUrl(blog.featuredImage)}
                       alt={blog.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[1.5s]"
                       loading="lazy"
                     />
-                    <span className="absolute top-4 left-4 px-3 py-1 bg-primary-500 text-white text-xs font-semibold rounded-full">
+                    <span className="absolute top-4 left-4 px-3 py-1 bg-primary-500 text-white text-[9px] uppercase tracking-widest font-sans rounded-full">
                       {blog.category}
                     </span>
                   </div>
-                  <div className="pt-4">
-
-                    <h3 className="font-poppins font-semibold text-lg text-dark mb-3 line-clamp-2 group-hover:text-primary-500 transition-colors">
+                  <div className="p-6">
+                    <h3 className="font-serif text-dark text-base md:text-lg mb-3 line-clamp-2 group-hover:text-primary-500 transition-colors">
                       {blog.title}
                     </h3>
-                    <p className="text-sm text-gray-500 line-clamp-3">
+                    <p className="text-xs md:text-sm text-gray-500 font-sans line-clamp-3 leading-relaxed tracking-wide">
                       {blog.excerpt || truncateText(stripHtml(blog.content), 120)}
                     </p>
                   </div>
@@ -754,20 +756,20 @@ const Home = () => {
             ))}
           </div>
 
-          <div className="text-center mt-8">
-            <Link to="/blogs" className="btn-outline">
-              Read All Articles <FiArrowRight />
+          <div className="text-center mt-12">
+            <Link to="/blogs" className="inline-flex items-center gap-1.5 text-xs font-sans font-bold uppercase tracking-widest text-primary-500 hover:text-dark transition-colors">
+              Read All Articles <FiArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         </div>
       </section>
 
       {/* ===== FAQ ===== */}
-      <section className="py-12 md:py-16 lg:py-20 bg-cream-50 border-t border-gray-100">
+      <section className="py-20 md:py-28 bg-cream-50/30 border-t border-cream-200/40">
         <div className="container-custom max-w-3xl">
           <SectionHeading
             badge="FAQ"
-            title={<>Frequently Asked <span className="text-primary-500">Questions</span></>}
+            title={<>Frequently Asked <span className="text-primary-500 italic font-normal">Questions</span></>}
           />
 
           <div className="space-y-4">
@@ -778,15 +780,15 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
-                className={`border rounded-2xl overflow-hidden transition-all duration-300 bg-white ${openFaq === i ? 'border-primary-500/30 shadow-[0_4px_25px_rgba(247,147,30,0.08)]' : 'border-gray-100'}`}
+                className={`border rounded-2xl overflow-hidden transition-all duration-300 bg-white ${openFaq === i ? 'border-primary-500/20 shadow-premium' : 'border-cream-200/60'}`}
               >
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors"
+                  className="w-full flex items-center justify-between p-5 text-left hover:bg-cream-50/20 transition-colors"
                 >
-                  <span className="font-poppins font-semibold text-dark pr-4">{faq.question}</span>
+                  <span className="font-serif text-dark text-sm md:text-base">{faq.question}</span>
                   <span className={`text-primary-500 transition-transform duration-300 ${openFaq === i ? 'rotate-45' : ''}`}>
-                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
                   </span>
                 </button>
                 <motion.div
@@ -795,14 +797,14 @@ const Home = () => {
                   transition={{ duration: 0.3 }}
                   className="overflow-hidden"
                 >
-                  <p className="px-6 pb-6 text-gray-500 font-inter leading-relaxed text-sm">{faq.answer}</p>
+                  <p className="px-5 pb-5 text-gray-500 font-sans leading-relaxed text-xs md:text-sm tracking-wide">{faq.answer}</p>
                 </motion.div>
               </motion.div>
             ))}
           </div>
 
-          <div className="text-center mt-8">
-            <Link to="/faq" className="btn-secondary">
+          <div className="text-center mt-12">
+            <Link to="/faq" className="inline-flex px-8 py-3.5 bg-transparent border border-cream-200 hover:border-dark rounded-full text-xs font-semibold font-sans tracking-widest uppercase transition">
               View All FAQs
             </Link>
           </div>
@@ -810,19 +812,19 @@ const Home = () => {
       </section>
 
       {/* ===== AMAZON STORE SHOWCASE SECTION ===== */}
-      <section className="py-12 md:py-16 lg:py-20 bg-dark text-white relative overflow-hidden">
+      <section className="py-20 bg-dark text-white relative overflow-hidden">
         <div className="container-custom relative z-10">
-          <div className="grid lg:grid-cols-12 gap-16 items-center">
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             {/* Left Column: Heading & Branding */}
             <div className="lg:col-span-6 space-y-6 text-center lg:text-left">
-              <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/10 text-primary-500 font-poppins font-semibold text-xs uppercase tracking-widest rounded-full border border-white/10">
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/5 text-primary-500 font-sans font-semibold text-[10px] uppercase tracking-wider rounded-full border border-white/10">
                 <FiShoppingCart className="w-3.5 h-3.5" />
                 Official Amazon Store
               </span>
-              <h2 className="text-page font-poppins font-bold text-white leading-tight">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-white leading-tight">
                 Shop PeelKraft™ on Amazon
               </h2>
-              <p className="text-gray-400 font-inter text-body max-w-md mx-auto lg:mx-0">
+              <p className="text-gray-400 font-sans text-xs md:text-sm leading-relaxed tracking-wide max-w-md mx-auto lg:mx-0">
                 Get fast & reliable delivery directly to your doorstep. Experience 100% natural, premium citrus peel products with Amazon Prime delivery.
               </p>
               <div className="pt-4 flex flex-wrap gap-4 justify-center lg:justify-start">
@@ -830,7 +832,7 @@ const Home = () => {
                   href={settings?.amazonStoreUrl || "https://www.amazon.in"}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-amazon"
+                  className="inline-flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white rounded-full px-6 py-3.5 text-xs font-semibold font-sans tracking-wider uppercase transition shadow-md"
                 >
                   <FiShoppingCart className="w-4 h-4" />
                   Visit Amazon Store
@@ -841,30 +843,30 @@ const Home = () => {
             {/* Right Column: Featured Products Available on Amazon */}
             <div className="lg:col-span-6">
               {products.length > 0 ? (
-                <div className="grid sm:grid-cols-2 gap-4">
+                <div className="grid sm:grid-cols-2 gap-6">
                   {products.slice(0, 2).map((prod) => (
-                    <div key={prod._id} className="bg-white/5 border border-white/10 rounded-2xl p-5 flex flex-col justify-between group hover:border-primary-500/30 transition-colors duration-300">
+                    <div key={prod._id} className="bg-white/5 border border-white/10 rounded-2xl p-5 flex flex-col justify-between group hover:border-primary-500/20 transition-all duration-300">
                       <div className="flex items-center gap-4 mb-6">
                         <img
                           src={getImageUrl(prod.thumbnail || prod.featuredImage)}
                           alt={prod.name}
-                          className="w-16 h-16 object-contain rounded-xl bg-white p-2"
+                          className="w-14 h-14 object-contain rounded-xl bg-white p-2"
                         />
                         <div>
-                          <span className="text-[10px] uppercase font-bold text-primary-500 tracking-wider">
+                          <span className="text-[9px] uppercase font-bold text-primary-500 tracking-wider">
                             Amazon Fulfilled
                           </span>
-                          <h4 className="font-poppins font-semibold text-sm text-white line-clamp-1 mt-1">
+                          <h4 className="font-serif text-sm text-white line-clamp-1 mt-1">
                             {prod.name}
                           </h4>
-                          <p className="text-xs text-gray-400 font-inter mt-1">{prod.weight || 'Premium Pack'}</p>
+                          <p className="text-[10px] text-gray-400 font-sans uppercase tracking-wider mt-1">{prod.weight || 'Premium Pack'}</p>
                         </div>
                       </div>
                       <a
                         href={prod.amazonLink || settings?.amazonStoreUrl || "https://www.amazon.in"}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full py-3 bg-white hover:bg-gray-100 text-dark font-poppins font-semibold text-xs rounded-full flex items-center justify-center gap-2 transition-colors"
+                        className="w-full py-2.5 bg-white hover:bg-cream-100 text-dark font-sans font-semibold text-[10px] uppercase tracking-wider rounded-full flex items-center justify-center gap-2 transition-colors"
                       >
                         <FiShoppingCart className="w-3.5 h-3.5" />
                         Buy Now
@@ -874,7 +876,7 @@ const Home = () => {
                 </div>
               ) : (
                 <div className="text-center p-8 bg-white/5 rounded-2xl border border-white/10">
-                  <p className="text-gray-400 font-inter text-sm">Explore all PeelKraft products on Amazon</p>
+                  <p className="text-gray-400 font-sans text-xs md:text-sm">Explore all PeelKraft products on Amazon</p>
                 </div>
               )}
             </div>

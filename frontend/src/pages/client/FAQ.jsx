@@ -23,36 +23,36 @@ const FAQ = () => {
     <>
       <SEOHead title="FAQ" description="Find answers to frequently asked questions about PeelKraft products." canonicalUrl="/faq" schema={faqSchema} />
 
-      <section className="pt-32 pb-12 bg-cream-50">
+      <section className="pt-36 pb-12 bg-cream-50 border-b border-cream-200/30">
         <div className="container-custom w-full">
           <Breadcrumbs items={[{ label: 'FAQ' }]} />
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="mt-8">
-            <h1 className="text-page font-poppins font-bold text-dark mb-4">Frequently Asked <span className="text-primary-500">Questions</span></h1>
+            <h1 className="text-4xl md:text-5xl font-serif text-dark mb-4">Frequently Asked <span className="text-primary-500 italic font-normal">Questions</span></h1>
           </motion.div>
         </div>
       </section>
 
-      <section className="py-6 md:py-10 bg-white">
+      <section className="py-16 bg-white">
         <div className="container-custom max-w-3xl">
           {/* Category Filter */}
           <div className="flex flex-wrap gap-2 mb-10">
             {categories.map(cat => (
-              <button key={cat} onClick={() => setActiveCategory(cat)} className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${activeCategory === cat ? 'bg-primary-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>{cat}</button>
+              <button key={cat} onClick={() => setActiveCategory(cat)} className={`px-5 py-2 rounded-full text-xs font-sans font-bold uppercase tracking-wider transition-all ${activeCategory === cat ? 'bg-dark text-white shadow-premium' : 'bg-cream-50 border border-cream-200/50 text-gray-500 hover:bg-cream-100'}`}>{cat}</button>
             ))}
           </div>
 
           <div className="space-y-4">
             {filtered.map((faq, i) => (
               <motion.div key={faq._id || i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.03 }}
-                className="border border-gray-100 rounded-2xl overflow-hidden">
-                <button onClick={() => setOpenIndex(openIndex === i ? null : i)} className="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors">
-                  <span className="font-poppins font-semibold text-dark pr-4">{faq.question}</span>
+                className="border border-cream-200/55 rounded-2xl overflow-hidden shadow-sm bg-white">
+                <button onClick={() => setOpenIndex(openIndex === i ? null : i)} className="w-full flex items-center justify-between p-6 text-left hover:bg-cream-50/40 transition-colors">
+                  <span className="font-serif text-dark text-base pr-4">{faq.question}</span>
                   <span className={`text-primary-500 transition-transform duration-300 shrink-0 ${openIndex === i ? 'rotate-45' : ''}`}>
-                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
                   </span>
                 </button>
                 <motion.div initial={false} animate={{ height: openIndex === i ? 'auto' : 0, opacity: openIndex === i ? 1 : 0 }} transition={{ duration: 0.3 }} className="overflow-hidden">
-                  <p className="px-6 pb-6 text-gray-500 leading-relaxed">{faq.answer}</p>
+                  <p className="px-6 pb-6 text-gray-500 leading-relaxed font-sans text-xs sm:text-sm tracking-wide">{faq.answer}</p>
                 </motion.div>
               </motion.div>
             ))}

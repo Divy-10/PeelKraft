@@ -46,8 +46,8 @@ const Navbar = () => {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className={`fixed top-0 left-0 right-0 z-[999] transition-all duration-500 bg-white border-b border-gray-100 ${
-          scrolled ? 'py-3 shadow-[0_2px_20px_-8px_rgba(0,0,0,0.05)]' : 'py-4'
+        className={`fixed top-0 left-0 right-0 z-[999] transition-all duration-500 bg-cream-50/90 backdrop-blur-md border-b border-cream-200/40 ${
+          scrolled ? 'py-2.5 shadow-[0_4px_30px_rgba(30,37,30,0.03)]' : 'py-4'
         }`}
       >
         <div className="container-custom">
@@ -57,17 +57,17 @@ const Navbar = () => {
               <img
                 src="/images/logo.png"
                 alt="PeelKraft"
-                className="h-9 md:h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                className="h-8 md:h-9 w-auto object-contain transition-transform duration-500 group-hover:scale-[1.02]"
               />
             </Link>
 
             {/* Desktop Nav - Uncluttered, Spacious, Single Line */}
-            <div className="hidden lg:flex items-center gap-6 xl:gap-8">
+            <div className="hidden lg:flex items-center gap-8">
               {navLinks.map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`relative py-1 font-inter font-medium text-[15px] whitespace-nowrap transition-colors duration-200 ${
+                  className={`relative py-1 font-sans font-medium text-[14px] uppercase tracking-wider transition-colors duration-300 ${
                     isActive(link.path)
                       ? 'text-dark'
                       : 'text-gray-500 hover:text-dark'
@@ -77,8 +77,8 @@ const Navbar = () => {
                   {isActive(link.path) && (
                     <motion.div
                       layoutId="active-nav-underline"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#F7931E] rounded-full"
-                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                      className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-primary-500"
+                      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                     />
                   )}
                 </Link>
@@ -86,35 +86,35 @@ const Navbar = () => {
             </div>
 
             {/* Right Actions */}
-            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
               <Link
                 to="/search"
-                className="p-2.5 rounded-full hover:bg-gray-100 text-gray-700 transition-colors hidden md:flex"
+                className="p-2.5 rounded-full hover:bg-cream-100 text-dark transition-colors hidden md:flex"
                 aria-label="Search"
               >
-                <FiSearch className="w-5 h-5" />
+                <FiSearch className="w-4.5 h-4.5" />
               </Link>
 
               {/* Wishlist Link */}
               {isAuthenticated && (
                 <Link
                   to="/wishlist"
-                  className="p-2.5 rounded-full hover:bg-gray-100 text-gray-700 transition-colors flex"
+                  className="p-2.5 rounded-full hover:bg-cream-100 text-dark transition-colors flex"
                   aria-label="Wishlist"
                 >
-                  <FiHeart className="w-5 h-5" />
+                  <FiHeart className="w-4.5 h-4.5" />
                 </Link>
               )}
 
               {/* Cart link with badge */}
               <Link
                 to="/cart"
-                className="p-2.5 rounded-full hover:bg-gray-100 text-gray-700 transition-colors relative"
+                className="p-2.5 rounded-full hover:bg-cream-100 text-dark transition-colors relative"
                 aria-label="Cart"
               >
-                <FiShoppingCart className="w-5 h-5" />
+                <FiShoppingCart className="w-4.5 h-4.5" />
                 {cartCount > 0 && (
-                  <span className="absolute top-1 right-1 bg-primary-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center font-poppins">
+                  <span className="absolute top-1 right-1 bg-primary-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center font-sans">
                     {cartCount}
                   </span>
                 )}
@@ -124,31 +124,31 @@ const Navbar = () => {
               {isAuthenticated ? (
                 <div className="relative group hidden md:block">
                   <button
-                    className="flex items-center gap-1.5 px-4 py-2 border border-gray-200 hover:border-gray-300 rounded-xl text-sm font-semibold text-dark font-poppins transition bg-white"
+                    className="flex items-center gap-2 px-4 py-2 border border-cream-200/60 hover:border-cream-200 rounded-full text-xs font-semibold text-dark font-sans tracking-wide uppercase transition bg-white"
                   >
-                    <FiUser className="w-4 h-4 text-primary-500" />
+                    <FiUser className="w-3.5 h-3.5 text-primary-500" />
                     <span>{user?.firstName || 'Account'}</span>
                   </button>
                   {/* Dropdown containing details */}
                   <div className="absolute right-0 pt-2 w-56 hidden group-hover:block z-50">
-                    <div className="bg-white border border-gray-100 rounded-2xl shadow-xl py-3 text-sm font-inter overflow-hidden">
-                      <div className="px-5 py-3 border-b border-gray-100 bg-gray-50/50">
-                        <p className="font-poppins font-bold text-dark text-sm">{user?.firstName} {user?.lastName}</p>
-                        <p className="text-gray-400 text-xs truncate mt-0.5">{user?.email}</p>
+                    <div className="bg-white border border-cream-100 rounded-2xl shadow-premium py-2.5 text-xs font-sans overflow-hidden">
+                      <div className="px-5 py-3 border-b border-cream-100 bg-cream-50/50">
+                        <p className="font-semibold text-dark text-xs uppercase tracking-wide">{user?.firstName} {user?.lastName}</p>
+                        <p className="text-gray-400 text-[11px] truncate mt-0.5">{user?.email}</p>
                       </div>
-                      <div className="p-1.5 space-y-1">
-                        <Link to="/my-profile" className="flex items-center gap-2 px-4 py-2.5 rounded-xl hover:bg-primary-50 hover:text-primary-600 text-gray-700 font-medium transition">
-                          <FiUser className="w-4 h-4" /> My Profile
+                      <div className="p-1 space-y-0.5">
+                        <Link to="/my-profile" className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-cream-50 text-gray-700 font-medium transition">
+                          <FiUser className="w-3.5 h-3.5" /> My Profile
                         </Link>
-                        <Link to="/my-orders" className="flex items-center gap-2 px-4 py-2.5 rounded-xl hover:bg-primary-50 hover:text-primary-600 text-gray-700 font-medium transition">
-                          <FiShoppingCart className="w-4 h-4" /> My Orders
+                        <Link to="/my-orders" className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-cream-50 text-gray-700 font-medium transition">
+                          <FiShoppingCart className="w-3.5 h-3.5" /> My Orders
                         </Link>
-                        <hr className="border-gray-100 my-1.5 mx-2" />
+                        <hr className="border-cream-100 my-1 mx-2" />
                         <button
                           onClick={logout}
-                          className="flex items-center gap-2 w-full text-left px-4 py-2.5 rounded-xl hover:bg-red-50 text-red-500 font-semibold transition"
+                          className="flex items-center gap-2 w-full text-left px-4 py-2 rounded-lg hover:bg-red-50 text-red-500 font-semibold transition"
                         >
-                          <FiLogOut className="w-4 h-4" /> Sign Out
+                          <FiLogOut className="w-3.5 h-3.5" /> Sign Out
                         </button>
                       </div>
                     </div>
@@ -157,9 +157,9 @@ const Navbar = () => {
               ) : (
                 <Link
                   to="/login"
-                  className="hidden md:flex items-center gap-1.5 px-4 py-2 bg-dark text-white rounded-xl text-sm font-semibold font-poppins hover:bg-gray-800 transition"
+                  className="hidden md:flex items-center gap-2 px-5 py-2.5 bg-dark text-white rounded-full text-xs font-semibold font-sans tracking-wider uppercase hover:bg-green-800 transition-all duration-300"
                 >
-                  <FiUser className="w-4 h-4" />
+                  <FiUser className="w-3.5 h-3.5" />
                   <span>Login</span>
                 </Link>
               )}
@@ -167,10 +167,10 @@ const Navbar = () => {
               {/* Mobile Menu Toggle */}
               <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="lg:hidden p-2.5 rounded-full hover:bg-gray-100 text-gray-700 transition-colors"
+                className="lg:hidden p-2.5 rounded-full hover:bg-cream-100 text-dark transition-colors"
                 aria-label="Toggle menu"
               >
-                {isOpen ? <FiX className="w-6 h-6" /> : <FiMenu className="w-6 h-6" />}
+                {isOpen ? <FiX className="w-5.5 h-5.5" /> : <FiMenu className="w-5.5 h-5.5" />}
               </button>
             </div>
           </nav>
@@ -194,26 +194,26 @@ const Navbar = () => {
                 animate={{ x: 0 }}
                 exit={{ x: '100%' }}
                 transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                className="fixed top-0 right-0 h-screen h-[100dvh] z-[1001] w-80 max-w-[85vw] bg-white shadow-2xl p-6 flex flex-col lg:hidden border-l border-gray-100"
+                className="fixed top-0 right-0 h-screen h-[100dvh] z-[1001] w-80 max-w-[85vw] bg-cream-50 shadow-2xl p-6 flex flex-col lg:hidden border-l border-cream-200"
               >
                 {/* Header inside drawer */}
-                <div className="flex items-center justify-between pb-6 border-b border-gray-100 mb-6">
-                  <span className="font-poppins font-bold text-lg text-dark">Menu</span>
+                <div className="flex items-center justify-between pb-6 border-b border-cream-100 mb-6">
+                  <span className="font-sans font-bold text-xs uppercase tracking-wider text-dark">Menu</span>
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="p-2 rounded-full hover:bg-gray-100 text-gray-700 transition-colors"
+                    className="p-2 rounded-full hover:bg-cream-100 text-dark transition-colors"
                     aria-label="Close menu"
                   >
-                    <FiX className="w-6 h-6" />
+                    <FiX className="w-5 h-5" />
                   </button>
                 </div>
                 {/* Search Bar inside Drawer */}
-                <div className="mb-4 relative">
-                  <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <div className="mb-6 relative">
+                  <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
                     type="text"
                     placeholder="Search products..."
-                    className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-inter focus:outline-none focus:border-primary-300"
+                    className="w-full pl-10 pr-4 py-2.5 bg-white border border-cream-200/80 rounded-full text-xs font-sans focus:outline-none focus:border-primary-500 transition-colors"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && e.target.value.trim()) {
                         navigate(`/search?q=${encodeURIComponent(e.target.value.trim())}`);
@@ -223,7 +223,7 @@ const Navbar = () => {
                   />
                 </div>
                 {/* Links */}
-                <div className="flex-1 space-y-2 overflow-y-auto">
+                <div className="flex-1 space-y-1 overflow-y-auto">
                   {navLinks.map((link, i) => (
                     <motion.div
                       key={link.path}
@@ -233,10 +233,10 @@ const Navbar = () => {
                     >
                       <Link
                         to={link.path}
-                        className={`block px-4 py-3.5 rounded-xl font-poppins font-semibold transition-all text-base ${
+                        className={`block px-4 py-3 rounded-lg font-sans font-medium text-xs uppercase tracking-wider transition-all ${
                           isActive(link.path)
-                            ? 'bg-primary-50 text-primary-500'
-                            : 'text-gray-600 hover:bg-gray-50'
+                            ? 'bg-white border-l-2 border-primary-500 text-primary-500 font-semibold'
+                            : 'text-gray-600 hover:bg-white/50'
                         }`}
                       >
                         {link.name}
@@ -252,8 +252,8 @@ const Navbar = () => {
                     >
                       <Link
                         to="/wishlist"
-                        className={`block px-4 py-3.5 rounded-xl font-poppins font-semibold transition-all text-base ${
-                          isActive('/wishlist') ? 'bg-primary-50 text-primary-500' : 'text-gray-600 hover:bg-gray-50'
+                        className={`block px-4 py-3 rounded-lg font-sans font-medium text-xs uppercase tracking-wider transition-all ${
+                          isActive('/wishlist') ? 'bg-white border-l-2 border-primary-500 text-primary-500 font-semibold' : 'text-gray-600 hover:bg-white/50'
                         }`}
                       >
                         Wishlist
@@ -262,18 +262,18 @@ const Navbar = () => {
                   )}
                 </div>
                 {/* Action button at bottom */}
-                <div className="pt-6 border-t border-gray-100 mt-auto">
+                <div className="pt-6 border-t border-cream-200 mt-auto">
                   {isAuthenticated ? (
                     <Link
                       to="/my-profile"
-                      className="flex bg-dark text-white rounded-xl w-full justify-center py-3.5 text-base font-semibold font-poppins hover:bg-gray-800 transition"
+                      className="flex bg-dark text-white rounded-full w-full justify-center py-3 text-xs font-semibold font-sans tracking-widest uppercase hover:bg-green-800 transition"
                     >
                       My Profile
                     </Link>
                   ) : (
                     <Link
                       to="/login"
-                      className="flex bg-dark text-white rounded-xl w-full justify-center py-3.5 text-base font-semibold font-poppins hover:bg-gray-800 transition"
+                      className="flex bg-dark text-white rounded-full w-full justify-center py-3 text-xs font-semibold font-sans tracking-widest uppercase hover:bg-green-800 transition"
                     >
                       Login / SignUp
                     </Link>

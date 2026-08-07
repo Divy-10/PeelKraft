@@ -5,23 +5,28 @@ export default {
     extend: {
       colors: {
         primary: {
-          500: '#F7931E', // Primary Orange
+          500: '#F7931E', // Primary Citrus Orange
+          600: '#E07D0A',
         },
         green: {
-          900: '#1A3322', // Dark Green
+          900: '#1A3322', // Deep Organic Green
+          800: '#2C4E35', // Accent Green
         },
         cream: {
-          50: '#FAFAFA', // Very light cream/gray for subtle backgrounds
-          100: '#F5F5F5',
+          50: '#FCFAF6', // Warm Cream Background
+          100: '#F5EFE6', // Soft Sand/Beige
+          200: '#EAE3D5',
         },
-        dark: '#111111', // Dark Gray
+        dark: '#1E251E', // Deep Earthy Charcoal instead of pure black
         gold: {
-          500: '#D4AF37', // Gold Accent
+          500: '#D4AF37',
         }
       },
       fontFamily: {
-        poppins: ['Poppins', 'sans-serif'], // Headings
-        inter: ['Inter', 'sans-serif'], // Body
+        serif: ['Playfair Display', 'serif'], // Elegant editorial headlines
+        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'], // Premium UI font
+        poppins: ['Poppins', 'sans-serif'],
+        inter: ['Inter', 'sans-serif'],
       },
       fontSize: {
         'hero': ['56px', { lineHeight: '1.2', letterSpacing: '-0.02em' }],

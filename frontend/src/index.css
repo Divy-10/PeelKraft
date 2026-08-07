@@ -19,9 +19,9 @@
   }
 
   body {
-    font-family: 'Inter', sans-serif;
-    color: #1A1A1A;
-    background-color: #FFFFFF;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    color: #1E251E;
+    background-color: #FCFAF6;
     line-height: 1.6;
     overflow-x: hidden;
   }
@@ -32,10 +32,10 @@
   h4,
   h5,
   h6 {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 700;
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
     line-height: 1.2;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
   }
 
   img {

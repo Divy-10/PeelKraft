@@ -57,21 +57,21 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-white border-t border-gray-100 text-dark pt-10 md:pt-12 lg:pt-14">
+    <footer className="bg-cream-100/30 border-t border-cream-200/40 text-dark pt-12 md:pt-16">
 
       {/* Newsletter Section */}
-      <div className="border-b border-gray-100">
-        <div className="container-custom pb-10 md:pb-12">
+      <div className="border-b border-cream-200/30">
+        <div className="container-custom pb-12 md:pb-16">
           <div className="max-w-2xl mx-auto text-center">
             <motion.h3
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-3xl font-poppins font-bold text-dark mb-3"
+              className="text-3xl font-serif text-dark mb-3"
             >
               Stay Connected
             </motion.h3>
-            <p className="text-gray-500 mb-8 font-inter">
+            <p className="text-gray-500 mb-8 font-sans text-sm tracking-wide">
               Subscribe to get the latest updates on new products and health tips.
             </p>
             <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
@@ -80,13 +80,13 @@ const Footer = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className="flex-1 input-premium !rounded-full"
+                className="flex-1 px-5 py-3 rounded-full border border-cream-200 focus:outline-none focus:border-primary-500 text-xs font-sans bg-white transition-colors"
                 required
               />
               <button
                 type="submit"
                 disabled={subscribing}
-                className="btn-primary"
+                className="px-6 py-3 bg-dark text-white rounded-full text-xs font-semibold font-sans tracking-widest uppercase hover:bg-green-800 transition-colors"
               >
                 {subscribing ? 'Subscribing...' : 'Subscribe'}
               </button>
@@ -104,13 +104,13 @@ const Footer = () => {
               <img
                 src="/images/logo.png"
                 alt="PeelKraft"
-                className="h-8 w-auto object-contain opacity-90 transition-opacity hover:opacity-100"
+                className="h-8 w-auto object-contain transition-opacity duration-300 hover:opacity-80"
               />
             </Link>
-            <p className="text-gray-500 leading-relaxed mb-6 max-w-sm text-sm font-inter">
+            <p className="text-gray-500 leading-relaxed mb-6 max-w-sm text-xs font-sans">
               Premium sustainable food products crafted from orange peels. By JuiceTap Global Pvt Ltd.
             </p>
-            <div className="space-y-3 text-gray-500 text-sm font-inter flex flex-col items-center md:items-start">
+            <div className="space-y-3 text-gray-500 text-xs font-sans flex flex-col items-center md:items-start">
               <a href={`mailto:${settings.email}`} className="flex items-center gap-3 hover:text-primary-500 transition-colors">
                 <FiMail className="w-4 h-4 text-gray-400" /> {settings.email}
               </a>
@@ -118,7 +118,7 @@ const Footer = () => {
                 <FiPhone className="w-4 h-4 text-gray-400" /> {settings.phone}
               </a>
               <p className="flex items-start gap-3 text-left">
-                <FiMapPin className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" /> <span className="whitespace-pre-line">{settings.address}</span>
+                <FiMapPin className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" /> <span className="whitespace-pre-line leading-relaxed">{settings.address}</span>
               </p>
             </div>
           </div>
@@ -126,13 +126,13 @@ const Footer = () => {
           {/* Links */}
           {Object.entries(footerLinks).map(([title, links]) => (
             <div key={title} className="text-center md:text-left">
-              <h4 className="font-poppins font-semibold text-dark text-sm mb-6 uppercase tracking-wider">{title}</h4>
+              <h4 className="font-sans font-semibold text-dark text-[11px] mb-6 uppercase tracking-wider">{title}</h4>
               <ul className="space-y-3">
                 {links.map((link) => (
                   <li key={link.path}>
                     <Link
                       to={link.path}
-                      className="text-gray-500 hover:text-primary-500 transition-colors duration-300 text-sm font-inter"
+                      className="text-gray-500 hover:text-primary-500 transition-colors duration-300 text-xs font-sans"
                     >
                       {link.name}
                     </Link>
@@ -145,9 +145,9 @@ const Footer = () => {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-gray-100 bg-white">
+      <div className="border-t border-cream-200/30 bg-cream-50/50">
         <div className="container-custom py-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-gray-400 text-sm font-inter text-center md:text-left">
+          <p className="text-gray-400 text-xs font-sans text-center md:text-left">
             {settings.footerText}
           </p>
           <div className="flex items-center gap-4">
@@ -156,7 +156,7 @@ const Footer = () => {
                 href={settings.socialLinks.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 hover:bg-primary-50 hover:text-primary-500 transition-colors"
+                className="w-9 h-9 rounded-full bg-white border border-cream-200/50 flex items-center justify-center text-gray-500 hover:text-primary-500 transition-colors"
                 aria-label="Instagram"
               >
                 <FiInstagram className="w-4 h-4" />
@@ -167,7 +167,7 @@ const Footer = () => {
                 href={settings.amazonStoreUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-amazon text-xs py-2 px-4"
+                className="flex items-center gap-2 bg-dark text-white rounded-full px-4 py-2.5 text-[10px] font-semibold font-sans tracking-widest uppercase hover:bg-green-800 transition-colors"
               >
                 <FiShoppingCart className="w-3.5 h-3.5" />
                 <span>Amazon Store</span>
@@ -180,10 +180,10 @@ const Footer = () => {
       {/* Back to Top */}
       <button
         onClick={scrollToTop}
-        className="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-dark text-white shadow-md flex items-center justify-center hover:bg-black transition-all duration-300 z-40"
+        className="fixed bottom-8 right-8 w-11 h-11 rounded-full bg-dark text-white shadow-soft flex items-center justify-center hover:bg-green-850 transition-all duration-350 z-40"
         aria-label="Back to top"
       >
-        <FiArrowUp className="w-5 h-5" />
+        <FiArrowUp className="w-4.5 h-4.5" />
       </button>
     </footer>
   );

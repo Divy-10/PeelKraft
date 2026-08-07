@@ -47,35 +47,35 @@ const Products = () => {
     <>
       <SEOHead title="Products" description="Explore PeelKraft's range of premium orange peel food products." canonicalUrl="/products" />
 
-      <section className="pt-32 pb-12 bg-cream-50">
+      <section className="pt-36 pb-16 bg-cream-50">
         <div className="container-custom">
           <Breadcrumbs items={[{ label: 'Products' }]} />
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="mt-8">
-            <h1 className="text-page font-poppins font-bold text-dark mb-4">Our Products</h1>
-            <p className="text-gray-500 text-body max-w-2xl font-inter">Discover our complete range of premium food products crafted from orange peels.</p>
+            <h1 className="text-3xl md:text-5xl font-serif text-dark mb-4">Our Products</h1>
+            <p className="text-gray-500 text-xs md:text-sm tracking-wide max-w-2xl font-sans">Discover our complete range of premium food products crafted from orange peels.</p>
           </motion.div>
         </div>
       </section>
 
-      <section className="py-6 md:py-10 bg-white">
+      <section className="py-12 bg-white">
         <div className="container-custom">
           {/* Filters */}
-          <div className="flex flex-row gap-2 mb-8 items-center justify-between">
+          <div className="flex flex-row gap-3 mb-10 items-center justify-between">
             <div className="relative flex-1 min-w-0">
-              <FiSearch className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 md:w-5 md:h-5" />
+              <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input 
                 type="text" 
                 value={search} 
                 onChange={(e) => { setSearch(e.target.value); setPage(1); }} 
                 placeholder="Search..." 
-                className="w-full pl-9 md:pl-12 pr-2 md:pr-4 py-2.5 md:py-3 text-xs md:text-sm input-premium" 
+                className="w-full pl-11 pr-4 py-2.5 text-xs font-sans rounded-full border border-cream-200 focus:outline-none focus:border-primary-500 transition-colors" 
               />
             </div>
-            <div className="flex gap-1.5 w-auto shrink-0">
+            <div className="flex gap-2 w-auto shrink-0">
               <select 
                 value={category} 
                 onChange={(e) => { setCategory(e.target.value); setPage(1); }} 
-                className="w-[90px] sm:w-auto px-1.5 md:px-4 py-2.5 md:py-3 text-xs md:text-sm input-premium bg-white cursor-pointer min-w-0"
+                className="px-4 py-2.5 text-xs font-sans rounded-full border border-cream-200 focus:outline-none focus:border-primary-500 bg-white cursor-pointer transition-colors"
               >
                 <option value="">Category</option>
                 {categories.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
@@ -83,7 +83,7 @@ const Products = () => {
               <select 
                 value={`${sortBy}-${sortOrder}`} 
                 onChange={(e) => { const [f, o] = e.target.value.split('-'); setSortBy(f); setSortOrder(o); setPage(1); }} 
-                className="w-[78px] sm:w-auto px-1.5 md:px-4 py-2.5 md:py-3 text-xs md:text-sm input-premium bg-white cursor-pointer min-w-0"
+                className="px-4 py-2.5 text-xs font-sans rounded-full border border-cream-200 focus:outline-none focus:border-primary-500 bg-white cursor-pointer transition-colors"
               >
                 <option value="createdAt-desc">Newest</option>
                 <option value="createdAt-asc">Oldest</option>
@@ -96,23 +96,23 @@ const Products = () => {
 
           {/* Product Grid */}
           {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-              {[...Array(8)].map((_, i) => (
-                <div key={i} className="card-premium">
-                  <div className="product-image-container skeleton rounded-xl mb-4" />
-                  <div className="h-5 skeleton w-3/4 mb-3" />
-                  <div className="h-4 skeleton w-full mb-4" />
-                  <div className="h-4 skeleton w-1/2" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="border border-cream-200 bg-cream-50/20 rounded-2xl p-5 flex flex-col items-center">
+                  <div className="aspect-square w-full skeleton rounded-xl mb-6" />
+                  <div className="h-4 skeleton w-3/4 mb-3" />
+                  <div className="h-3 skeleton w-full mb-6" />
+                  <div className="h-3 skeleton w-1/2 mt-auto" />
                 </div>
               ))}
             </div>
           ) : products.length === 0 ? (
-            <div className="text-center py-20 bg-gray-50 rounded-2xl border border-gray-100">
-              <p className="text-lg text-dark font-poppins font-semibold mb-2">No products found</p>
-              <p className="text-gray-500 font-inter text-sm">Try adjusting your search or filter criteria.</p>
+            <div className="text-center py-20 bg-cream-50/40 rounded-2xl border border-cream-200/50">
+              <p className="text-sm font-serif text-dark mb-2">No products found</p>
+              <p className="text-gray-500 font-sans text-xs">Try adjusting your search or filter criteria.</p>
             </div>
           ) : (
-            <div className={products.length === 1 ? 'grid grid-cols-1 max-w-[380px] mx-auto gap-6' : products.length === 2 ? 'grid grid-cols-1 sm:grid-cols-2 max-w-[780px] mx-auto gap-6' : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto gap-6'}>
+            <div className={products.length === 1 ? 'grid grid-cols-1 max-w-[380px] mx-auto gap-8' : products.length === 2 ? 'grid grid-cols-1 sm:grid-cols-2 max-w-[780px] mx-auto gap-8' : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto gap-8'}>
               {products.map((product, i) => {
                 const hasOptions = product.packageOptions && product.packageOptions.length > 0;
                 const trackInventory = product.trackInventory !== false;
@@ -124,49 +124,50 @@ const Products = () => {
                   : false;
                 return (
                   <motion.div key={product._id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-                    <Link to={`/products/${product.slug}`} className="card-premium group text-center block h-full !p-3 md:!p-6">
-                      <div className="product-image-container rounded-xl mb-3 md:mb-6 relative">
+                    <Link to={`/products/${product.slug}`} className="group block h-full bg-cream-50/30 border border-cream-200/50 rounded-2xl p-5 transition-all duration-500 hover:shadow-premium hover:-translate-y-1 hover:bg-white">
+                      <div className="aspect-square bg-cream-50 rounded-xl mb-6 relative border border-cream-200/30 flex items-center justify-center p-4 overflow-hidden">
                         {product.isUpcoming && (
-                          <span className="hidden md:inline-block absolute top-3 left-3 z-10 bg-[#7BA639] text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-sm font-poppins">
+                          <span className="absolute top-3 left-3 z-10 bg-green-800 text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-sm font-sans">
                             Upcoming
                           </span>
                         )}
                         {isOutOfStock && !product.isUpcoming && (
-                          <span className="hidden md:inline-block absolute top-3 right-3 z-10 bg-red-600 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-sm font-poppins">
+                          <span className="absolute top-3 right-3 z-10 bg-red-600 text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-sm font-sans">
                             Sold Out
                           </span>
                         )}
                         <img 
                           src={getImageUrl(product.thumbnail)} 
                           alt={product.name} 
-                          className={`product-image group-hover:scale-105 ${isOutOfStock && !product.isUpcoming ? 'opacity-50 grayscale-[40%]' : ''}`} 
+                          className={`max-h-[85%] max-w-[85%] object-contain transition-transform duration-750 group-hover:scale-105 ${isOutOfStock && !product.isUpcoming ? 'opacity-50 grayscale-[40%]' : ''}`} 
                           loading="lazy" 
                         />
                       </div>
-                    <p className="hidden md:block text-[11px] uppercase tracking-wider text-gray-400 font-semibold mb-2">{product.category?.name || 'Product'}</p>
-                    <h3 className="font-poppins font-semibold text-dark text-sm md:text-lg mb-1 md:mb-2 group-hover:text-primary-500 transition-colors line-clamp-2 md:line-clamp-1">{product.name}</h3>
-                    <p className="hidden md:block text-sm text-gray-500 font-inter mb-4 line-clamp-2">{product.shortDescription}</p>
-                    
-                    {/* Catalog Price */}
-                    <div className="flex items-center justify-center gap-2 mb-1 md:mb-4">
-                      <span className="font-poppins font-bold text-dark text-sm md:text-base">₹{product.sellingPrice || product.mrp}</span>
-                      {product.mrp > product.sellingPrice && (
-                        <span className="text-xs text-gray-400 line-through font-inter">₹{product.mrp}</span>
-                      )}
-                    </div>
+                      <p className="text-[9px] uppercase tracking-widest text-gray-400 font-bold mb-2 font-sans">{product.category?.name || 'Product'}</p>
+                      <h3 className="font-serif text-dark text-base md:text-lg mb-2 group-hover:text-primary-500 transition-colors line-clamp-2 md:line-clamp-1">{product.name}</h3>
+                      <p className="text-xs text-gray-500 font-sans mb-4 line-clamp-2 leading-relaxed tracking-wide">{product.shortDescription}</p>
+                      
+                      {/* Catalog Price */}
+                      <div className="flex items-center justify-center gap-2 mb-4">
+                        <span className="font-sans font-bold text-dark text-sm md:text-base">₹{product.sellingPrice || product.mrp}</span>
+                        {product.mrp > product.sellingPrice && (
+                          <span className="text-xs text-gray-400 line-through font-sans">₹{product.mrp}</span>
+                        )}
+                      </div>
 
-                    <span className="hidden md:block mt-auto text-sm font-poppins font-semibold text-primary-500">View Details →</span>
-                  </Link>
-                </motion.div>
-              )})}
+                      <span className="inline-flex items-center gap-1.5 text-xs font-sans font-semibold text-primary-500 uppercase tracking-widest group-hover:text-dark transition-colors">View Details</span>
+                    </Link>
+                  </motion.div>
+                )})}
             </div>
           )}
+
 
           {/* Pagination */}
           {pagination && pagination.pages > 1 && (
             <div className="flex justify-center gap-2 mt-16">
               {[...Array(pagination.pages)].map((_, i) => (
-                <button key={i} onClick={() => setPage(i + 1)} className={`w-10 h-10 rounded-xl font-inter font-semibold text-sm transition-all border ${page === i + 1 ? 'bg-primary-500 border-primary-500 text-white' : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300'}`}>
+                <button key={i} onClick={() => setPage(i + 1)} className={`w-9 h-9 rounded-full font-sans font-semibold text-xs transition-all border ${page === i + 1 ? 'bg-dark border-dark text-white' : 'bg-white border-cream-200 text-gray-600 hover:border-dark'}`}>
                   {i + 1}
                 </button>
               ))}
