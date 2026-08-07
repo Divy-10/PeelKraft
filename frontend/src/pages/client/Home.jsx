@@ -37,7 +37,7 @@ const Counter = ({ end, suffix = '', label }) => {
 
   return (
     <div ref={ref} className="text-center p-6 border border-cream-200/30 rounded-2xl bg-white/40 backdrop-blur-sm">
-      <p className="text-4xl md:text-5xl font-serif text-dark">
+      <p className="text-4xl md:text-5xl font-sans font-medium text-dark tracking-tight">
         {count}{suffix}
       </p>
       <p className="text-xs uppercase tracking-widest text-gray-500 font-sans mt-3">{label}</p>
