@@ -28,17 +28,19 @@ const Counter = ({ end, suffix = '', label }) => {
           setCount(end);
           clearInterval(timer);
         } else {
-          setCount(Math.floor(start));
+          setCount(start);
         }
       }, 16);
       return () => clearInterval(timer);
     }
   }, [isInView, end]);
 
+  const displayVal = Number.isInteger(end) ? Math.floor(count).toLocaleString('en-IN') : count.toFixed(1);
+
   return (
     <div ref={ref} className="text-center p-6 border border-cream-200/30 rounded-2xl bg-white/40 backdrop-blur-sm">
-      <p className="text-4xl md:text-5xl font-sans font-medium text-dark tracking-tight">
-        {count}{suffix}
+      <p className="text-4xl md:text-5xl font-serif text-dark lining-nums font-medium">
+        {displayVal}{suffix}
       </p>
       <p className="text-xs uppercase tracking-widest text-gray-500 font-sans mt-3">{label}</p>
     </div>
@@ -624,9 +626,10 @@ const Home = () => {
             {(() => {
               const parseStat = (val, defaultVal, defaultSuffix) => {
                 if (!val) return { end: defaultVal, suffix: defaultSuffix };
-                const numMatch = String(val).match(/^([\d.]+)/);
+                const cleanStr = String(val).replace(/,/g, '');
+                const numMatch = cleanStr.match(/^([\d.]+)/);
                 const end = numMatch ? parseFloat(numMatch[1]) : defaultVal;
-                const suffix = String(val).substring(numMatch ? numMatch[1].length : 0) || defaultSuffix;
+                const suffix = cleanStr.substring(numMatch ? numMatch[1].length : 0) || defaultSuffix;
                 return { end, suffix };
               };
               const happy = parseStat(settings?.stats?.happyCustomers, 10000, '+');
