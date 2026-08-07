@@ -845,43 +845,49 @@ const Home = () => {
 
             {/* Right Column: Featured Products Available on Amazon */}
             <div className="lg:col-span-6">
-              {products.length > 0 ? (
-                <div className="grid sm:grid-cols-2 gap-6">
-                  {products.slice(0, 2).map((prod) => (
-                    <div key={prod._id} className="bg-white/5 border border-white/10 rounded-2xl p-5 flex flex-col justify-between group hover:border-primary-500/20 transition-all duration-300">
-                      <div className="flex items-center gap-4 mb-6">
-                        <img
-                          src={getImageUrl(prod.thumbnail || prod.featuredImage)}
-                          alt={prod.name}
-                          className="w-14 h-14 object-contain rounded-xl bg-white p-2"
-                        />
-                        <div>
-                          <span className="text-[9px] uppercase font-bold text-primary-500 tracking-wider">
-                            Amazon Fulfilled
-                          </span>
-                          <h4 className="font-serif text-sm text-white line-clamp-1 mt-1">
-                            {prod.name}
-                          </h4>
-                          <p className="text-[10px] text-gray-400 font-sans uppercase tracking-wider mt-1">{prod.weight || 'Premium Pack'}</p>
+              {(() => {
+                const amazonProducts = products.filter(p => !p.isUpcoming && p.status === 'active');
+                if (amazonProducts.length > 0) {
+                  return (
+                    <div className={amazonProducts.length === 1 ? "max-w-md mx-auto" : "grid sm:grid-cols-2 gap-6"}>
+                      {amazonProducts.slice(0, 2).map((prod) => (
+                        <div key={prod._id} className="bg-white/5 border border-white/10 rounded-2xl p-5 flex flex-col justify-between group hover:border-primary-500/20 transition-all duration-300">
+                          <div className="flex items-center gap-4 mb-6">
+                            <img
+                              src={getImageUrl(prod.thumbnail || prod.featuredImage)}
+                              alt={prod.name}
+                              className="w-14 h-14 object-contain rounded-xl bg-white p-2"
+                            />
+                            <div>
+                              <span className="text-[9px] uppercase font-bold text-primary-500 tracking-wider">
+                                Amazon Fulfilled
+                              </span>
+                              <h4 className="font-serif text-sm text-white line-clamp-1 mt-1">
+                                {prod.name}
+                              </h4>
+                              <p className="text-[10px] text-gray-400 font-sans uppercase tracking-wider mt-1">{prod.weight || 'Premium Pack'}</p>
+                            </div>
+                          </div>
+                          <a
+                            href={prod.amazonLink || settings?.amazonStoreUrl || "https://www.amazon.in"}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full py-2.5 bg-white hover:bg-cream-100 text-dark font-sans font-semibold text-[10px] uppercase tracking-wider rounded-full flex items-center justify-center gap-2 transition-colors"
+                          >
+                            <FiShoppingCart className="w-3.5 h-3.5" />
+                            Buy Now
+                          </a>
                         </div>
-                      </div>
-                      <a
-                        href={prod.amazonLink || settings?.amazonStoreUrl || "https://www.amazon.in"}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full py-2.5 bg-white hover:bg-cream-100 text-dark font-sans font-semibold text-[10px] uppercase tracking-wider rounded-full flex items-center justify-center gap-2 transition-colors"
-                      >
-                        <FiShoppingCart className="w-3.5 h-3.5" />
-                        Buy Now
-                      </a>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center p-8 bg-white/5 rounded-2xl border border-white/10">
-                  <p className="text-gray-400 font-sans text-xs md:text-sm">Explore all PeelKraft products on Amazon</p>
-                </div>
-              )}
+                  );
+                }
+                return (
+                  <div className="text-center p-8 bg-white/5 rounded-2xl border border-white/10">
+                    <p className="text-gray-400 font-sans text-xs md:text-sm">Explore all PeelKraft products on Amazon</p>
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </div>
