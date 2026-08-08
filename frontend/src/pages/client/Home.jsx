@@ -222,10 +222,13 @@ const Home = () => {
                 <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500 font-sans">100% Natural Innovation</span>
               </div>
 
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.2rem] leading-[1.1] font-serif text-dark mb-6 tracking-tight text-balance">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.2rem] leading-[1.1] font-poppins font-black text-dark mb-6 tracking-tight text-balance">
                 Nature's <br />
-                <span className="text-primary-500 italic relative inline-block font-normal">
+                <span className="text-primary-500 relative inline-block mt-2">
                   Hidden Treasure
+                  <svg className="absolute left-0 -bottom-2 w-full h-3 text-primary-500/30" viewBox="0 0 100 10" preserveAspectRatio="none">
+                    <path d="M0,5 Q50,10 100,5" stroke="currentColor" strokeWidth="6" fill="none" strokeLinecap="round" />
+                  </svg>
                 </span>
               </h1>
 
