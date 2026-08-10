@@ -351,13 +351,19 @@ const Settings = () => {
           {/* Uploaded Images Grid */}
           {(watch('homeCarousel') || []).length > 0 && (
             <div className="space-y-3">
-              <p className="text-xs font-semibold text-gray-500 uppercase font-poppins">Uploaded Carousel Images</p>
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-semibold text-gray-500 uppercase font-poppins">Uploaded Carousel Images</p>
+                <span className="text-[10px] text-gray-400 font-sans">Images display on Home Page in 1:1 aspect ratio</span>
+              </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                 {(watch('homeCarousel') || []).map((img, idx) => {
                   const imgUrl = typeof img === 'string' ? img : img.url;
                   return (
-                    <div key={idx} className="relative group rounded-xl overflow-hidden border border-gray-200 aspect-square bg-white shadow-sm">
+                    <div key={idx} className="relative group rounded-xl overflow-hidden border border-gray-200 aspect-square bg-gray-50 shadow-sm">
                       <img src={imgUrl} alt={`Carousel ${idx + 1}`} className="w-full h-full object-cover" />
+                      <div className="absolute top-2 left-2 bg-dark/80 text-white text-[10px] font-bold px-2 py-0.5 rounded-full font-sans">
+                        #{idx + 1}
+                      </div>
                       <button
                         type="button"
                         onClick={() => handleRemoveCarouselImage(idx)}
