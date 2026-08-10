@@ -90,7 +90,16 @@ const Home = () => {
           faqApi.getAll(),
           testimonialApi.getAll({ featured: 'true' }),
         ]);
-        if (prodRes.status === 'fulfilled') setProducts(prodRes.value.data || []);
+        if (prodRes.status === 'fulfilled') {
+          const featured = prodRes.value.data || [];
+          if (featured.length > 0) {
+            setProducts(featured);
+          } else {
+            // Fallback to fetch all public products if none are marked as featured
+            const allProdRes = await productApi.getAll({ limit: 6 });
+            setProducts(allProdRes.data || []);
+          }
+        }
         if (blogRes.status === 'fulfilled') setBlogs(blogRes.value.data || []);
         if (faqRes.status === 'fulfilled') setFaqs((faqRes.value.data || []).slice(0, 5));
         if (testRes.status === 'fulfilled') setTestimonials(testRes.value.data || []);
