@@ -334,7 +334,7 @@ const Home = () => {
           />
         </div>
 
-        {/* Symmetrical Center-Focused 3-Slide (1 Left Preview + MAIN + 1 Right Preview) Container */}
+        {/* Premium Responsive Carousel Container */}
         {settings?.homeCarousel && settings.homeCarousel.length > 0 ? (() => {
           let items = settings.homeCarousel;
           if (items.length > 0 && items.length < 10) {
@@ -342,7 +342,7 @@ const Home = () => {
             items = Array(multiplier).fill(items).flat();
           }
           return (
-            <div className="w-full max-w-[1100px] mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden relative">
+            <div className="w-full max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden relative">
               <Swiper
                 grabCursor={true}
                 centeredSlides={true}
@@ -350,8 +350,8 @@ const Home = () => {
                 slidesPerView={1}
                 spaceBetween={0}
                 breakpoints={{
-                  640: { slidesPerView: 2.2, spaceBetween: 20 },
-                  1024: { slidesPerView: 3, spaceBetween: 28 },
+                  640: { slidesPerView: 3, spaceBetween: 20 },
+                  1024: { slidesPerView: 5, spaceBetween: 24 },
                 }}
                 speed={750}
                 modules={[Pagination, Autoplay, Navigation]}
@@ -391,7 +391,7 @@ const Home = () => {
             displayProducts = Array(multiplier).fill(displayProducts).flat();
           }
           return (
-            <div className="w-full max-w-[1100px] mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden relative">
+            <div className="w-full max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden relative">
               <Swiper
                 grabCursor={true}
                 centeredSlides={true}
@@ -399,8 +399,8 @@ const Home = () => {
                 slidesPerView={1}
                 spaceBetween={0}
                 breakpoints={{
-                  640: { slidesPerView: 2.2, spaceBetween: 20 },
-                  1024: { slidesPerView: 3, spaceBetween: 28 },
+                  640: { slidesPerView: 3, spaceBetween: 20 },
+                  1024: { slidesPerView: 5, spaceBetween: 24 },
                 }}
                 speed={750}
                 modules={[Pagination, Autoplay, Navigation]}
