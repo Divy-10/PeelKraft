@@ -342,6 +342,7 @@ const Home = () => {
               grabCursor={true}
               centeredSlides={true}
               slidesPerView="auto"
+              speed={1000}
               coverflowEffect={{
                 rotate: 0,
                 stretch: 0,
@@ -351,8 +352,12 @@ const Home = () => {
               }}
               modules={[EffectCoverflow, Pagination, Autoplay, Navigation]}
               pagination={{ clickable: true }}
-              autoplay={{ delay: 3500, disableOnInteraction: false }}
-              loop={settings.homeCarousel.length > 2}
+              autoplay={{
+                delay: 2000,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: false,
+              }}
+              loop={true}
               className="single-product-swiper"
             >
               {settings.homeCarousel.map((item, idx) => {
@@ -379,6 +384,7 @@ const Home = () => {
               grabCursor={true}
               centeredSlides={true}
               slidesPerView="auto"
+              speed={1000}
               coverflowEffect={{
                 rotate: 0,
                 stretch: 0,
@@ -388,8 +394,12 @@ const Home = () => {
               }}
               modules={[EffectCoverflow, Pagination, Autoplay, Navigation]}
               pagination={{ clickable: true }}
-              autoplay={{ delay: 3500, disableOnInteraction: false }}
-              loop={products.length > 2}
+              autoplay={{
+                delay: 2000,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: false,
+              }}
+              loop={true}
               className="single-product-swiper"
             >
               {products.map((product, i) => (
