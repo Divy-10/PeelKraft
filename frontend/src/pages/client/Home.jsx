@@ -334,26 +334,25 @@ const Home = () => {
           />
         </div>
 
-        {/* Coverflow 1:1 Square Image Carousel */}
+        {/* 5-Image Centered Infinite Carousel (2 Left + 1 Center + 2 Right) */}
         {settings?.homeCarousel && settings.homeCarousel.length > 0 ? (
-          <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 overflow-hidden">
             <Swiper
-              effect="coverflow"
               grabCursor={true}
               centeredSlides={true}
-              slidesPerView="auto"
-              speed={1000}
-              coverflowEffect={{
-                rotate: 0,
-                stretch: 0,
-                depth: 180,
-                modifier: 2.5,
-                slideShadows: false,
+              slidesPerView={1.2}
+              spaceBetween={16}
+              breakpoints={{
+                480: { slidesPerView: 1.8, spaceBetween: 20 },
+                640: { slidesPerView: 2.8, spaceBetween: 24 },
+                1024: { slidesPerView: 3.8, spaceBetween: 28 },
+                1280: { slidesPerView: 5, spaceBetween: 32 },
               }}
-              modules={[EffectCoverflow, Pagination, Autoplay, Navigation]}
+              speed={700}
+              modules={[Pagination, Autoplay, Navigation]}
               pagination={{ clickable: true }}
               autoplay={{
-                delay: 2000,
+                delay: 3500,
                 disableOnInteraction: false,
                 pauseOnMouseEnter: false,
               }}
@@ -364,7 +363,7 @@ const Home = () => {
                 const imgUrl = typeof item === 'string' ? item : item.url;
                 return (
                   <SwiperSlide key={idx}>
-                    <div className="w-full h-full aspect-square rounded-3xl overflow-hidden shadow-premium bg-white border border-cream-200/50">
+                    <div className="w-full h-full aspect-square rounded-2xl overflow-hidden bg-white border border-cream-200/50 shadow-sm">
                       <img
                         src={getImageUrl(imgUrl)}
                         alt={`PeelKraft Showcase ${idx + 1}`}
@@ -378,24 +377,23 @@ const Home = () => {
             </Swiper>
           </div>
         ) : products.length > 0 ? (
-          <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 overflow-hidden">
             <Swiper
-              effect="coverflow"
               grabCursor={true}
               centeredSlides={true}
-              slidesPerView="auto"
-              speed={1000}
-              coverflowEffect={{
-                rotate: 0,
-                stretch: 0,
-                depth: 180,
-                modifier: 2.5,
-                slideShadows: false,
+              slidesPerView={1.2}
+              spaceBetween={16}
+              breakpoints={{
+                480: { slidesPerView: 1.8, spaceBetween: 20 },
+                640: { slidesPerView: 2.8, spaceBetween: 24 },
+                1024: { slidesPerView: 3.8, spaceBetween: 28 },
+                1280: { slidesPerView: 5, spaceBetween: 32 },
               }}
-              modules={[EffectCoverflow, Pagination, Autoplay, Navigation]}
+              speed={700}
+              modules={[Pagination, Autoplay, Navigation]}
               pagination={{ clickable: true }}
               autoplay={{
-                delay: 2000,
+                delay: 3500,
                 disableOnInteraction: false,
                 pauseOnMouseEnter: false,
               }}
@@ -405,7 +403,7 @@ const Home = () => {
               {products.map((product, i) => (
                 <SwiperSlide key={product._id || i}>
                   <Link to={`/products/${product.slug}`} className="block w-full h-full">
-                    <div className="w-full h-full aspect-square rounded-3xl overflow-hidden shadow-premium bg-white border border-cream-200/50">
+                    <div className="w-full h-full aspect-square rounded-2xl overflow-hidden bg-white border border-cream-200/50 shadow-sm">
                       <img
                         src={getImageUrl(product.thumbnail || product.featuredImage)}
                         alt={product.name}
