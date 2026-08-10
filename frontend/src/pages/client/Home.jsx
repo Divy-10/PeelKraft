@@ -342,15 +342,15 @@ const Home = () => {
             items = Array(multiplier).fill(items).flat();
           }
           return (
-            <div className="w-full max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden relative">
+            <div className="w-full max-w-[1380px] mx-auto px-3 sm:px-6 lg:px-8 overflow-hidden relative">
               <Swiper
                 grabCursor={true}
                 centeredSlides={true}
                 initialSlide={0}
                 slidesPerView={1.3}
-                spaceBetween={16}
+                spaceBetween={12}
                 breakpoints={{
-                  480: { slidesPerView: 2.3, spaceBetween: 18 },
+                  480: { slidesPerView: 2.3, spaceBetween: 16 },
                   640: { slidesPerView: 3.3, spaceBetween: 20 },
                   1024: { slidesPerView: 5, spaceBetween: 24 },
                 }}
@@ -392,15 +392,15 @@ const Home = () => {
             displayProducts = Array(multiplier).fill(displayProducts).flat();
           }
           return (
-            <div className="w-full max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden relative">
+            <div className="w-full max-w-[1380px] mx-auto px-3 sm:px-6 lg:px-8 overflow-hidden relative">
               <Swiper
                 grabCursor={true}
                 centeredSlides={true}
                 initialSlide={0}
                 slidesPerView={1.3}
-                spaceBetween={16}
+                spaceBetween={12}
                 breakpoints={{
-                  480: { slidesPerView: 2.3, spaceBetween: 18 },
+                  480: { slidesPerView: 2.3, spaceBetween: 16 },
                   640: { slidesPerView: 3.3, spaceBetween: 20 },
                   1024: { slidesPerView: 5, spaceBetween: 24 },
                 }}
