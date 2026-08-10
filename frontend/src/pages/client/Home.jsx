@@ -334,7 +334,7 @@ const Home = () => {
           />
         </div>
 
-        {/* Full-Width 5-Slide Viewport Carousel Container */}
+        {/* Premium Separated 5-Slide Viewport Carousel Container */}
         {settings?.homeCarousel && settings.homeCarousel.length > 0 ? (() => {
           let items = settings.homeCarousel;
           if (items.length > 0 && items.length < 10) {
@@ -342,17 +342,17 @@ const Home = () => {
             items = Array(multiplier).fill(items).flat();
           }
           return (
-            <div className="w-full max-w-[1440px] mx-auto px-2 sm:px-4 lg:px-6 overflow-hidden relative">
+            <div className="w-full max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden relative">
               <Swiper
                 grabCursor={true}
                 centeredSlides={true}
                 initialSlide={0}
                 slidesPerView={1.3}
-                spaceBetween={8}
+                spaceBetween={16}
                 breakpoints={{
-                  480: { slidesPerView: 2.3, spaceBetween: 8 },
-                  640: { slidesPerView: 3.3, spaceBetween: 8 },
-                  1024: { slidesPerView: 5, spaceBetween: 8 },
+                  480: { slidesPerView: 2.3, spaceBetween: 18 },
+                  640: { slidesPerView: 3.3, spaceBetween: 20 },
+                  1024: { slidesPerView: 5, spaceBetween: 24 },
                 }}
                 speed={750}
                 modules={[Pagination, Autoplay, Navigation]}
@@ -392,17 +392,17 @@ const Home = () => {
             displayProducts = Array(multiplier).fill(displayProducts).flat();
           }
           return (
-            <div className="w-full max-w-[1440px] mx-auto px-2 sm:px-4 lg:px-6 overflow-hidden relative">
+            <div className="w-full max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden relative">
               <Swiper
                 grabCursor={true}
                 centeredSlides={true}
                 initialSlide={0}
                 slidesPerView={1.3}
-                spaceBetween={8}
+                spaceBetween={16}
                 breakpoints={{
-                  480: { slidesPerView: 2.3, spaceBetween: 8 },
-                  640: { slidesPerView: 3.3, spaceBetween: 8 },
-                  1024: { slidesPerView: 5, spaceBetween: 8 },
+                  480: { slidesPerView: 2.3, spaceBetween: 18 },
+                  640: { slidesPerView: 3.3, spaceBetween: 20 },
+                  1024: { slidesPerView: 5, spaceBetween: 24 },
                 }}
                 speed={750}
                 modules={[Pagination, Autoplay, Navigation]}
