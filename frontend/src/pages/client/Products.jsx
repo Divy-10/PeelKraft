@@ -113,52 +113,63 @@ const Products = () => {
             </div>
           ) : (
             <div className={products.length === 1 ? 'grid grid-cols-1 max-w-[380px] mx-auto gap-8' : products.length === 2 ? 'grid grid-cols-1 sm:grid-cols-2 max-w-[780px] mx-auto gap-8' : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto gap-8'}>
-              {products.map((product, i) => {
-                const hasOptions = product.packageOptions && product.packageOptions.length > 0;
-                const trackInventory = product.trackInventory !== false;
-                const isOutOfStock = trackInventory
-                  ? (hasOptions
-                      ? product.packageOptions.every(opt => (opt.stock ?? 0) <= 0 || opt.status === 'disabled')
-                      : ((product.stock ?? 0) <= 0)
-                    )
-                  : false;
-                return (
-                  <motion.div key={product._id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-                    <Link to={`/products/${product.slug}`} className="group block h-full bg-cream-50/30 border border-cream-200/50 rounded-2xl p-5 transition-all duration-500 hover:shadow-premium hover:-translate-y-1 hover:bg-white">
-                      <div className="aspect-square bg-cream-50 rounded-xl mb-6 relative border border-cream-200/30 flex items-center justify-center p-4 overflow-hidden">
-                        {product.isUpcoming && (
-                          <span className="absolute top-3 left-3 z-10 bg-green-800 text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-sm font-sans">
-                            Upcoming
-                          </span>
-                        )}
-                        {isOutOfStock && !product.isUpcoming && (
-                          <span className="absolute top-3 right-3 z-10 bg-red-600 text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-sm font-sans">
-                            Sold Out
-                          </span>
-                        )}
-                        <img 
-                          src={getImageUrl(product.thumbnail)} 
-                          alt={product.name} 
-                          className={`max-h-[85%] max-w-[85%] object-contain transition-transform duration-750 group-hover:scale-105 ${isOutOfStock && !product.isUpcoming ? 'opacity-50 grayscale-[40%]' : ''}`} 
-                          loading="lazy" 
-                        />
-                      </div>
-                      <p className="text-[9px] uppercase tracking-widest text-gray-400 font-bold mb-2 font-sans">{product.category?.name || 'Product'}</p>
-                      <h3 className="font-serif text-dark text-base md:text-lg mb-2 group-hover:text-primary-500 transition-colors line-clamp-2 md:line-clamp-1">{product.name}</h3>
-                      <p className="text-xs text-gray-500 font-sans mb-4 line-clamp-2 leading-relaxed tracking-wide">{product.shortDescription}</p>
-                      
-                      {/* Catalog Price */}
-                      <div className="flex items-center justify-center gap-2 mb-4">
-                        <span className="font-sans font-bold text-dark text-sm md:text-base">₹{product.sellingPrice || product.mrp}</span>
-                        {product.mrp > product.sellingPrice && (
-                          <span className="text-xs text-gray-400 line-through font-sans">₹{product.mrp}</span>
-                        )}
-                      </div>
+              {(() => {
+                let upcomingSeen = 0;
+                return products.map((product, i) => {
+                  let isHiddenOnMobile = false;
+                  if (product.isUpcoming) {
+                    upcomingSeen++;
+                    if (upcomingSeen > 1) {
+                      isHiddenOnMobile = true;
+                    }
+                  }
+                  const hasOptions = product.packageOptions && product.packageOptions.length > 0;
+                  const trackInventory = product.trackInventory !== false;
+                  const isOutOfStock = trackInventory
+                    ? (hasOptions
+                        ? product.packageOptions.every(opt => (opt.stock ?? 0) <= 0 || opt.status === 'disabled')
+                        : ((product.stock ?? 0) <= 0)
+                      )
+                    : false;
+                  return (
+                    <motion.div key={product._id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className={isHiddenOnMobile ? 'hidden sm:block' : ''}>
+                      <Link to={`/products/${product.slug}`} className="group block h-full bg-cream-50/30 border border-cream-200/50 rounded-2xl p-5 transition-all duration-500 hover:shadow-premium hover:-translate-y-1 hover:bg-white">
+                        <div className="aspect-square bg-cream-50 rounded-xl mb-6 relative border border-cream-200/30 flex items-center justify-center p-4 overflow-hidden">
+                          {product.isUpcoming && (
+                            <span className="absolute top-3 left-3 z-10 bg-green-800 text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-sm font-sans">
+                              Upcoming
+                            </span>
+                          )}
+                          {isOutOfStock && !product.isUpcoming && (
+                            <span className="absolute top-3 right-3 z-10 bg-red-600 text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-sm font-sans">
+                              Sold Out
+                            </span>
+                          )}
+                          <img 
+                            src={getImageUrl(product.thumbnail)} 
+                            alt={product.name} 
+                            className={`max-h-[85%] max-w-[85%] object-contain transition-transform duration-750 group-hover:scale-105 ${isOutOfStock && !product.isUpcoming ? 'opacity-50 grayscale-[40%]' : ''}`} 
+                            loading="lazy" 
+                          />
+                        </div>
+                        <p className="text-[9px] uppercase tracking-widest text-gray-400 font-bold mb-2 font-sans">{product.category?.name || 'Product'}</p>
+                        <h3 className="font-serif text-dark text-base md:text-lg mb-2 group-hover:text-primary-500 transition-colors line-clamp-2 md:line-clamp-1">{product.name}</h3>
+                        <p className="text-xs text-gray-500 font-sans mb-4 line-clamp-2 leading-relaxed tracking-wide">{product.shortDescription}</p>
+                        
+                        {/* Catalog Price */}
+                        <div className="flex items-center justify-center gap-2 mb-4">
+                          <span className="font-sans font-bold text-dark text-sm md:text-base">₹{product.sellingPrice || product.mrp}</span>
+                          {product.mrp > product.sellingPrice && (
+                            <span className="text-xs text-gray-400 line-through font-sans">₹{product.mrp}</span>
+                          )}
+                        </div>
 
-                      <span className="inline-flex items-center gap-1.5 text-xs font-sans font-semibold text-primary-500 uppercase tracking-widest group-hover:text-dark transition-colors">View Details</span>
-                    </Link>
-                  </motion.div>
-                )})}
+                        <span className="inline-flex items-center gap-1.5 text-xs font-sans font-semibold text-primary-500 uppercase tracking-widest group-hover:text-dark transition-colors">View Details</span>
+                      </Link>
+                    </motion.div>
+                  );
+                });
+              })()}
             </div>
           )}
 
