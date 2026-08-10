@@ -248,11 +248,11 @@
   font-weight: 700;
 }
 
-/* Custom styles for 5-image Coverflow Showcase Carousel matching reference image */
+/* Custom styles for 0px Gap Seamless Continuous Full-Width Image Strip Carousel */
 .single-product-swiper {
   width: 100%;
-  padding-top: 30px;
-  padding-bottom: 60px;
+  padding-top: 10px;
+  padding-bottom: 40px;
   background: transparent;
   overflow: hidden !important;
 }
@@ -266,62 +266,41 @@
   background: transparent;
   background-position: center;
   background-size: cover;
-  width: 340px !important;
-  height: 340px !important;
+  width: 20vw !important;
+  height: 20vw !important;
   aspect-ratio: 1 / 1;
-  border-radius: 2.2rem;
+  border-radius: 0;
   overflow: hidden;
-  transition: transform 750ms cubic-bezier(0.25, 1, 0.5, 1), opacity 750ms ease, box-shadow 750ms ease;
-  box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.08);
-  opacity: 0.5 !important;
+  box-shadow: none;
+  opacity: 1 !important;
   filter: none !important;
-  transform: scale(0.85);
-}
-
-@media (max-width: 1536px) {
-  .single-product-swiper .swiper-slide {
-    width: 310px !important;
-    height: 310px !important;
-  }
-}
-
-@media (max-width: 1280px) {
-  .single-product-swiper .swiper-slide {
-    width: 270px !important;
-    height: 270px !important;
-  }
+  transform: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 @media (max-width: 1024px) {
   .single-product-swiper .swiper-slide {
-    width: 280px !important;
-    height: 280px !important;
+    width: 28.5vw !important;
+    height: 28.5vw !important;
   }
 }
 
 @media (max-width: 640px) {
   .single-product-swiper .swiper-slide {
-    width: 230px !important;
-    height: 230px !important;
+    width: 45vw !important;
+    height: 45vw !important;
   }
 }
 
-/* Focused Active Center Slide */
-.single-product-swiper .swiper-slide-active {
-  transform: scale(1.18) !important;
-  opacity: 1 !important;
-  z-index: 30 !important;
-  filter: none !important;
-  box-shadow: 0 24px 50px -8px rgba(0, 0, 0, 0.18);
-}
-
-/* Immediate Left & Right Neighbors (1 step away) */
+.single-product-swiper .swiper-slide-active,
 .single-product-swiper .swiper-slide-prev,
 .single-product-swiper .swiper-slide-next {
-  opacity: 0.75 !important;
-  z-index: 20 !important;
+  transform: none !important;
+  opacity: 1 !important;
+  z-index: 10 !important;
   filter: none !important;
-  transform: scale(0.95) !important;
+  box-shadow: none !important;
 }
 
 
