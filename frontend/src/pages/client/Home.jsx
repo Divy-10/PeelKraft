@@ -334,16 +334,15 @@ const Home = () => {
           />
         </div>
 
-        {/* Symmetrical 5-Image Centered Active Carousel (2 Left + 1 CENTER ACTIVE + 2 Right) */}
+        {/* Strict 5-Slide Viewport Carousel Container */}
         {settings?.homeCarousel && settings.homeCarousel.length > 0 ? (() => {
           let items = settings.homeCarousel;
-          // Multiply items array if length < 10 to ensure seamless infinite looping with slidesPerView 5
           if (items.length > 0 && items.length < 10) {
             const multiplier = Math.ceil(10 / items.length);
             items = Array(multiplier).fill(items).flat();
           }
           return (
-            <div className="w-full max-w-full px-4 sm:px-6 lg:px-8 overflow-hidden">
+            <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden relative">
               <Swiper
                 grabCursor={true}
                 centeredSlides={true}
@@ -353,7 +352,7 @@ const Home = () => {
                 breakpoints={{
                   480: { slidesPerView: 2.3, spaceBetween: 18 },
                   640: { slidesPerView: 3.3, spaceBetween: 20 },
-                  1024: { slidesPerView: 5, spaceBetween: 24 },
+                  1024: { slidesPerView: 5, spaceBetween: 20 },
                 }}
                 speed={750}
                 modules={[Pagination, Autoplay, Navigation]}
@@ -393,7 +392,7 @@ const Home = () => {
             displayProducts = Array(multiplier).fill(displayProducts).flat();
           }
           return (
-            <div className="w-full max-w-full px-4 sm:px-6 lg:px-8 overflow-hidden">
+            <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden relative">
               <Swiper
                 grabCursor={true}
                 centeredSlides={true}
@@ -403,7 +402,7 @@ const Home = () => {
                 breakpoints={{
                   480: { slidesPerView: 2.3, spaceBetween: 18 },
                   640: { slidesPerView: 3.3, spaceBetween: 20 },
-                  1024: { slidesPerView: 5, spaceBetween: 24 },
+                  1024: { slidesPerView: 5, spaceBetween: 20 },
                 }}
                 speed={750}
                 modules={[Pagination, Autoplay, Navigation]}
