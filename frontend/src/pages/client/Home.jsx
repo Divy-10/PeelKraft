@@ -334,9 +334,9 @@ const Home = () => {
           />
         </div>
 
-        {/* 5-Image Centered Infinite Carousel (2 Left + 1 Center + 2 Right) */}
+        {/* 5-Image Centered Infinite Full-Width Carousel */}
         {settings?.homeCarousel && settings.homeCarousel.length > 0 ? (
-          <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 overflow-hidden">
+          <div className="w-full max-w-full px-0 overflow-hidden">
             <Swiper
               grabCursor={true}
               centeredSlides={true}
@@ -352,11 +352,12 @@ const Home = () => {
               modules={[Pagination, Autoplay, Navigation]}
               pagination={{ clickable: true }}
               autoplay={{
-                delay: 3500,
+                delay: 2500,
                 disableOnInteraction: false,
                 pauseOnMouseEnter: false,
               }}
               loop={true}
+              loopAdditionalSlides={5}
               className="single-product-swiper"
             >
               {settings.homeCarousel.map((item, idx) => {
@@ -377,7 +378,7 @@ const Home = () => {
             </Swiper>
           </div>
         ) : products.length > 0 ? (
-          <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 overflow-hidden">
+          <div className="w-full max-w-full px-0 overflow-hidden">
             <Swiper
               grabCursor={true}
               centeredSlides={true}
@@ -393,11 +394,12 @@ const Home = () => {
               modules={[Pagination, Autoplay, Navigation]}
               pagination={{ clickable: true }}
               autoplay={{
-                delay: 3500,
+                delay: 2500,
                 disableOnInteraction: false,
                 pauseOnMouseEnter: false,
               }}
               loop={true}
+              loopAdditionalSlides={5}
               className="single-product-swiper"
             >
               {products.map((product, i) => (
