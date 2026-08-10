@@ -334,20 +334,19 @@ const Home = () => {
           />
         </div>
 
-        {/* Large 5-Image Centered Infinite Full-Width Showcase Carousel */}
+        {/* Exactly 5 Visible Images Full-Width Carousel */}
         {settings?.homeCarousel && settings.homeCarousel.length > 0 ? (
-          <div className="w-full max-w-full px-2 sm:px-4 lg:px-6 overflow-hidden">
+          <div className="w-full max-w-full px-0 overflow-hidden">
             <Swiper
               grabCursor={true}
               centeredSlides={true}
               initialSlide={2}
-              slidesPerView={1.2}
-              spaceBetween={16}
+              slidesPerView={1.3}
+              spaceBetween={12}
               breakpoints={{
-                480: { slidesPerView: 1.8, spaceBetween: 20 },
-                640: { slidesPerView: 2.8, spaceBetween: 24 },
-                1024: { slidesPerView: 3.8, spaceBetween: 28 },
-                1280: { slidesPerView: 5, spaceBetween: 28 },
+                480: { slidesPerView: 2.2, spaceBetween: 14 },
+                640: { slidesPerView: 3.2, spaceBetween: 16 },
+                1024: { slidesPerView: 5.2, spaceBetween: 18 },
               }}
               speed={750}
               modules={[Pagination, Autoplay, Navigation]}
@@ -365,7 +364,7 @@ const Home = () => {
                 const imgUrl = typeof item === 'string' ? item : item.url;
                 return (
                   <SwiperSlide key={idx}>
-                    <div className="w-full h-full aspect-square rounded-3xl overflow-hidden bg-white border border-cream-200/60 shadow-md">
+                    <div className="w-full h-full aspect-square rounded-2xl overflow-hidden bg-white border border-cream-200/50 shadow-sm">
                       <img
                         src={getImageUrl(imgUrl)}
                         alt={`PeelKraft Showcase ${idx + 1}`}
@@ -379,18 +378,17 @@ const Home = () => {
             </Swiper>
           </div>
         ) : products.length > 0 ? (
-          <div className="w-full max-w-full px-2 sm:px-4 lg:px-6 overflow-hidden">
+          <div className="w-full max-w-full px-0 overflow-hidden">
             <Swiper
               grabCursor={true}
               centeredSlides={true}
               initialSlide={2}
-              slidesPerView={1.2}
-              spaceBetween={16}
+              slidesPerView={1.3}
+              spaceBetween={12}
               breakpoints={{
-                480: { slidesPerView: 1.8, spaceBetween: 20 },
-                640: { slidesPerView: 2.8, spaceBetween: 24 },
-                1024: { slidesPerView: 3.8, spaceBetween: 28 },
-                1280: { slidesPerView: 5, spaceBetween: 28 },
+                480: { slidesPerView: 2.2, spaceBetween: 14 },
+                640: { slidesPerView: 2.8, spaceBetween: 16 },
+                1024: { slidesPerView: 5.2, spaceBetween: 18 },
               }}
               speed={750}
               modules={[Pagination, Autoplay, Navigation]}
@@ -407,7 +405,7 @@ const Home = () => {
               {products.map((product, i) => (
                 <SwiperSlide key={product._id || i}>
                   <Link to={`/products/${product.slug}`} className="block w-full h-full">
-                    <div className="w-full h-full aspect-square rounded-3xl overflow-hidden bg-white border border-cream-200/60 shadow-md">
+                    <div className="w-full h-full aspect-square rounded-2xl overflow-hidden bg-white border border-cream-200/50 shadow-sm">
                       <img
                         src={getImageUrl(product.thumbnail || product.featuredImage)}
                         alt={product.name}
