@@ -324,7 +324,7 @@ const Home = () => {
       </section>
 
 
-      {/* ===== FEATURED PRODUCTS & COLLECTION CAROUSEL (Live & Wild Harvest) ===== */}
+      {/* ===== FEATURED COLLECTION CAROUSEL (1:1 Ratio Coverflow Image Carousel) ===== */}
       <section className="py-12 md:py-16 bg-white overflow-hidden">
         <div className="container-custom">
           <SectionHeading
@@ -334,33 +334,36 @@ const Home = () => {
           />
         </div>
 
-        {/* Admin-Controlled 1:1 Square Image Carousel */}
-        {settings?.homeCarousel && settings.homeCarousel.length > 0 && (
-          <div className="mb-14 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Coverflow 1:1 Square Image Carousel */}
+        {settings?.homeCarousel && settings.homeCarousel.length > 0 ? (
+          <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <Swiper
-              modules={[Navigation, Pagination, Autoplay]}
-              spaceBetween={20}
-              slidesPerView={1}
-              breakpoints={{
-                480: { slidesPerView: 1.2, spaceBetween: 16 },
-                640: { slidesPerView: 2, spaceBetween: 20 },
-                1024: { slidesPerView: 3, spaceBetween: 24 },
+              effect="coverflow"
+              grabCursor={true}
+              centeredSlides={true}
+              slidesPerView="auto"
+              coverflowEffect={{
+                rotate: 0,
+                stretch: 0,
+                depth: 180,
+                modifier: 2.5,
+                slideShadows: false,
               }}
-              navigation={true}
+              modules={[EffectCoverflow, Pagination, Autoplay, Navigation]}
               pagination={{ clickable: true }}
               autoplay={{ delay: 3500, disableOnInteraction: false }}
-              loop={settings.homeCarousel.length > 3}
-              className="pb-12"
+              loop={settings.homeCarousel.length > 2}
+              className="single-product-swiper"
             >
               {settings.homeCarousel.map((item, idx) => {
                 const imgUrl = typeof item === 'string' ? item : item.url;
                 return (
-                  <SwiperSlide key={idx} className="h-auto">
-                    <div className="w-full aspect-square bg-cream-50 rounded-3xl overflow-hidden border border-cream-200/60 shadow-premium group">
+                  <SwiperSlide key={idx}>
+                    <div className="w-full h-full aspect-square rounded-3xl overflow-hidden shadow-premium bg-white border border-cream-200/50">
                       <img
                         src={getImageUrl(imgUrl)}
-                        alt={`PeelKraft Collection ${idx + 1}`}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        alt={`PeelKraft Showcase ${idx + 1}`}
+                        className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                         loading="lazy"
                       />
                     </div>
@@ -369,117 +372,49 @@ const Home = () => {
               })}
             </Swiper>
           </div>
-        )}
-
-        {products.length > 0 ? (
-          <div className="w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        ) : products.length > 0 ? (
+          <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <Swiper
-              modules={[Navigation, Pagination, Autoplay]}
-              spaceBetween={24}
-              slidesPerView={1}
-              breakpoints={{
-                480: { slidesPerView: 1.2, spaceBetween: 20 },
-                640: { slidesPerView: 2, spaceBetween: 24 },
-                1024: { slidesPerView: 3, spaceBetween: 30 },
+              effect="coverflow"
+              grabCursor={true}
+              centeredSlides={true}
+              slidesPerView="auto"
+              coverflowEffect={{
+                rotate: 0,
+                stretch: 0,
+                depth: 180,
+                modifier: 2.5,
+                slideShadows: false,
               }}
+              modules={[EffectCoverflow, Pagination, Autoplay, Navigation]}
               pagination={{ clickable: true }}
-              autoplay={{ delay: 4000, disableOnInteraction: false }}
-              className="pb-12"
+              autoplay={{ delay: 3500, disableOnInteraction: false }}
+              loop={products.length > 2}
+              className="single-product-swiper"
             >
-              {(() => {
-                let upcomingSeen = 0;
-                return products.map((product, i) => {
-                  let isHiddenOnMobile = false;
-                  if (product.isUpcoming) {
-                    upcomingSeen++;
-                    if (upcomingSeen > 1) {
-                      isHiddenOnMobile = true;
-                    }
-                  }
-                  const hasOptions = product.packageOptions && product.packageOptions.length > 0;
-                  const trackInventory = product.trackInventory !== false;
-                  const isOutOfStock = trackInventory
-                    ? (hasOptions
-                      ? product.packageOptions.every(opt => (opt.stock ?? 0) <= 0 || opt.status === 'disabled')
-                      : ((product.stock ?? 0) <= 0)
-                    )
-                    : false;
-
-                  if (isHiddenOnMobile) return null;
-
-                  return (
-                    <SwiperSlide key={product._id || i} className="h-auto pb-4">
-                      <motion.div
-                        initial={{ opacity: 1, y: 0 }}
-                        className="h-full"
-                      >
-                        <Link
-                          to={`/products/${product.slug}`}
-                          className="group block h-full bg-cream-50/30 border border-cream-200/50 rounded-2xl p-5 transition-all duration-500 hover:shadow-premium hover:-translate-y-1 hover:bg-white"
-                        >
-                          <div className="aspect-square bg-cream-50 rounded-xl mb-6 relative border border-cream-200/30 flex items-center justify-center p-4 overflow-hidden">
-                            {product.isUpcoming && (
-                              <span className="absolute top-3 left-3 z-10 bg-green-800 text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-sm font-sans">
-                                Upcoming
-                              </span>
-                            )}
-                            {isOutOfStock && !product.isUpcoming && (
-                              <span className="absolute top-3 right-3 z-10 bg-red-600 text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-sm font-sans">
-                                Sold Out
-                              </span>
-                            )}
-                            <img
-                              src={getImageUrl(product.thumbnail)}
-                              alt={product.name}
-                              className={`max-h-[85%] max-w-[85%] object-contain transition-transform duration-750 group-hover:scale-105 ${isOutOfStock && !product.isUpcoming ? 'opacity-50 grayscale-[40%]' : ''}`}
-                              loading="lazy"
-                            />
-                          </div>
-                          <p className="text-[9px] uppercase tracking-widest text-gray-400 font-bold mb-2 font-sans">{product.category?.name || 'Product'}</p>
-                          <h3 className="font-serif text-dark text-base md:text-lg mb-2 group-hover:text-primary-500 transition-colors line-clamp-2 md:line-clamp-1">
-                            {product.name}
-                          </h3>
-
-                          {/* Price section */}
-                          <div className="flex items-center justify-center gap-2 mb-4">
-                            <span className="font-sans font-bold text-dark text-sm md:text-base">₹{product.sellingPrice || product.mrp}</span>
-                            {product.mrp > product.sellingPrice && (
-                              <span className="text-xs text-gray-400 line-through font-sans">₹{product.mrp}</span>
-                            )}
-                          </div>
-
-                          <p className="hidden md:block text-xs text-gray-500 font-sans mb-6 line-clamp-2 leading-relaxed tracking-wide">
-                            {product.shortDescription || 'Pure, organic orange peel product carefully processed for health.'}
-                          </p>
-                          <span
-                            className="inline-flex items-center gap-1.5 text-xs font-sans font-semibold text-primary-500 uppercase tracking-widest group-hover:text-dark transition-colors"
-                          >
-                            View Details
-                          </span>
-                        </Link>
-                      </motion.div>
-                    </SwiperSlide>
-                  );
-                });
-              })()}
+              {products.map((product, i) => (
+                <SwiperSlide key={product._id || i}>
+                  <Link to={`/products/${product.slug}`} className="block w-full h-full">
+                    <div className="w-full h-full aspect-square rounded-3xl overflow-hidden shadow-premium bg-white border border-cream-200/50">
+                      <img
+                        src={getImageUrl(product.thumbnail || product.featuredImage)}
+                        alt={product.name}
+                        className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                        loading="lazy"
+                      />
+                    </div>
+                  </Link>
+                </SwiperSlide>
+              ))}
             </Swiper>
           </div>
         ) : (
-          <div className="container-custom">
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="border border-cream-200 bg-cream-50/20 rounded-2xl p-5 flex flex-col items-center">
-                  <div className="aspect-square w-full skeleton rounded-xl mb-6" />
-                  <div className="h-4 skeleton w-3/4 mb-3" />
-                  <div className="h-3 skeleton w-full mb-6" />
-                  <div className="h-3 skeleton w-1/2 mt-auto" />
-                </div>
-              ))}
-            </div>
+          <div className="container-custom text-center py-12">
+            <p className="text-gray-400 font-sans text-sm">No collection images uploaded yet.</p>
           </div>
         )}
 
-        <div className="container-custom mt-12 text-center">
+        <div className="container-custom mt-8 text-center">
           <Link
             to="/products"
             className="inline-flex items-center justify-center px-8 py-3 bg-transparent border border-cream-200 hover:border-dark rounded-full text-xs font-semibold font-sans tracking-widest uppercase transition-colors"

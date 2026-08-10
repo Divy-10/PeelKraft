@@ -251,40 +251,42 @@
 /* Custom styles for the single-product coverflow carousel */
 .single-product-swiper {
   width: 100%;
-  padding-top: 20px;
-  padding-bottom: 30px;
+  padding-top: 30px;
+  padding-bottom: 50px;
   background: transparent;
 }
 
 .single-product-swiper .swiper-wrapper {
   background: transparent;
+  align-items: center;
 }
 
 .single-product-swiper .swiper-slide {
   background: transparent;
   background-position: center;
   background-size: cover;
-  width: 460px;
-  height: 460px;
+  width: 440px !important;
+  height: 440px !important;
+  aspect-ratio: 1 / 1;
   border-radius: 2rem;
   overflow: hidden;
   transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-  filter: grayscale(10%) brightness(1.1) !important;
-  opacity: 0.6 !important;
+  filter: blur(4px) opacity(0.5) !important;
+  opacity: 0.5 !important;
 }
 
 @media (max-width: 1024px) {
   .single-product-swiper .swiper-slide {
-    width: 360px;
-    height: 360px;
+    width: 340px !important;
+    height: 340px !important;
   }
 }
 
 @media (max-width: 640px) {
   .single-product-swiper .swiper-slide {
-    width: 280px;
-    height: 280px;
+    width: 280px !important;
+    height: 280px !important;
   }
 }
 
@@ -292,7 +294,7 @@
   transform: scale(1.05) !important;
   opacity: 1 !important;
   filter: none !important;
-  box-shadow: 0 30px 60px -15px rgba(247, 147, 30, 0.2);
+  box-shadow: 0 25px 50px -12px rgba(247, 147, 30, 0.25);
 }
 
 
