@@ -348,11 +348,11 @@ const Home = () => {
                 centeredSlides={true}
                 initialSlide={0}
                 slidesPerView={1.3}
-                spaceBetween={12}
+                spaceBetween={8}
                 breakpoints={{
-                  480: { slidesPerView: 2.3, spaceBetween: 12 },
-                  640: { slidesPerView: 3.3, spaceBetween: 14 },
-                  1024: { slidesPerView: 5, spaceBetween: 14 },
+                  480: { slidesPerView: 2.3, spaceBetween: 8 },
+                  640: { slidesPerView: 3.3, spaceBetween: 8 },
+                  1024: { slidesPerView: 5, spaceBetween: 8 },
                 }}
                 speed={750}
                 modules={[Pagination, Autoplay, Navigation]}
@@ -398,11 +398,11 @@ const Home = () => {
                 centeredSlides={true}
                 initialSlide={0}
                 slidesPerView={1.3}
-                spaceBetween={12}
+                spaceBetween={8}
                 breakpoints={{
-                  480: { slidesPerView: 2.3, spaceBetween: 12 },
-                  640: { slidesPerView: 3.3, spaceBetween: 14 },
-                  1024: { slidesPerView: 5, spaceBetween: 14 },
+                  480: { slidesPerView: 2.3, spaceBetween: 8 },
+                  640: { slidesPerView: 3.3, spaceBetween: 8 },
+                  1024: { slidesPerView: 5, spaceBetween: 8 },
                 }}
                 speed={750}
                 modules={[Pagination, Autoplay, Navigation]}
