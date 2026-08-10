@@ -335,90 +335,107 @@ const Home = () => {
         </div>
 
         {/* Premium Separated Card-Style Carousel (2 Left + 1 MAIN CENTER + 2 Right) */}
-        {settings?.homeCarousel && settings.homeCarousel.length > 0 ? (
-          <div className="w-full max-w-full px-4 sm:px-6 lg:px-8 overflow-hidden">
-            <Swiper
-              grabCursor={true}
-              centeredSlides={true}
-              initialSlide={2}
-              slidesPerView={1.3}
-              spaceBetween={16}
-              breakpoints={{
-                480: { slidesPerView: 2.2, spaceBetween: 18 },
-                640: { slidesPerView: 3.2, spaceBetween: 20 },
-                1024: { slidesPerView: 5.2, spaceBetween: 24 },
-              }}
-              speed={750}
-              modules={[Pagination, Autoplay, Navigation]}
-              pagination={{ clickable: true }}
-              autoplay={{
-                delay: 3500,
-                disableOnInteraction: false,
-                pauseOnMouseEnter: false,
-              }}
-              loop={true}
-              loopAdditionalSlides={5}
-              className="single-product-swiper"
-            >
-              {settings.homeCarousel.map((item, idx) => {
-                const imgUrl = typeof item === 'string' ? item : item.url;
-                return (
-                  <SwiperSlide key={idx}>
-                    <div className="w-full h-full aspect-square rounded-3xl overflow-hidden bg-white border border-cream-200/60 shadow-md transition-shadow duration-300">
-                      <img
-                        src={getImageUrl(imgUrl)}
-                        alt={`PeelKraft Showcase ${idx + 1}`}
-                        className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-                        loading="eager"
-                      />
-                    </div>
+        {settings?.homeCarousel && settings.homeCarousel.length > 0 ? (() => {
+          let items = settings.homeCarousel;
+          // Duplicate items array if length < 10 to ensure seamless infinite looping with slidesPerView 5.2
+          if (items.length > 0 && items.length < 10) {
+            const multiplier = Math.ceil(10 / items.length);
+            items = Array(multiplier).fill(items).flat();
+          }
+          return (
+            <div className="w-full max-w-full px-4 sm:px-6 lg:px-8 overflow-hidden">
+              <Swiper
+                grabCursor={true}
+                centeredSlides={true}
+                initialSlide={2}
+                slidesPerView={1.3}
+                spaceBetween={16}
+                breakpoints={{
+                  480: { slidesPerView: 2.2, spaceBetween: 18 },
+                  640: { slidesPerView: 3.2, spaceBetween: 20 },
+                  1024: { slidesPerView: 5.2, spaceBetween: 24 },
+                }}
+                speed={750}
+                modules={[Pagination, Autoplay, Navigation]}
+                pagination={{ clickable: true }}
+                autoplay={{
+                  delay: 3500,
+                  disableOnInteraction: false,
+                  pauseOnMouseEnter: false,
+                  stopOnLastSlide: false,
+                }}
+                loop={true}
+                loopPreventsSliding={false}
+                className="single-product-swiper"
+              >
+                {items.map((item, idx) => {
+                  const imgUrl = typeof item === 'string' ? item : item.url;
+                  return (
+                    <SwiperSlide key={idx}>
+                      <div className="w-full h-full aspect-square rounded-3xl overflow-hidden bg-white border border-cream-200/60 shadow-md transition-shadow duration-300">
+                        <img
+                          src={getImageUrl(imgUrl)}
+                          alt={`PeelKraft Showcase ${(idx % settings.homeCarousel.length) + 1}`}
+                          className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                          loading="eager"
+                        />
+                      </div>
+                    </SwiperSlide>
+                  );
+                })}
+              </Swiper>
+            </div>
+          );
+        })() : products.length > 0 ? (() => {
+          let displayProducts = products;
+          if (displayProducts.length > 0 && displayProducts.length < 10) {
+            const multiplier = Math.ceil(10 / displayProducts.length);
+            displayProducts = Array(multiplier).fill(displayProducts).flat();
+          }
+          return (
+            <div className="w-full max-w-full px-4 sm:px-6 lg:px-8 overflow-hidden">
+              <Swiper
+                grabCursor={true}
+                centeredSlides={true}
+                initialSlide={2}
+                slidesPerView={1.3}
+                spaceBetween={16}
+                breakpoints={{
+                  480: { slidesPerView: 2.2, spaceBetween: 18 },
+                  640: { slidesPerView: 3.2, spaceBetween: 20 },
+                  1024: { slidesPerView: 5.2, spaceBetween: 24 },
+                }}
+                speed={750}
+                modules={[Pagination, Autoplay, Navigation]}
+                pagination={{ clickable: true }}
+                autoplay={{
+                  delay: 3500,
+                  disableOnInteraction: false,
+                  pauseOnMouseEnter: false,
+                  stopOnLastSlide: false,
+                }}
+                loop={true}
+                loopPreventsSliding={false}
+                className="single-product-swiper"
+              >
+                {displayProducts.map((product, i) => (
+                  <SwiperSlide key={`${product._id || i}-${i}`}>
+                    <Link to={`/products/${product.slug}`} className="block w-full h-full">
+                      <div className="w-full h-full aspect-square rounded-3xl overflow-hidden bg-white border border-cream-200/60 shadow-md transition-shadow duration-300">
+                        <img
+                          src={getImageUrl(product.thumbnail || product.featuredImage)}
+                          alt={product.name}
+                          className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                          loading="eager"
+                        />
+                      </div>
+                    </Link>
                   </SwiperSlide>
-                );
-              })}
-            </Swiper>
-          </div>
-        ) : products.length > 0 ? (
-          <div className="w-full max-w-full px-4 sm:px-6 lg:px-8 overflow-hidden">
-            <Swiper
-              grabCursor={true}
-              centeredSlides={true}
-              initialSlide={2}
-              slidesPerView={1.3}
-              spaceBetween={16}
-              breakpoints={{
-                480: { slidesPerView: 2.2, spaceBetween: 18 },
-                640: { slidesPerView: 3.2, spaceBetween: 20 },
-                1024: { slidesPerView: 5.2, spaceBetween: 24 },
-              }}
-              speed={750}
-              modules={[Pagination, Autoplay, Navigation]}
-              pagination={{ clickable: true }}
-              autoplay={{
-                delay: 3500,
-                disableOnInteraction: false,
-                pauseOnMouseEnter: false,
-              }}
-              loop={true}
-              loopAdditionalSlides={5}
-              className="single-product-swiper"
-            >
-              {products.map((product, i) => (
-                <SwiperSlide key={product._id || i}>
-                  <Link to={`/products/${product.slug}`} className="block w-full h-full">
-                    <div className="w-full h-full aspect-square rounded-3xl overflow-hidden bg-white border border-cream-200/60 shadow-md transition-shadow duration-300">
-                      <img
-                        src={getImageUrl(product.thumbnail || product.featuredImage)}
-                        alt={product.name}
-                        className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-                        loading="eager"
-                      />
-                    </div>
-                  </Link>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div>
-        ) : (
+                ))}
+              </Swiper>
+            </div>
+          );
+        })() : (
           <div className="container-custom text-center py-12">
             <p className="text-gray-400 font-sans text-sm">No collection images uploaded yet.</p>
           </div>
