@@ -324,7 +324,7 @@ const Home = () => {
       </section>
 
 
-      {/* ===== FEATURED PRODUCTS (Live & Wild Harvest) ===== */}
+      {/* ===== FEATURED PRODUCTS & COLLECTION CAROUSEL (Live & Wild Harvest) ===== */}
       <section className="py-12 md:py-16 bg-white overflow-hidden">
         <div className="container-custom">
           <SectionHeading
@@ -333,6 +333,43 @@ const Home = () => {
             subtitle="Discover our range of premium organic food products made from carefully selected orange peels."
           />
         </div>
+
+        {/* Admin-Controlled 1:1 Square Image Carousel */}
+        {settings?.homeCarousel && settings.homeCarousel.length > 0 && (
+          <div className="mb-14 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <Swiper
+              modules={[Navigation, Pagination, Autoplay]}
+              spaceBetween={20}
+              slidesPerView={1}
+              breakpoints={{
+                480: { slidesPerView: 1.2, spaceBetween: 16 },
+                640: { slidesPerView: 2, spaceBetween: 20 },
+                1024: { slidesPerView: 3, spaceBetween: 24 },
+              }}
+              navigation={true}
+              pagination={{ clickable: true }}
+              autoplay={{ delay: 3500, disableOnInteraction: false }}
+              loop={settings.homeCarousel.length > 3}
+              className="pb-12"
+            >
+              {settings.homeCarousel.map((item, idx) => {
+                const imgUrl = typeof item === 'string' ? item : item.url;
+                return (
+                  <SwiperSlide key={idx} className="h-auto">
+                    <div className="w-full aspect-square bg-cream-50 rounded-3xl overflow-hidden border border-cream-200/60 shadow-premium group">
+                      <img
+                        src={getImageUrl(imgUrl)}
+                        alt={`PeelKraft Collection ${idx + 1}`}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                    </div>
+                  </SwiperSlide>
+                );
+              })}
+            </Swiper>
+          </div>
+        )}
 
         {products.length > 0 ? (
           <div className="w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
@@ -538,51 +575,14 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ===== MANUFACTURING PROCESS & GALLERY ===== */}
+      {/* ===== MANUFACTURING PROCESS ===== */}
       <section className="py-12 md:py-16 bg-cream-50/50 border-t border-cream-200/40 relative overflow-hidden">
         <div className="container-custom relative z-10">
           <SectionHeading
-            badge="Our Collection & Process"
+            badge="Our Process"
             title={<>How We <span className="text-primary-500 italic font-normal">Craft</span> Perfection</>}
-            subtitle="Explore our journey and 100% natural upcycling process"
+            subtitle="Every PeelKraft product goes through a meticulous 5-step process"
           />
-
-          {/* Admin-Controlled 1:1 Square Image Carousel */}
-          {settings?.homeCarousel && settings.homeCarousel.length > 0 && (
-            <div className="mb-14 max-w-5xl mx-auto px-2">
-              <Swiper
-                modules={[Navigation, Pagination, Autoplay]}
-                spaceBetween={20}
-                slidesPerView={1}
-                breakpoints={{
-                  480: { slidesPerView: 1.2, spaceBetween: 16 },
-                  640: { slidesPerView: 2, spaceBetween: 20 },
-                  1024: { slidesPerView: 3, spaceBetween: 24 },
-                }}
-                navigation={true}
-                pagination={{ clickable: true }}
-                autoplay={{ delay: 3500, disableOnInteraction: false }}
-                loop={settings.homeCarousel.length > 3}
-                className="pb-12"
-              >
-                {settings.homeCarousel.map((item, idx) => {
-                  const imgUrl = typeof item === 'string' ? item : item.url;
-                  return (
-                    <SwiperSlide key={idx} className="h-auto">
-                      <div className="w-full aspect-square bg-white rounded-3xl overflow-hidden border border-cream-200/60 shadow-premium group">
-                        <img
-                          src={getImageUrl(imgUrl)}
-                          alt={`PeelKraft Process ${idx + 1}`}
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                          loading="lazy"
-                        />
-                      </div>
-                    </SwiperSlide>
-                  );
-                })}
-              </Swiper>
-            </div>
-          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {processSteps.map((step, i) => (
