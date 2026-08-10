@@ -342,7 +342,7 @@ const Home = () => {
             items = Array(multiplier).fill(items).flat();
           }
           return (
-            <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden relative">
+            <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden relative">
               <Swiper
                 grabCursor={true}
                 centeredSlides={true}
@@ -352,7 +352,7 @@ const Home = () => {
                 breakpoints={{
                   480: { slidesPerView: 2.3, spaceBetween: 18 },
                   640: { slidesPerView: 3.3, spaceBetween: 20 },
-                  1024: { slidesPerView: 5, spaceBetween: 20 },
+                  1024: { slidesPerView: 5, spaceBetween: 18 },
                 }}
                 speed={750}
                 modules={[Pagination, Autoplay, Navigation]}
@@ -392,7 +392,7 @@ const Home = () => {
             displayProducts = Array(multiplier).fill(displayProducts).flat();
           }
           return (
-            <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden relative">
+            <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden relative">
               <Swiper
                 grabCursor={true}
                 centeredSlides={true}
@@ -402,7 +402,7 @@ const Home = () => {
                 breakpoints={{
                   480: { slidesPerView: 2.3, spaceBetween: 18 },
                   640: { slidesPerView: 3.3, spaceBetween: 20 },
-                  1024: { slidesPerView: 5, spaceBetween: 20 },
+                  1024: { slidesPerView: 5, spaceBetween: 18 },
                 }}
                 speed={750}
                 modules={[Pagination, Autoplay, Navigation]}
