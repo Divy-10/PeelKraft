@@ -325,167 +325,85 @@ const Home = () => {
           />
         </div>
 
-        {(products.length > 0 || (settings?.homeCarousel && settings.homeCarousel.length > 0)) ? (
-          (products.length > 0 || (settings?.homeCarousel && settings.homeCarousel.length > 0)) ? (
-            (() => {
-              const singleProduct = products[0] || null;
-              const rawImages = settings?.homeCarousel && settings.homeCarousel.length > 0
-                ? settings.homeCarousel
-                : getProductImages(singleProduct);
-              let slides = [...rawImages];
-              if (slides.length > 0) {
-                while (slides.length < 6) {
-                  slides = [...slides, ...rawImages];
-                }
-              }
-
-              return (
-                <div className="w-full flex flex-col items-center">
-                  <div className="w-full max-w-7xl mx-auto overflow-hidden mb-6">
-                    <Swiper
-                      modules={[EffectCoverflow, Pagination, Autoplay]}
-                      effect="coverflow"
-                      grabCursor={true}
-                      centeredSlides={true}
-                      slidesPerView={1.2}
-                      breakpoints={{
-                        640: { slidesPerView: 2 },
-                        1024: { slidesPerView: 3 },
-                      }}
-                      loop={true}
-                      speed={1000}
-                      autoplay={{ delay: 5000, disableOnInteraction: false }}
-                      coverflowEffect={{
-                        rotate: 35,
-                        stretch: 10,
-                        depth: 160,
-                        modifier: 1,
-                        slideShadows: false,
-                      }}
-                      pagination={{ clickable: true }}
-                      className="single-product-swiper"
-                    >
-                      {slides.map((img, index) => (
-                        <SwiperSlide key={index}>
-                          <div className="w-full h-full relative group rounded-3xl overflow-hidden">
-                            <img
-                              src={getImageUrl(img)}
-                              alt={singleProduct?.name || 'PeelKraft'}
-                              className="w-full h-full object-cover"
-                              loading="lazy"
-                            />
-                          </div>
-                        </SwiperSlide>
-                      ))}
-                    </Swiper>
-                  </div>
-
-                  <div className="container-custom">
+        {products.length > 0 ? (
+          <div className="container-custom">
+            <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
+              {(() => {
+                let upcomingSeen = 0;
+                return products.slice(0, 6).map((product, i) => {
+                  let isHiddenOnMobile = false;
+                  if (product.isUpcoming) {
+                    upcomingSeen++;
+                    if (upcomingSeen > 1) {
+                      isHiddenOnMobile = true;
+                    }
+                  }
+                  const hasOptions = product.packageOptions && product.packageOptions.length > 0;
+                  const trackInventory = product.trackInventory !== false;
+                  const isOutOfStock = trackInventory
+                    ? (hasOptions
+                      ? product.packageOptions.every(opt => (opt.stock ?? 0) <= 0 || opt.status === 'disabled')
+                      : ((product.stock ?? 0) <= 0)
+                    )
+                    : false;
+                  return (
                     <motion.div
+                      key={product._id || i}
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
-                      className="text-center mt-6 max-w-xl mx-auto"
+                      className={`h-full ${isHiddenOnMobile ? 'hidden sm:block' : ''}`}
                     >
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-primary-500 font-sans mb-3 block">
-                        {(singleProduct?.category && typeof singleProduct.category === 'object') ? singleProduct.category.name : 'Orange Peel Snacks'}
-                      </span>
-                      <h3 className="font-serif text-dark text-2xl md:text-3xl mb-4">
-                        {singleProduct?.name || 'Our Premium Selection'}
-                      </h3>
-                      <p className="text-xs md:text-sm text-gray-500 font-sans mb-8 leading-relaxed tracking-wide">
-                        {singleProduct?.shortDescription || 'Discover our range of premium organic food products made from carefully selected orange peels.'}
-                      </p>
                       <Link
-                        to={singleProduct ? `/products/${singleProduct.slug}` : '/products'}
-                        className="inline-flex items-center gap-2 px-8 py-3.5 bg-dark text-white rounded-full text-xs font-semibold font-sans tracking-widest uppercase hover:bg-green-800 transition shadow-premium"
+                        to={`/products/${product.slug}`}
+                        className="group block h-full bg-cream-50/30 border border-cream-200/50 rounded-2xl p-5 transition-all duration-500 hover:shadow-premium hover:-translate-y-1 hover:bg-white"
                       >
-                        View Details
+                        <div className="aspect-square bg-cream-50 rounded-xl mb-6 relative border border-cream-200/30 flex items-center justify-center p-4 overflow-hidden">
+                          {product.isUpcoming && (
+                            <span className="absolute top-3 left-3 z-10 bg-green-800 text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-sm font-sans">
+                              Upcoming
+                            </span>
+                          )}
+                          {isOutOfStock && !product.isUpcoming && (
+                            <span className="absolute top-3 right-3 z-10 bg-red-600 text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-sm font-sans">
+                              Sold Out
+                            </span>
+                          )}
+                          <img
+                            src={getImageUrl(product.thumbnail)}
+                            alt={product.name}
+                            className={`max-h-[85%] max-w-[85%] object-contain transition-transform duration-750 group-hover:scale-105 ${isOutOfStock && !product.isUpcoming ? 'opacity-50 grayscale-[40%]' : ''}`}
+                            loading="lazy"
+                          />
+                        </div>
+                        <p className="text-[9px] uppercase tracking-widest text-gray-400 font-bold mb-2 font-sans">{product.category?.name || 'Product'}</p>
+                        <h3 className="font-serif text-dark text-base md:text-lg mb-2 group-hover:text-primary-500 transition-colors line-clamp-2 md:line-clamp-1">
+                          {product.name}
+                        </h3>
+
+                        {/* Price section */}
+                        <div className="flex items-center justify-center gap-2 mb-4">
+                          <span className="font-sans font-bold text-dark text-sm md:text-base">₹{product.sellingPrice || product.mrp}</span>
+                          {product.mrp > product.sellingPrice && (
+                            <span className="text-xs text-gray-400 line-through font-sans">₹{product.mrp}</span>
+                          )}
+                        </div>
+
+                        <p className="hidden md:block text-xs text-gray-500 font-sans mb-6 line-clamp-2 leading-relaxed tracking-wide">
+                          {product.shortDescription || 'Pure, organic orange peel product carefully processed for health.'}
+                        </p>
+                        <span
+                          className="inline-flex items-center gap-1.5 text-xs font-sans font-semibold text-primary-500 uppercase tracking-widest group-hover:text-dark transition-colors"
+                        >
+                          View Details
+                        </span>
                       </Link>
                     </motion.div>
-                  </div>
-                </div>
-              );
-            })()
-          ) : (
-            <div className="container-custom">
-              <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                {(() => {
-                  let upcomingSeen = 0;
-                  return products.slice(0, 3).map((product, i) => {
-                    let isHiddenOnMobile = false;
-                    if (product.isUpcoming) {
-                      upcomingSeen++;
-                      if (upcomingSeen > 1) {
-                        isHiddenOnMobile = true;
-                      }
-                    }
-                    const hasOptions = product.packageOptions && product.packageOptions.length > 0;
-                    const trackInventory = product.trackInventory !== false;
-                    const isOutOfStock = trackInventory
-                      ? (hasOptions
-                        ? product.packageOptions.every(opt => (opt.stock ?? 0) <= 0 || opt.status === 'disabled')
-                        : ((product.stock ?? 0) <= 0)
-                      )
-                      : false;
-                    return (
-                      <motion.div
-                        key={product._id || i}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className={`h-full ${isHiddenOnMobile ? 'hidden sm:block' : ''}`}
-                      >
-                        <Link
-                          to={`/products/${product.slug}`}
-                          className="group block h-full bg-cream-50/30 border border-cream-200/50 rounded-2xl p-5 transition-all duration-500 hover:shadow-premium hover:-translate-y-1 hover:bg-white"
-                        >
-                          <div className="aspect-square bg-cream-50 rounded-xl mb-6 relative border border-cream-200/30 flex items-center justify-center p-4 overflow-hidden">
-                            {product.isUpcoming && (
-                              <span className="absolute top-3 left-3 z-10 bg-green-800 text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-sm font-sans">
-                                Upcoming
-                              </span>
-                            )}
-                            {isOutOfStock && !product.isUpcoming && (
-                              <span className="absolute top-3 right-3 z-10 bg-red-600 text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-sm font-sans">
-                                Sold Out
-                              </span>
-                            )}
-                            <img
-                              src={getImageUrl(product.thumbnail)}
-                              alt={product.name}
-                              className={`max-h-[85%] max-w-[85%] object-contain transition-transform duration-750 group-hover:scale-105 ${isOutOfStock && !product.isUpcoming ? 'opacity-50 grayscale-[40%]' : ''}`}
-                              loading="lazy"
-                            />
-                          </div>
-                          <h3 className="font-serif text-dark text-base md:text-lg mb-2 group-hover:text-primary-500 transition-colors line-clamp-2 md:line-clamp-1">
-                            {product.name}
-                          </h3>
-
-                          {/* Price section */}
-                          <div className="flex items-center justify-center gap-2 mb-4">
-                            <span className="font-sans font-bold text-dark text-sm md:text-base">₹{product.sellingPrice || product.mrp}</span>
-                            {product.mrp > product.sellingPrice && (
-                              <span className="text-xs text-gray-400 line-through font-sans">₹{product.mrp}</span>
-                            )}
-                          </div>
-
-                          <p className="hidden md:block text-xs text-gray-500 font-sans mb-6 line-clamp-2 leading-relaxed tracking-wide">
-                            {product.shortDescription || 'Pure, organic orange peel product carefully processed for health.'}
-                          </p>
-                          <span
-                            className="inline-flex items-center gap-1.5 text-xs font-sans font-semibold text-primary-500 uppercase tracking-widest group-hover:text-dark transition-colors"
-                          >
-                            View Details
-                          </span>
-                        </Link>
-                      </motion.div>
-                    );
-                  });
-                })()}
-              </div>
+                  );
+                });
+              })()}
             </div>
-          )
+          </div>
         ) : (
           <div className="container-custom">
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
