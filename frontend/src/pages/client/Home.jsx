@@ -336,7 +336,7 @@ const Home = () => {
 
         {/* 5-Image Centered Infinite Full-Width Carousel */}
         {settings?.homeCarousel && settings.homeCarousel.length > 0 ? (
-          <div className="w-full max-w-full px-0 overflow-hidden">
+          <div className="w-full max-w-full px-2 sm:px-4 lg:px-6 overflow-hidden">
             <Swiper
               grabCursor={true}
               centeredSlides={true}
@@ -348,16 +348,15 @@ const Home = () => {
                 1024: { slidesPerView: 3.8, spaceBetween: 28 },
                 1280: { slidesPerView: 5, spaceBetween: 32 },
               }}
-              speed={700}
+              speed={750}
               modules={[Pagination, Autoplay, Navigation]}
               pagination={{ clickable: true }}
               autoplay={{
-                delay: 2500,
+                delay: 3500,
                 disableOnInteraction: false,
                 pauseOnMouseEnter: false,
               }}
               loop={true}
-              loopAdditionalSlides={5}
               className="single-product-swiper"
             >
               {settings.homeCarousel.map((item, idx) => {
@@ -378,7 +377,7 @@ const Home = () => {
             </Swiper>
           </div>
         ) : products.length > 0 ? (
-          <div className="w-full max-w-full px-0 overflow-hidden">
+          <div className="w-full max-w-full px-2 sm:px-4 lg:px-6 overflow-hidden">
             <Swiper
               grabCursor={true}
               centeredSlides={true}
@@ -390,16 +389,15 @@ const Home = () => {
                 1024: { slidesPerView: 3.8, spaceBetween: 28 },
                 1280: { slidesPerView: 5, spaceBetween: 32 },
               }}
-              speed={700}
+              speed={750}
               modules={[Pagination, Autoplay, Navigation]}
               pagination={{ clickable: true }}
               autoplay={{
-                delay: 2500,
+                delay: 3500,
                 disableOnInteraction: false,
                 pauseOnMouseEnter: false,
               }}
               loop={true}
-              loopAdditionalSlides={5}
               className="single-product-swiper"
             >
               {products.map((product, i) => (
