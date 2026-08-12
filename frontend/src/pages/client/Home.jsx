@@ -342,16 +342,20 @@ const Home = () => {
             items = Array(multiplier).fill(items).flat();
           }
           return (
-            <div className="w-full max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden relative">
+            <div className="w-full max-w-[1440px] mx-auto px-0 overflow-hidden relative">
               <Swiper
                 grabCursor={true}
                 centeredSlides={true}
+                centeredSlidesBounds={false}
                 initialSlide={0}
-                slidesPerView={1}
-                spaceBetween={0}
+                slidesPerView={1.4}
+                spaceBetween={12}
                 breakpoints={{
-                  640: { slidesPerView: 3, spaceBetween: 20 },
-                  1024: { slidesPerView: 5, spaceBetween: 24 },
+                  480: { slidesPerView: 2.2, spaceBetween: 16 },
+                  640: { slidesPerView: 3.2, spaceBetween: 20 },
+                  768: { slidesPerView: 4.2, spaceBetween: 20 },
+                  1024: { slidesPerView: 4.5, spaceBetween: 24 },
+                  1280: { slidesPerView: 4.5, spaceBetween: 24 },
                 }}
                 speed={750}
                 modules={[Pagination, Autoplay, Navigation]}
@@ -391,16 +395,20 @@ const Home = () => {
             displayProducts = Array(multiplier).fill(displayProducts).flat();
           }
           return (
-            <div className="w-full max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden relative">
+            <div className="w-full max-w-[1440px] mx-auto px-0 overflow-hidden relative">
               <Swiper
                 grabCursor={true}
                 centeredSlides={true}
+                centeredSlidesBounds={false}
                 initialSlide={0}
-                slidesPerView={1}
-                spaceBetween={0}
+                slidesPerView={1.4}
+                spaceBetween={12}
                 breakpoints={{
-                  640: { slidesPerView: 3, spaceBetween: 20 },
-                  1024: { slidesPerView: 5, spaceBetween: 24 },
+                  480: { slidesPerView: 2.2, spaceBetween: 16 },
+                  640: { slidesPerView: 3.2, spaceBetween: 20 },
+                  768: { slidesPerView: 4.2, spaceBetween: 20 },
+                  1024: { slidesPerView: 4.5, spaceBetween: 24 },
+                  1280: { slidesPerView: 4.5, spaceBetween: 24 },
                 }}
                 speed={750}
                 modules={[Pagination, Autoplay, Navigation]}
