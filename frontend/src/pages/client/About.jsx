@@ -6,7 +6,7 @@ import Breadcrumbs from '../../components/seo/Breadcrumbs';
 const timeline = [
   { year: '2025', title: 'The Idea', desc: 'JuiceTap Global identifies the massive orange peel waste problem in India\'s juice industry.' },
   { year: '2025', title: 'R&D Phase', desc: 'Our food scientists develop the proprietary process to convert orange peels into food-grade products.' },
-  { year: 'May 2026', title: 'PeelKraft Born', desc: 'PeelKraft launches as a sub-brand of JuiceTap Global with its first product — Orange Peel Powder.' },
+  { year: 'May 2026', title: 'PeelKraft Born', desc: 'PeelKraft launches as a sub-brand of JuiceTap Global with its first product — Orange Peel candy.' },
   { year: 'July 2026', title: 'Scaling Up', desc: 'Product range expands to include snacks, tea blends, and seasonings. Amazon store goes live.' },
 ];
 
