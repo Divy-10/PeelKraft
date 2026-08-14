@@ -147,16 +147,15 @@ const Sustainability = () => (
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
           <h2 className="text-3xl md:text-4xl font-serif text-dark mb-16">Our <span className="text-primary-500 italic font-normal">Impact</span></h2>
         </motion.div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-4xl mx-auto items-center justify-items-center">
           {[
-            { num: '500+', label: 'Tonnes of Peels Recycled' },
-            { num: '200+', label: 'Tonnes of CO₂ Saved' },
-            { num: '100+', label: 'Jobs Created' },
-            { num: '10,000+', label: 'Customers Served' },
+            { num: '500+', label: 'KG of Peels Recycled' },
+            { num: '20+', label: 'Jobs Created' },
+            { num: '5,000+', label: 'Customers Served' },
           ].map((item, i) => (
-            <motion.div key={i} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="p-6">
-              <p className="text-4xl md:text-5xl font-serif text-dark">{item.num}</p>
-              <p className="text-gray-400 text-xs mt-3 font-sans tracking-wide uppercase font-semibold">{item.label}</p>
+            <motion.div key={i} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="p-6 text-center w-full">
+              <p className="text-4xl md:text-5xl font-serif text-dark mb-3">{item.num}</p>
+              <p className="text-gray-400 text-xs font-sans tracking-widest uppercase font-semibold">{item.label}</p>
             </motion.div>
           ))}
         </div>
