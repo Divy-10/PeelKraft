@@ -3,6 +3,7 @@ import connectDB from './src/config/db.js';
 import config from './src/config/index.js';
 import Admin from './src/models/Admin.js';
 import { seedDatabase } from './src/seed.js';
+import { verifySMTP } from './src/services/emailService.js';
 import mongoose from 'mongoose';
 
 // Handle Uncaught Exceptions
@@ -35,13 +36,16 @@ const startServer = async () => {
     }
 
     // 3. Start server after successful DB connection and seeding check
-    server = app.listen(config.port, () => {
+    server = app.listen(config.port, async () => {
       console.log(`\n🚀 PeelKraft API Server running on port ${config.port}`);
       console.log(`📍 Environment: ${config.nodeEnv}`);
       console.log(`🌐 Frontend URL: ${config.frontendUrl}`);
       console.log(`🔑 Razorpay Key ID: ${config.razorpay.keyId ? config.razorpay.keyId.substring(0, 8) + '...' : 'Not Configured'}`);
       console.log(`🔒 Razorpay Mode: ${config.razorpay.keyId && config.razorpay.keyId.startsWith('rzp_live') ? 'LIVE Mode 🟢' : 'TEST Mode 🔴'}`);
       console.log(`💚 Health: http://localhost:${config.port}/api/health\n`);
+
+      // Verify SMTP connection safely
+      await verifySMTP();
     });
   } catch (error) {
     console.error('\n❌ Failed to start server due to connection error:\n', error);

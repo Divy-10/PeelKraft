@@ -12,20 +12,15 @@ export const sendEmail = async ({ to, subject, html }) => {
   const from = config.emailFrom || 'PeelKraft <support@juicetap.in>';
 
   // Check that required env variables are present
-  const configErrors = [];
-  const requiredEnv = ['EMAIL_HOST', 'EMAIL_PORT', 'EMAIL_USER', 'EMAIL_PASS', 'EMAIL_FROM'];
-  requiredEnv.forEach(envVar => {
-    if (!process.env[envVar]) {
-      configErrors.push(`${envVar} is undefined`);
-    }
-  });
+  const user = config.smtp.user;
+  const pass = config.smtp.pass;
 
-  if (configErrors.length > 0) {
-    console.error('SMTP configuration loaded with errors. Missing variables:', configErrors.join(', '));
-    return { success: false, message: 'SMTP environment variables missing or undefined', errors: configErrors };
+  if (!user || !pass) {
+    console.error('SMTP configuration error: EMAIL_USER/SMTP_USER or EMAIL_PASS/SMTP_PASS missing');
+    return { success: false, message: 'SMTP credentials missing or undefined' };
   }
 
-  console.log('SMTP configuration loaded');
+  console.log(`SMTP configuration loaded for user: ${user}`);
 
   try {
     const transporter = createTransporter();
@@ -51,8 +46,23 @@ export const sendEmail = async ({ to, subject, html }) => {
     };
   } catch (error) {
     console.error('Complete error stack if sending fails:');
-    console.error(error.stack || error);
+    console.error(error.message || error);
     throw error;
+  }
+};
+
+/**
+ * Verify SMTP Transporter connection
+ */
+export const verifySMTP = async () => {
+  try {
+    const transporter = createTransporter();
+    await transporter.verify();
+    console.log('✅ SMTP connection verified successfully');
+    return { success: true, message: 'SMTP connection verified successfully' };
+  } catch (error) {
+    console.error('❌ SMTP verification failed:', error.message || error);
+    return { success: false, error: error.message };
   }
 };
 
