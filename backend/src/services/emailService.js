@@ -483,7 +483,7 @@ export const sendNewsletterWelcome = async (email) => {
   }
 
   const token = generateUnsubscribeToken(normalizedEmail);
-  const baseUrl = config.frontendUrl || 'http://localhost:5173';
+  const baseUrl = (config.frontendUrl || 'http://localhost:5173').replace(/\/+$/, '');
   const unsubscribeUrl = `${baseUrl}/unsubscribe?email=${encodeURIComponent(normalizedEmail)}&token=${token}`;
 
   const html = `
