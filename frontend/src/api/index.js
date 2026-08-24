@@ -53,6 +53,7 @@ export const contactApi = {
 
 export const newsletterApi = {
   subscribe: (data) => api.post('/newsletter', data),
+  unsubscribe: (data) => api.post('/newsletter/unsubscribe', data),
   getAll: (params) => api.get('/newsletter', { params }),
   export: () => api.get('/newsletter/export', { responseType: 'blob' }),
   delete: (id) => api.delete(`/newsletter/${id}`),

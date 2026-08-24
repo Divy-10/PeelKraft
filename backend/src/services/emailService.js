@@ -1,5 +1,7 @@
+import crypto from 'crypto';
 import config from '../config/index.js';
 import createTransporter from '../config/email.js';
+import Newsletter from '../models/Newsletter.js';
 
 /**
  * Send an email using Gmail SMTP transporter
@@ -451,9 +453,39 @@ export const sendContactReply = async (contact, replyMessage) => {
 };
 
 /**
+ * Generate secure HMAC unsubscribe token for an email address
+ */
+export const generateUnsubscribeToken = (email) => {
+  const secret = config.jwtSecret || 'peelkraft_secret_key';
+  return crypto.createHmac('sha256', secret).update((email || '').toLowerCase().trim()).digest('hex');
+};
+
+/**
+ * Verify unsubscribe token for an email address
+ */
+export const verifyUnsubscribeToken = (email, token) => {
+  if (!email || !token) return false;
+  const expectedToken = generateUnsubscribeToken(email);
+  return token === expectedToken;
+};
+
+/**
  * Send newsletter welcome email
  */
 export const sendNewsletterWelcome = async (email) => {
+  const normalizedEmail = (email || '').toLowerCase().trim();
+
+  // Check if subscriber exists and is unsubscribed
+  const subscriber = await Newsletter.findOne({ email: normalizedEmail });
+  if (subscriber && subscriber.status === 'unsubscribed') {
+    console.log(`Skipping newsletter welcome email to unsubscribed address: ${normalizedEmail}`);
+    return { success: false, message: 'User is unsubscribed' };
+  }
+
+  const token = generateUnsubscribeToken(normalizedEmail);
+  const baseUrl = config.frontendUrl || 'http://localhost:5173';
+  const unsubscribeUrl = `${baseUrl}/unsubscribe?email=${encodeURIComponent(normalizedEmail)}&token=${token}`;
+
   const html = `
     <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
       <div style="background: linear-gradient(135deg, #1E7A34, #F7931E); padding: 40px; border-radius: 12px 12px 0 0; text-align: center;">
@@ -462,13 +494,20 @@ export const sendNewsletterWelcome = async (email) => {
       <div style="background: #FFF8EE; padding: 30px; border-radius: 0 0 12px 12px; text-align: center;">
         <p style="font-size: 16px; color: #222;">Thank you for subscribing to our newsletter!</p>
         <p style="color: #666;">You'll be the first to know about our latest products, recipes, health tips, and sustainability updates.</p>
-        <a href="${config.frontendUrl}" style="display: inline-block; background: #F7931E; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; margin-top: 15px; font-weight: 600;">Visit Our Website</a>
+        <a href="${baseUrl}" style="display: inline-block; background: #F7931E; color: white; padding: 12px 30px; border-radius: 50px; text-decoration: none; margin-top: 15px; font-weight: 600;">Visit Our Website</a>
+        
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #E5E7EB; text-align: center;">
+          <p style="font-size: 12px; color: #6B7280; margin: 0;">
+            If you wish to stop receiving subscription and marketing emails, you can 
+            <a href="${unsubscribeUrl}" style="color: #F7931E; text-decoration: underline; font-weight: 600;">Unsubscribe here</a>.
+          </p>
+        </div>
       </div>
     </div>
   `;
 
   return sendEmail({
-    to: email,
+    to: normalizedEmail,
     subject: 'Welcome to PeelKraft Newsletter! 🍊',
     html,
   });

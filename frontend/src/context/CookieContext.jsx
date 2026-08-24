@@ -83,21 +83,33 @@ export const CookieProvider = ({ children }) => {
   // Google Analytics loader implementation
   const loadAnalyticsScripts = () => {
     if (document.getElementById('google-analytics-script')) return;
+    const gaId = import.meta.env.VITE_GA_MEASUREMENT_ID;
+
+    // Provide fallback dummy gtag function
+    window.dataLayer = window.dataLayer || [];
+    if (!window.gtag) {
+      window.gtag = function () {
+        window.dataLayer.push(arguments);
+      };
+    }
+
+    if (!gaId || gaId === 'G-MOCKID1234') {
+      console.log('🍪 Cookie Manager: Analytics initialized (Mock mode)');
+      return;
+    }
+
     console.log('🍪 Cookie Manager: Initializing Analytics Scripts');
-    
-    // Create Tag Manager / GA script tags dynamically
     const script = document.createElement('script');
     script.id = 'google-analytics-script';
     script.async = true;
-    script.src = 'https://www.googletagmanager.com/gtag/js?id=G-MOCKID1234';
-    
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
+    script.onerror = (err) => console.warn('Google Analytics script failed to load:', err);
+
     const inlineScript = document.createElement('script');
     inlineScript.id = 'google-analytics-inline-script';
     inlineScript.innerHTML = `
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-MOCKID1234');
+      gtag('config', '${gaId}');
     `;
 
     document.head.appendChild(script);
@@ -114,8 +126,28 @@ export const CookieProvider = ({ children }) => {
   // Meta Pixel / Marketing script loader
   const loadMarketingScripts = () => {
     if (document.getElementById('meta-pixel-script')) return;
-    console.log('🍪 Cookie Manager: Initializing Marketing/Meta Pixel Scripts');
+    const pixelId = import.meta.env.VITE_META_PIXEL_ID;
 
+    // Provide fallback dummy fbq function
+    if (!window.fbq) {
+      window.fbq = function () {
+        if (window.fbq.callMethod) {
+          window.fbq.callMethod.apply(window.fbq, arguments);
+        } else {
+          window.fbq.queue.push(arguments);
+        }
+      };
+      window.fbq.queue = [];
+      window.fbq.loaded = true;
+      window.fbq.version = '2.0';
+    }
+
+    if (!pixelId || pixelId === '123456789012345') {
+      console.log('🍪 Cookie Manager: Marketing scripts initialized (Mock mode)');
+      return;
+    }
+
+    console.log('🍪 Cookie Manager: Initializing Marketing/Meta Pixel Scripts');
     const inlineScript = document.createElement('script');
     inlineScript.id = 'meta-pixel-script';
     inlineScript.innerHTML = `
@@ -124,10 +156,12 @@ export const CookieProvider = ({ children }) => {
       n.callMethod.apply(n,arguments):n.queue.push(arguments)};
       if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
       n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
+      t.src=v;
+      t.onerror=function(){ console.warn('Meta Pixel script failed to load:', v); };
+      s=b.getElementsByTagName(e)[0];
       s.parentNode.insertBefore(t,s)}(window, document,'script',
       'https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', '123456789012345');
+      fbq('init', '${pixelId}');
       fbq('track', 'PageView');
     `;
 

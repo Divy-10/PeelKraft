@@ -13,11 +13,16 @@ const Footer = () => {
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
-    if (!email) return;
+    const trimmedEmail = email.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
+      toast.error('Please enter a valid email address.');
+      return;
+    }
     setSubscribing(true);
     try {
-      const res = await newsletterApi.subscribe({ email });
-      toast.success(res.message);
+      const res = await newsletterApi.subscribe({ email: trimmedEmail });
+      toast.success(res.message || 'Subscribed successfully!');
       setEmail('');
     } catch (err) {
       toast.error(err.message || 'Failed to subscribe');

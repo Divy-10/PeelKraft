@@ -28,6 +28,7 @@ const SearchPage = lazy(() => import('./pages/client/Search'));
 const PrivacyPolicy = lazy(() => import('./pages/client/PrivacyPolicy'));
 const TermsConditions = lazy(() => import('./pages/client/TermsConditions'));
 const CookiePolicy = lazy(() => import('./pages/client/CookiePolicy'));
+const Unsubscribe = lazy(() => import('./pages/client/Unsubscribe'));
 const NotFound = lazy(() => import('./pages/client/NotFound'));
 
 import { CookieProvider } from './context/CookieContext';
@@ -91,6 +92,7 @@ const App = () => {
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-conditions" element={<TermsConditions />} />
             <Route path="/cookie-policy" element={<CookiePolicy />} />
+            <Route path="/unsubscribe" element={<Unsubscribe />} />
             
             {/* E-commerce client-side paths */}
             <Route path="/cart" element={<Cart />} />
