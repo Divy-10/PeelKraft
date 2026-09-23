@@ -39,6 +39,20 @@ const Testimonials = () => {
     fetchTestimonials();
   }, []);
 
+  const handleEditClick = (testimonial) => {
+    setEditingId(testimonial._id);
+    reset({
+      name: testimonial.name || '',
+      designation: testimonial.designation || '',
+      company: testimonial.company || '',
+      content: testimonial.content || '',
+      rating: testimonial.rating || 5,
+      avatar: testimonial.avatar || { url: '' },
+      featured: testimonial.featured || false,
+      status: testimonial.status || 'active',
+    });
+  };
+
   const handleCancelEdit = () => {
     setEditingId(null);
     reset({
@@ -47,6 +61,7 @@ const Testimonials = () => {
       company: '',
       content: '',
       rating: 5,
+      avatar: { url: '' },
       featured: false,
       status: 'active',
     });

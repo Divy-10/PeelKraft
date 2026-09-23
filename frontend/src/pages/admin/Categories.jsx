@@ -36,11 +36,23 @@ const Categories = () => {
     fetchCategories();
   }, []);
 
+  const handleEditClick = (category) => {
+    setEditingId(category._id);
+    reset({
+      name: category.name || '',
+      description: category.description || '',
+      image: category.image || { url: '' },
+      status: category.status || 'active',
+      order: category.order || 0,
+    });
+  };
+
   const handleCancelEdit = () => {
     setEditingId(null);
     reset({
       name: '',
       description: '',
+      image: { url: '' },
       status: 'active',
       order: 0,
     });
