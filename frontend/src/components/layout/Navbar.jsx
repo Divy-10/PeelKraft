@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiMenu, FiX, FiSearch, FiShoppingCart, FiUser, FiHeart, FiLogOut } from 'react-icons/fi';
+import { FiMenu, FiX, FiSearch, FiShoppingCart, FiUser, FiHeart, FiLogOut, FiChevronDown, FiArrowRight } from 'react-icons/fi';
 import { useSettings } from '../../context/SettingsContext';
 import { useCart } from '../../context/CartContext';
 import { useUser } from '../../context/UserContext';
+import { categoryApi } from '../../api';
+import { getImageUrl } from '../../utils';
 
 const navLinks = [
   { name: 'Home', path: '/' },
@@ -18,10 +20,21 @@ const navLinks = [
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [isShopHovered, setIsShopHovered] = useState(false);
+  const [mobileShopOpen, setMobileShopOpen] = useState(false);
+  const hoverTimeout = useRef(null);
+
   const location = useLocation();
   const navigate = useNavigate();
   const { getItemCount } = useCart();
   const { isAuthenticated, user, logout } = useUser();
+
+  useEffect(() => {
+    categoryApi.getAll({ status: 'active' })
+      .then((res) => setCategories(res.data || []))
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 30);
@@ -31,7 +44,19 @@ const Navbar = () => {
 
   useEffect(() => {
     setIsOpen(false);
+    setIsShopHovered(false);
   }, [location.pathname]);
+
+  const handleShopMouseEnter = () => {
+    if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+    setIsShopHovered(true);
+  };
+
+  const handleShopMouseLeave = () => {
+    hoverTimeout.current = setTimeout(() => {
+      setIsShopHovered(false);
+    }, 200);
+  };
 
   const isActive = (path) => {
     if (path === '/') return location.pathname === '/';
@@ -63,26 +88,128 @@ const Navbar = () => {
 
             {/* Desktop Nav - Uncluttered, Spacious, Single Line */}
             <div className="hidden lg:flex items-center gap-8">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className={`relative py-1 font-sans font-medium text-[14px] uppercase tracking-wider transition-colors duration-300 ${
-                    isActive(link.path)
-                      ? 'text-dark'
-                      : 'text-gray-500 hover:text-dark'
-                  }`}
-                >
-                  {link.name}
-                  {isActive(link.path) && (
-                    <motion.div
-                      layoutId="active-nav-underline"
-                      className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-primary-500"
-                      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                    />
-                  )}
-                </Link>
-              ))}
+              {navLinks.map((link) => {
+                if (link.name === 'Shop') {
+                  return (
+                    <div
+                      key={link.path}
+                      className="relative py-1"
+                      onMouseEnter={handleShopMouseEnter}
+                      onMouseLeave={handleShopMouseLeave}
+                    >
+                      <Link
+                        to={link.path}
+                        className={`flex items-center gap-1 font-sans font-medium text-[14px] uppercase tracking-wider transition-colors duration-300 ${
+                          isActive(link.path) || isShopHovered
+                            ? 'text-dark'
+                            : 'text-gray-500 hover:text-dark'
+                        }`}
+                      >
+                        <span>Shop</span>
+                        <FiChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${isShopHovered ? 'rotate-180 text-primary-500' : 'text-gray-400'}`} />
+                        {isActive(link.path) && (
+                          <motion.div
+                            layoutId="active-nav-underline"
+                            className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-primary-500"
+                            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                          />
+                        )}
+                      </Link>
+
+                      {/* Mega Menu Dropdown Rectangle Container */}
+                      <AnimatePresence>
+                        {isShopHovered && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 12, scale: 0.98 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 10, scale: 0.98 }}
+                            transition={{ duration: 0.22, ease: 'easeOut' }}
+                            className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-[720px] max-w-[94vw] bg-white/95 backdrop-blur-xl rounded-3xl border border-cream-200 shadow-2xl p-6 z-50 overflow-hidden"
+                            onMouseEnter={handleShopMouseEnter}
+                            onMouseLeave={handleShopMouseLeave}
+                          >
+                            {/* Top Bar Header */}
+                            <div className="flex items-center justify-between pb-4 mb-4 border-b border-cream-100">
+                              <div className="flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-primary-500 animate-pulse" />
+                                <h4 className="font-poppins font-bold text-xs uppercase tracking-wider text-dark">
+                                  Shop By Category
+                                </h4>
+                              </div>
+                              <Link
+                                to="/products"
+                                onClick={() => setIsShopHovered(false)}
+                                className="text-xs font-semibold text-primary-600 hover:text-primary-700 flex items-center gap-1 group font-sans uppercase tracking-wider"
+                              >
+                                <span>Browse All Catalog</span>
+                                <FiArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                              </Link>
+                            </div>
+
+                            {/* Category Cards Grid */}
+                            {categories.length > 0 ? (
+                              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 max-h-[380px] overflow-y-auto pr-1">
+                                {categories.map((cat) => (
+                                  <Link
+                                    key={cat._id}
+                                    to={`/products?category=${cat._id || cat.slug}`}
+                                    onClick={() => setIsShopHovered(false)}
+                                    className="flex items-center gap-3.5 p-3 rounded-2xl bg-cream-50/70 border border-cream-100 hover:bg-white hover:border-primary-500/40 hover:shadow-md transition-all duration-300 group"
+                                  >
+                                    <div className="w-12 h-12 rounded-xl border border-cream-200 overflow-hidden bg-white shrink-0 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+                                      {cat.image?.url ? (
+                                        <img
+                                          src={getImageUrl(cat.image.url)}
+                                          alt={cat.name}
+                                          className="w-full h-full object-cover"
+                                        />
+                                      ) : (
+                                        <div className="w-full h-full bg-primary-50 text-primary-600 font-bold text-xs flex items-center justify-center">
+                                          {cat.name?.charAt(0)}
+                                        </div>
+                                      )}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <h5 className="font-poppins font-bold text-xs sm:text-sm text-dark group-hover:text-primary-600 transition-colors leading-snug">
+                                        {cat.name}
+                                      </h5>
+                                    </div>
+                                  </Link>
+                                ))}
+                              </div>
+                            ) : (
+                              <div className="text-center py-6 text-xs text-gray-400 font-sans">
+                                Loading categories...
+                              </div>
+                            )}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                }
+
+                return (
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    className={`relative py-1 font-sans font-medium text-[14px] uppercase tracking-wider transition-colors duration-300 ${
+                      isActive(link.path)
+                        ? 'text-dark'
+                        : 'text-gray-500 hover:text-dark'
+                    }`}
+                  >
+                    {link.name}
+                    {isActive(link.path) && (
+                      <motion.div
+                        layoutId="active-nav-underline"
+                        className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-primary-500"
+                        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                      />
+                    )}
+                  </Link>
+                );
+              })}
             </div>
 
             {/* Right Actions */}
@@ -224,25 +351,90 @@ const Navbar = () => {
                 </div>
                 {/* Links */}
                 <div className="flex-1 space-y-1 overflow-y-auto">
-                  {navLinks.map((link, i) => (
-                    <motion.div
-                      key={link.path}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.05 }}
-                    >
-                      <Link
-                        to={link.path}
-                        className={`block px-4 py-3 rounded-lg font-sans font-medium text-xs uppercase tracking-wider transition-all ${
-                          isActive(link.path)
-                            ? 'bg-white border-l-2 border-primary-500 text-primary-500 font-semibold'
-                            : 'text-gray-600 hover:bg-white/50'
-                        }`}
+                  {navLinks.map((link, i) => {
+                    if (link.name === 'Shop') {
+                      return (
+                        <motion.div
+                          key={link.path}
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: i * 0.05 }}
+                          className="space-y-1"
+                        >
+                          <div className="flex items-center justify-between">
+                            <Link
+                              to={link.path}
+                              onClick={() => setIsOpen(false)}
+                              className={`flex-1 block px-4 py-3 rounded-lg font-sans font-medium text-xs uppercase tracking-wider transition-all ${
+                                isActive(link.path)
+                                  ? 'bg-white border-l-2 border-primary-500 text-primary-500 font-semibold'
+                                  : 'text-gray-600 hover:bg-white/50'
+                              }`}
+                            >
+                              Shop
+                            </Link>
+                            <button
+                              type="button"
+                              onClick={() => setMobileShopOpen(!mobileShopOpen)}
+                              className="p-3 text-gray-500 hover:text-dark"
+                            >
+                              <FiChevronDown className={`w-4 h-4 transition-transform ${mobileShopOpen ? 'rotate-180 text-primary-500' : ''}`} />
+                            </button>
+                          </div>
+
+                          {/* Mobile Categories list */}
+                          <AnimatePresence>
+                            {mobileShopOpen && categories.length > 0 && (
+                              <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                className="pl-4 pr-2 py-2 space-y-2 border-l border-cream-200 ml-4 overflow-hidden"
+                              >
+                                {categories.map((cat) => (
+                                  <Link
+                                    key={cat._id}
+                                    to={`/products?category=${cat._id || cat.slug}`}
+                                    onClick={() => setIsOpen(false)}
+                                    className="flex items-center gap-3 p-2 rounded-xl bg-white/60 hover:bg-white transition-colors"
+                                  >
+                                    <div className="w-8 h-8 rounded-lg border border-cream-200 overflow-hidden bg-white shrink-0 flex items-center justify-center">
+                                      {cat.image?.url ? (
+                                        <img src={getImageUrl(cat.image.url)} alt={cat.name} className="w-full h-full object-cover" />
+                                      ) : (
+                                        <span className="text-[10px] font-bold text-primary-600">{cat.name?.charAt(0)}</span>
+                                      )}
+                                    </div>
+                                    <span className="text-xs font-medium text-gray-700 font-sans truncate">{cat.name}</span>
+                                  </Link>
+                                ))}
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </motion.div>
+                      );
+                    }
+
+                    return (
+                      <motion.div
+                        key={link.path}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.05 }}
                       >
-                        {link.name}
-                      </Link>
-                    </motion.div>
-                  ))}
+                        <Link
+                          to={link.path}
+                          className={`block px-4 py-3 rounded-lg font-sans font-medium text-xs uppercase tracking-wider transition-all ${
+                            isActive(link.path)
+                              ? 'bg-white border-l-2 border-primary-500 text-primary-500 font-semibold'
+                              : 'text-gray-600 hover:bg-white/50'
+                          }`}
+                        >
+                          {link.name}
+                        </Link>
+                      </motion.div>
+                    );
+                  })}
                   
                   {isAuthenticated && (
                     <motion.div

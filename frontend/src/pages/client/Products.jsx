@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiSearch, FiFilter, FiGrid, FiList, FiChevronDown, FiShoppingCart } from 'react-icons/fi';
 import SEOHead from '../../components/seo/SEOHead';
@@ -9,16 +9,23 @@ import { getImageUrl, truncateText } from '../../utils';
 import useDebounce from '../../hooks/useDebounce';
 
 const Products = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const categoryParam = searchParams.get('category') || '';
+
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState(categoryParam);
   const [sortBy, setSortBy] = useState('createdAt');
   const [sortOrder, setSortOrder] = useState('desc');
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState(null);
   const debouncedSearch = useDebounce(search, 400);
+
+  useEffect(() => {
+    setCategory(categoryParam);
+  }, [categoryParam]);
 
   useEffect(() => {
     categoryApi.getAll().then(res => setCategories(res.data || [])).catch(() => {});
