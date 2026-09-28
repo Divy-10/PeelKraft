@@ -85,6 +85,30 @@ const Categories = () => {
     }
   };
 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folder', 'categories');
+
+    try {
+      const res = await mediaApi.upload(formData);
+      setValue('image', { url: res.data.url, publicId: res.data.publicId || '' });
+      toast.success('Category image uploaded successfully.');
+    } catch (err) {
+      toast.error('Failed to upload category image.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setValue('image', { url: '', publicId: '' });
+  };
+
   const imageUrl = watch('image.url');
 
   return (
@@ -108,6 +132,13 @@ const Categories = () => {
               {categories.map((cat) => (
                 <div key={cat._id} className="p-6 flex items-center justify-between hover:bg-gray-50/50 transition-colors">
                   <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl overflow-hidden border border-gray-100 bg-gray-50 shrink-0 flex items-center justify-center">
+                      {cat.image?.url ? (
+                        <img src={cat.image.url} alt={cat.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-xs font-bold text-gray-400">{cat.name?.charAt(0)}</span>
+                      )}
+                    </div>
                     <div>
                       <h4 className="font-poppins font-bold text-dark">{cat.name}</h4>
                       <p className="text-xs text-gray-400 mt-0.5">{cat.slug}</p>
@@ -160,6 +191,42 @@ const Categories = () => {
                 placeholder="e.g. Orange Peel Powder"
               />
               {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase font-poppins">Category Image</label>
+              {imageUrl ? (
+                <div className="relative w-full h-32 rounded-xl overflow-hidden border border-gray-200 group bg-gray-50">
+                  <img src={imageUrl} alt="Category" className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                      title="Remove image"
+                    >
+                      <FiTrash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-200 hover:border-primary-500 rounded-xl cursor-pointer bg-gray-50/50 hover:bg-gray-50 transition-all">
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <FiUploadCloud className="w-7 h-7 text-gray-400 mb-1.5" />
+                    <p className="text-xs text-gray-500 font-medium">
+                      {uploading ? 'Uploading...' : 'Click to upload category image'}
+                    </p>
+                    <p className="text-[10px] text-gray-400 mt-0.5">PNG, JPG, WEBP up to 5MB</p>
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    disabled={uploading}
+                    className="hidden"
+                  />
+                </label>
+              )}
             </div>
 
             <div>

@@ -15,7 +15,7 @@ const ProductDetails = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { addToCart, isInCart } = useCart();
-  const { isAuthenticated } = useUser();
+  const { isAuthenticated, loading: userLoading } = useUser();
 
   const [product, setProduct] = useState(null);
   const [selectedPackage, setSelectedPackage] = useState(null);
@@ -44,19 +44,6 @@ const ProductDetails = () => {
         setProduct(res.data);
         setQuantity(1);
         setSelectedPackage(res.data.packageOptions && res.data.packageOptions.length > 0 ? res.data.packageOptions.find(o => o.stock > 0 && o.status !== 'disabled') || res.data.packageOptions[0] : null);
-
-        // Load wishlist status
-        if (isAuthenticated) {
-          try {
-            const wishRes = await wishlistApi.get();
-            const inWishlist = (wishRes.data || []).some(
-              (item) => item.product?._id === res.data?._id || item.product === res.data?._id
-            );
-            setWishlisted(inWishlist);
-          } catch (e) {
-            console.error('Error fetching wishlist status:', e);
-          }
-        }
 
         // Load reviews
         try {
@@ -96,6 +83,30 @@ const ProductDetails = () => {
       reloadReviews();
     }
   }, [sortBy, product?._id]);
+
+  // Check wishlist status when product & auth state are ready
+  useEffect(() => {
+    let isMounted = true;
+    const checkWishlistStatus = async () => {
+      if (isAuthenticated && !userLoading && product?._id) {
+        try {
+          const wishRes = await wishlistApi.get();
+          if (isMounted) {
+            const inWishlist = (wishRes.data || []).some(
+              (item) => item.product?._id === product._id || item.product === product._id
+            );
+            setWishlisted(inWishlist);
+          }
+        } catch {
+          if (isMounted) setWishlisted(false);
+        }
+      } else if (!isAuthenticated && !userLoading) {
+        if (isMounted) setWishlisted(false);
+      }
+    };
+    checkWishlistStatus();
+    return () => { isMounted = false; };
+  }, [isAuthenticated, userLoading, product?._id]);
 
   const handleWishlistToggle = async () => {
     if (!isAuthenticated) {

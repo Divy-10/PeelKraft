@@ -9,7 +9,7 @@ import { useUser } from '../../context/UserContext';
 const navLinks = [
   { name: 'Home', path: '/' },
   { name: 'About', path: '/about' },
-  { name: 'Products', path: '/products' },
+  { name: 'Shop', path: '/products' },
   { name: 'Sustainability', path: '/sustainability' },
   { name: 'Blog', path: '/blogs' },
   { name: 'Contact', path: '/contact' },

@@ -12,7 +12,7 @@ import Breadcrumbs from '../../components/seo/Breadcrumbs';
 
 const Checkout = () => {
   const { items, getSubtotal, clearCart, getItemCount } = useCart();
-  const { user, isAuthenticated } = useUser();
+  const { user, isAuthenticated, loading: userLoading } = useUser();
   const { settings } = useSettings();
   const navigate = useNavigate();
 
@@ -78,12 +78,13 @@ const Checkout = () => {
   const total = subtotal - discount + shipping;
 
   useEffect(() => {
+    if (userLoading) return;
     if (!isAuthenticated) {
       navigate('/login', { state: { from: '/checkout' } });
     } else if (items.length === 0) {
       navigate('/cart');
     }
-  }, [isAuthenticated, items.length, navigate]);
+  }, [isAuthenticated, userLoading, items.length, navigate]);
 
   useEffect(() => {
     const fetchActiveCoupons = async () => {

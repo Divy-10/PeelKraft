@@ -13,16 +13,19 @@ const axiosInstance = axios.create({
 // Request interceptor — attach auth token
 axiosInstance.interceptors.request.use(
   (config) => {
-    const isUserRoute = 
-      config.url.startsWith('/users') || 
-      config.url.startsWith('/wishlist') || 
-      config.url.startsWith('/payments') ||
-      (config.url.startsWith('/orders') && !config.url.includes('/admin')) ||
-      (config.url.startsWith('/reviews') && config.method !== 'get' && !window.location.pathname.startsWith('/admin'));
+    const rawUrl = config.url || '';
+    // Normalize URL path by stripping domain and /api prefix if present
+    const urlPath = rawUrl.replace(/^https?:\/\/[^\/]+/, '').replace(/^\/api/, '');
 
-    const token = isUserRoute 
-      ? (localStorage.getItem('pk_user_token') || localStorage.getItem('peelkraft_token'))
-      : (localStorage.getItem('peelkraft_token') || localStorage.getItem('pk_user_token'));
+    const isAdminRequest = 
+      window.location.pathname.startsWith('/admin') ||
+      urlPath.startsWith('/auth') ||
+      urlPath.startsWith('/dashboard') ||
+      urlPath.includes('/admin');
+
+    const token = isAdminRequest 
+      ? (localStorage.getItem('peelkraft_token') || localStorage.getItem('pk_user_token'))
+      : localStorage.getItem('pk_user_token');
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -43,7 +46,8 @@ axiosInstance.interceptors.response.use(
         if (isAdminRoute) {
           localStorage.removeItem('peelkraft_token');
           localStorage.removeItem('peelkraft_admin');
-          window.location.href = '/admin/login';
+        } else {
+          localStorage.removeItem('pk_user_token');
         }
       }
       return Promise.reject(error.response.data);

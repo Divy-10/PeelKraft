@@ -28,8 +28,8 @@ const About = () => (
           <motion.div initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
             <span className="inline-block px-4 py-1.5 bg-cream-100 border border-cream-200 text-primary-500 font-sans font-bold text-[10px] uppercase tracking-wider rounded-full mb-6">About PeelKraft</span>
             <h1 className="text-4xl md:text-5xl font-serif text-dark mb-6 leading-tight">Turning Orange Peels into <span className="text-primary-500 italic font-normal">Gold</span></h1>
-            <p className="text-gray-500 font-sans leading-relaxed mb-6 text-sm tracking-wide">PeelKraft is a sustainability-driven startup built on the principles of the circular economy. As a subbrand of JuiceTap, India's rapidly growing network of automated fresh orange juice vending machines, PeelKraft transforms premium orange peels into innovative, high-value consumer products.</p>
-            <p className="text-gray-500 font-sans leading-relaxed text-sm tracking-wide">By leveraging a unique supply chain advantage, PeelKraft converts what is traditionally considered waste into differentiated products across the confectionery, wellness, and functional snacking categories.</p>
+            <p className="text-gray-500 font-sans leading-relaxed mb-6 text-sm tracking-wide">PeelKraft is a startup built on the principles of the circular economy. As a subbrand of JuiceTap, India's growing network of automated fresh orange juice vending machines, PeelKraft transforms premium orange peels into innovative, high-value consumer products.</p>
+            <p className="text-gray-500 font-sans leading-relaxed text-sm tracking-wide">By leveraging a unique supply chain advantage, PeelKraft converts overlooked orange peel into differentiated products across the confectionery and gourmet snacking categories.</p>
           </motion.div>
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }}>
             <img

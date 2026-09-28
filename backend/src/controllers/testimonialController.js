@@ -23,6 +23,7 @@ export const getTestimonials = asyncHandler(async (req, res) => {
       url: r.profilePhoto || '',
       publicId: '',
     },
+    images: r.images || [],
     rating: r.rating || 5,
     featured: true,
     status: 'active',

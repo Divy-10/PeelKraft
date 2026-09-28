@@ -80,6 +80,7 @@ const Home = () => {
   const [testimonials, setTestimonials] = useState([]);
   const [openFaq, setOpenFaq] = useState(null);
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -224,38 +225,38 @@ const Home = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="lg:col-span-6 max-w-2xl order-2 lg:order-1"
+              className="lg:col-span-6 order-2 lg:order-1 flex flex-col justify-center"
             >
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-cream-200/50 shadow-sm mb-6">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-800 animate-pulse" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500 font-sans">100% Natural Innovation</span>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-cream-200 shadow-xs mb-5 w-fit">
+                <span className="w-2 h-2 rounded-full bg-green-600 animate-pulse" />
+                <span className="text-[11px] font-bold uppercase tracking-wider text-gray-600 font-sans">The zest of orange in every bite.</span>
               </div>
 
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.2rem] leading-[1.1] font-poppins font-black text-dark mb-6 tracking-tight text-balance">
-                Nature's <br />
-                <span className="text-primary-500 relative inline-block mt-2">
+              <h1 className="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-poppins font-black text-dark mb-5 tracking-tight leading-[1.15]">
+                Nature's{' '}
+                <span className="text-primary-500 relative inline-block">
                   Hidden Treasure
-                  <svg className="absolute left-0 -bottom-2 w-full h-3 text-primary-500/30" viewBox="0 0 100 10" preserveAspectRatio="none">
+                  <svg className="absolute left-0 -bottom-1.5 w-full h-2.5 text-primary-500/30" viewBox="0 0 100 10" preserveAspectRatio="none">
                     <path d="M0,5 Q50,10 100,5" stroke="currentColor" strokeWidth="6" fill="none" strokeLinecap="round" />
                   </svg>
                 </span>
               </h1>
 
-              <p className="text-sm md:text-base text-gray-500 font-sans mb-10 max-w-md leading-relaxed tracking-wide">
-                Discover the power of naturally crafted orange peel products made with sustainability, nutrition, and exceptional taste in every bite.
+              <p className="text-sm sm:text-base text-gray-500 font-sans mb-8 max-w-lg leading-relaxed">
+                Every JuiceTap vending machine squeezes fresh Valencia oranges for juice — and PeelKraft picks up where that ends. We reclaim the peel and craft it into gourmet citrus confectionery: Candied Orange Peel, Orangette (Coming Soon), and Cacaote Dragees (Coming Soon). One machine's overlooked byproduct, reinvented as three gourmet treats.
               </p>
 
-              <div className="flex flex-wrap gap-4 items-center">
+              <div className="flex flex-wrap gap-4 items-center mb-2">
                 <Link
                   to="/products"
-                  className="flex items-center gap-2 px-8 py-3.5 bg-dark text-white rounded-full text-xs font-semibold font-sans tracking-widest uppercase hover:bg-green-800 hover:-translate-y-0.5 transition-all duration-300 shadow-premium"
+                  className="flex items-center gap-2 px-7 py-3.5 bg-dark text-white rounded-full text-xs font-semibold font-sans tracking-wider uppercase hover:bg-green-800 hover:-translate-y-0.5 transition-all duration-300 shadow-md"
                 >
                   <FiShoppingCart className="w-4 h-4" />
                   Shop Now
                 </Link>
                 <Link
                   to="/about"
-                  className="px-8 py-3.5 bg-transparent border border-cream-200 hover:border-dark hover:bg-cream-50 rounded-full text-xs font-semibold font-sans tracking-widest uppercase hover:-translate-y-0.5 transition-all duration-300"
+                  className="px-7 py-3.5 bg-transparent border border-cream-300 hover:border-dark hover:bg-white rounded-full text-xs font-semibold font-sans tracking-wider uppercase hover:-translate-y-0.5 transition-all duration-300"
                 >
                   Our Story
                 </Link>
@@ -296,12 +297,12 @@ const Home = () => {
               </div>
             </motion.div>
 
-            {/* Premium Product Image */}
+            {/* Premium Product Image / Video */}
             <motion.div
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, delay: 0.2 }}
-              className="lg:col-span-6 flex justify-center lg:justify-end order-1 lg:order-2"
+              className="lg:col-span-6 flex justify-center lg:justify-end order-1 lg:order-2 lg:-mt-10 xl:-mt-14"
             >
               <div className="relative w-full max-w-xl aspect-[4/3] rounded-3xl overflow-hidden group bg-transparent border-4 border-white shadow-premium">
                 <video
@@ -610,7 +611,7 @@ const Home = () => {
         <div className="container-custom">
           <SectionHeading
             badge="Testimonials"
-            title={<>What Our Customers <span className="text-primary-500 italic font-normal">Say</span></>}
+            title={<>What did our first few customers <span className="text-primary-500 italic font-normal">say?</span></>}
           />
 
           <div className="flex justify-center mt-2 mb-10">
@@ -640,17 +641,69 @@ const Home = () => {
             >
               {testimonials.map((t, i) => (
                 <SwiperSlide key={t._id || i}>
-                  <div className="card-premium h-full flex flex-col">
-                    <div className="flex gap-1 mb-4">
-                      {[...Array(5)].map((_, s) => (
-                        <FiStar key={s} className={`w-4 h-4 ${s < t.rating ? 'text-gold-500 fill-gold-500' : 'text-gray-200'}`} />
-                      ))}
+                  <div className="card-premium h-full flex flex-col p-5 bg-white rounded-3xl border border-cream-200 shadow-sm hover:shadow-md transition-all group">
+                    {/* 1:1 Ratio Photo Box on Top */}
+                    <div className="w-full aspect-square rounded-2xl overflow-hidden bg-cream-50 border border-cream-100 mb-4 relative shadow-xs">
+                      {t.images && t.images.length > 0 ? (
+                        <div className="relative w-full h-full cursor-pointer overflow-hidden" onClick={() => setPreviewImage(getImageUrl(t.images[0]))}>
+                          <img
+                            src={getImageUrl(t.images[0])}
+                            alt={t.name}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                          />
+                          {t.images.length > 1 && (
+                            <div className="absolute bottom-2.5 right-2.5 px-2.5 py-1 bg-black/60 backdrop-blur-xs text-white text-[10px] font-bold rounded-full">
+                              +{t.images.length - 1} photos
+                            </div>
+                          )}
+                        </div>
+                      ) : t.avatar?.url ? (
+                        <div className="w-full h-full cursor-pointer overflow-hidden" onClick={() => setPreviewImage(getImageUrl(t.avatar.url))}>
+                          <img
+                            src={getImageUrl(t.avatar.url)}
+                            alt={t.name}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br from-cream-100 to-primary-50/30">
+                          <div className="w-16 h-16 rounded-full bg-primary-100 text-primary-700 font-bold text-xl flex items-center justify-center border border-primary-200 mb-2 shadow-xs">
+                            {getInitials(t.name)}
+                          </div>
+                          <span className="text-xs font-semibold text-gray-500">{t.name}</span>
+                        </div>
+                      )}
                     </div>
-                    <p className="text-gray-500 font-inter italic mb-6 line-clamp-4 text-sm">"{t.content}"</p>
-                    <div className="flex items-center gap-3 mt-auto">
+
+                    {/* Review Details Below Photo Box */}
+                    <div className="flex flex-col flex-1 justify-between space-y-3">
                       <div>
-                        <p className="font-semibold text-sm text-dark font-poppins">{t.name}</p>
-                        <p className="text-xs text-gray-400 font-inter">{t.designation || 'Verified Reviewer'}</p>
+                        {/* Rating Stars */}
+                        <div className="flex gap-1 mb-2">
+                          {[...Array(5)].map((_, s) => (
+                            <FiStar key={s} className={`w-4 h-4 ${s < t.rating ? 'text-amber-400 fill-amber-400' : 'text-gray-200'}`} />
+                          ))}
+                        </div>
+
+                        {/* Review Content */}
+                        <p className="text-gray-600 font-inter text-sm leading-relaxed line-clamp-3 italic mb-2">
+                          "{t.content}"
+                        </p>
+                      </div>
+
+                      {/* Reviewer Profile Details */}
+                      <div className="flex items-center gap-3 pt-3 border-t border-cream-100 mt-auto">
+                        {t.avatar?.url ? (
+                          <img src={getImageUrl(t.avatar.url)} alt={t.name} className="w-9 h-9 rounded-full object-cover border border-cream-200 shrink-0" />
+                        ) : (
+                          <div className="w-9 h-9 rounded-full bg-primary-100 text-primary-700 font-bold text-xs flex items-center justify-center border border-primary-200 shrink-0">
+                            {getInitials(t.name)}
+                          </div>
+                        )}
+                        <div className="overflow-hidden">
+                          <p className="font-semibold text-sm text-dark font-poppins truncate">{t.name}</p>
+                          <p className="text-[11px] text-gray-400 font-inter truncate">{t.designation || 'Verified Customer'}</p>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -772,99 +825,22 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ===== AMAZON STORE SHOWCASE SECTION ===== */}
-      <section className="py-12 md:py-16 bg-dark text-white relative overflow-hidden">
-        <div className="container-custom relative z-10">
-          <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-            {/* Left Column: Heading & Branding */}
-            <div className="lg:col-span-6 space-y-6 text-center lg:text-left">
-              <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/5 text-primary-500 font-sans font-semibold text-[10px] uppercase tracking-wider rounded-full border border-white/10">
-                <FiShoppingCart className="w-3.5 h-3.5" />
-                Official Amazon Store
-              </span>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-white leading-tight">
-                Shop PeelKraft™ on Amazon
-              </h2>
-              <p className="text-gray-400 font-sans text-xs md:text-sm leading-relaxed tracking-wide max-w-md mx-auto lg:mx-0">
-                Get fast & reliable delivery directly to your doorstep. Experience 100% natural, premium citrus peel products with Amazon Prime delivery.
-              </p>
-              <div className="pt-4 flex flex-wrap gap-4 justify-center lg:justify-start">
-                <a
-                  href={settings?.amazonStoreUrl || "https://www.amazon.in"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white rounded-full px-6 py-3.5 text-xs font-semibold font-sans tracking-wider uppercase transition shadow-md"
-                >
-                  <FiShoppingCart className="w-4 h-4" />
-                  Visit Amazon Store
-                </a>
-              </div>
-            </div>
+      <WriteReviewModal isOpen={reviewModalOpen} onClose={() => setReviewModalOpen(false)} />
 
-            {/* Right Column: Featured Products Available on Amazon */}
-            <div className="lg:col-span-6">
-              {(() => {
-                const amazonProducts = products.filter(p => !p.isUpcoming && p.status === 'active');
-                if (amazonProducts.length > 0) {
-                  return (
-                    <div className={amazonProducts.length === 1 ? "max-w-md mx-auto" : "grid sm:grid-cols-2 gap-6"}>
-                      {amazonProducts.slice(0, 2).map((prod) => (
-                        <div key={prod._id} className="bg-white/5 border border-white/10 rounded-2xl p-5 flex flex-col justify-between group hover:border-primary-500/20 transition-all duration-300">
-                          <div className="flex items-center gap-4 mb-6">
-                            <img
-                              src={getImageUrl(prod.thumbnail || prod.featuredImage)}
-                              alt={prod.name}
-                              className="w-14 h-14 object-contain rounded-xl bg-white p-2"
-                            />
-                            <div>
-                              <span className="text-[9px] uppercase font-bold text-primary-500 tracking-wider">
-                                Amazon Fulfilled
-                              </span>
-                              <h4 className="font-serif text-sm text-white line-clamp-1 mt-1">
-                                {prod.name}
-                              </h4>
-                              <p className="text-[10px] text-gray-400 font-sans uppercase tracking-wider mt-1">{prod.weight || 'Premium Pack'}</p>
-                            </div>
-                          </div>
-                          <a
-                            href={prod.amazonLink || settings?.amazonStoreUrl || "https://www.amazon.in"}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full py-2.5 bg-white hover:bg-cream-100 text-dark font-sans font-semibold text-[10px] uppercase tracking-wider rounded-full flex items-center justify-center gap-2 transition-colors"
-                          >
-                            <FiShoppingCart className="w-3.5 h-3.5" />
-                            Buy Now
-                          </a>
-                        </div>
-                      ))}
-                    </div>
-                  );
-                }
-                return (
-                  <div className="text-center p-8 md:p-12 bg-white/5 border border-white/10 rounded-3xl backdrop-blur-sm max-w-md mx-auto">
-                    <div className="w-12 h-12 rounded-full bg-primary-500/10 flex items-center justify-center mx-auto mb-6">
-                      <FiShoppingCart className="w-5 h-5 text-primary-500" />
-                    </div>
-                    <h3 className="font-serif text-lg text-white mb-2">Explore the Full Collection</h3>
-                    <p className="text-gray-400 font-sans text-xs leading-relaxed mb-6">
-                      Our premium range of organic orange peel products is available with fast Prime delivery on Amazon India.
-                    </p>
-                    <a
-                      href={settings?.amazonStoreUrl || "https://www.amazon.in"}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 bg-white hover:bg-cream-100 text-dark rounded-full px-6 py-2.5 text-xs font-semibold font-sans tracking-wider uppercase transition shadow-md"
-                    >
-                      Browse Amazon Catalog
-                    </a>
-                  </div>
-                );
-              })()}
-            </div>
+      {/* Review Image Preview Lightbox */}
+      {previewImage && (
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setPreviewImage(null)}>
+          <div className="relative max-w-3xl max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
+            <img src={previewImage} alt="Full review image" className="max-w-full max-h-[85vh] rounded-2xl object-contain shadow-2xl" />
+            <button
+              onClick={() => setPreviewImage(null)}
+              className="absolute -top-3 -right-3 bg-white text-dark rounded-full w-8 h-8 flex items-center justify-center shadow-lg font-bold hover:bg-gray-100 transition"
+            >
+              ✕
+            </button>
           </div>
         </div>
-      </section>
-      <WriteReviewModal isOpen={reviewModalOpen} onClose={() => setReviewModalOpen(false)} />
+      )}
     </>
   );
 };

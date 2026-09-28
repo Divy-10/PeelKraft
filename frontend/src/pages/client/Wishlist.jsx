@@ -10,14 +10,16 @@ import SEOHead from '../../components/seo/SEOHead';
 import Breadcrumbs from '../../components/seo/Breadcrumbs';
 
 const Wishlist = () => {
-  const { token, isAuthenticated } = useUser();
+  const { token, isAuthenticated, loading: userLoading } = useUser();
   const { addToCart } = useCart();
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!token) {
+    if (userLoading) return;
+
+    if (!token || !isAuthenticated) {
       navigate('/login');
       return;
     }
@@ -32,7 +34,7 @@ const Wishlist = () => {
       }
     };
     fetchWishlist();
-  }, [token, navigate]);
+  }, [userLoading, token, isAuthenticated, navigate]);
 
   const handleRemove = async (productId) => {
     try {
