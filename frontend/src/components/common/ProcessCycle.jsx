@@ -222,24 +222,14 @@ export const ProcessCycle = () => {
                 />
               )}
 
-              {/* Glowing Traveling Citrus Particle */}
+              {/* Traveling Citrus Particle Dot */}
               {!shouldReduceMotion && (
-                <g>
-                  <circle
-                    cx={particleX}
-                    cy={particleY}
-                    r="2.5"
-                    fill="#F7931E"
-                    opacity="0.4"
-                    className="animate-ping"
-                  />
-                  <circle
-                    cx={particleX}
-                    cy={particleY}
-                    r="1.5"
-                    fill="#F7931E"
-                  />
-                </g>
+                <circle
+                  cx={particleX}
+                  cy={particleY}
+                  r="2.5"
+                  fill="#F7931E"
+                />
               )}
             </svg>
 
@@ -291,14 +281,6 @@ export const ProcessCycle = () => {
                 >
                   {/* Orbit Node Dot */}
                   <div className="relative flex items-center justify-center mb-1">
-                    {isActive && (
-                      <motion.div
-                        layoutId="activeGlowCompact"
-                        className="absolute w-10 h-10 rounded-full bg-primary-500/20 border border-primary-500/50"
-                        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                      />
-                    )}
-                    
                     <div
                       className={`w-7 h-7 lg:w-8 lg:h-8 rounded-full flex items-center justify-center font-serif text-xs font-semibold transition-all duration-500 border ${
                         isActive
