@@ -224,13 +224,22 @@ export const ProcessCycle = () => {
 
               {/* Glowing Traveling Citrus Particle */}
               {!shouldReduceMotion && (
-                <circle
-                  cx={particleX}
-                  cy={particleY}
-                  r="2.5"
-                  fill="#F7931E"
-                  className="shadow-sm transition-all duration-75"
-                />
+                <g>
+                  <circle
+                    cx={particleX}
+                    cy={particleY}
+                    r="2.5"
+                    fill="#F7931E"
+                    opacity="0.4"
+                    className="animate-ping"
+                  />
+                  <circle
+                    cx={particleX}
+                    cy={particleY}
+                    r="1.5"
+                    fill="#F7931E"
+                  />
+                </g>
               )}
             </svg>
 
