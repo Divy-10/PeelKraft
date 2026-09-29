@@ -7,6 +7,7 @@ import { FiArrowRight, FiShoppingCart, FiStar, FiHeart, FiAward, FiRefreshCw, Fi
 import { FaLeaf as FiLeaf } from 'react-icons/fa';
 import SEOHead from '../../components/seo/SEOHead';
 import WriteReviewModal from '../../components/common/WriteReviewModal';
+import { ProcessCycle } from '../../components/common/ProcessCycle';
 import { productApi, blogApi, faqApi, testimonialApi } from '../../api';
 import { formatDate, truncateText, stripHtml, getImageUrl, getInitials } from '../../utils';
 import { useSettings } from '../../context/SettingsContext';
@@ -544,39 +545,7 @@ const Home = () => {
       </section>
 
       {/* ===== MANUFACTURING PROCESS ===== */}
-      <section className="py-12 md:py-16 bg-cream-50/50 border-t border-cream-200/40 relative overflow-hidden">
-        <div className="container-custom relative z-10">
-          <SectionHeading
-            badge="Our Process"
-            title={<>How We <span className="text-primary-500 italic font-normal">Craft</span> Perfection</>}
-            subtitle="Every PeelKraft product goes through a meticulous 5-step process"
-          />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {processSteps.map((step, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="relative bg-white border border-cream-200/50 rounded-2xl p-8 hover:shadow-premium transition-all duration-300 flex flex-col h-full group"
-              >
-                <span className="text-5xl font-serif text-cream-200/50 absolute top-4 right-6 transition-colors group-hover:text-primary-100/50">
-                  {step.num}
-                </span>
-                <div className="flex-1">
-                  <h3 className="font-serif text-dark text-lg mb-1 relative z-10">{step.title}</h3>
-                  {step.subtitle && (
-                    <p className="text-[10px] text-primary-500 font-semibold font-sans mb-3 relative z-10 uppercase tracking-wider">{step.subtitle}</p>
-                  )}
-                  <p className="text-gray-500 font-sans text-xs md:text-sm relative z-10 leading-relaxed mt-3">{step.desc}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <ProcessCycle />
 
       {/* ===== STATISTICS ===== */}
       <section className="py-10 md:py-12 bg-white border-y border-cream-200/40">
